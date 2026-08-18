@@ -1,0 +1,375 @@
+/* =========================================================
+   ESTATE PRIMA — Design System
+   Palette: navy (#16324f) + gold (#c9a24b)
+   Type: Fraunces (display) + Manrope (body)
+   Signature: blueprint corner-tick accents
+   ========================================================= */
+
+:root {
+    --navy-950: #0d1f33;
+    --navy-900: #16324f;
+    --navy-700: #24486d;
+    --gold-500: #c9a24b;
+    --gold-300: #e0c179;
+    --cream-50:  #f7f5f0;
+    --ink-900:  #20242b;
+    --ink-500:  #6b7280;
+}
+
+body {
+    font-family: 'Manrope', sans-serif;
+    color: var(--ink-900);
+    background: var(--cream-50);
+}
+
+.font-display { font-family: 'Fraunces', serif; }
+.text-gold    { color: var(--gold-500); }
+.bg-navy      { background-color: var(--navy-900); }
+.bg-navy-950  { background-color: var(--navy-950); }
+
+/* ---------- Navbar ---------- */
+.navbar-estate { background-color: var(--navy-900); padding: 1.1rem 0; }
+.navbar-estate .navbar-brand {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.5rem;
+    letter-spacing: 0.02em;
+    color: #fff;
+}
+.navbar-estate .navbar-brand .accent { color: var(--gold-500); }
+.navbar-estate .nav-link {
+    color: rgba(255,255,255,0.82);
+    font-weight: 600;
+    font-size: 0.92rem;
+    margin: 0 0.65rem;
+}
+.navbar-estate .nav-link:hover,
+.navbar-estate .nav-link.active { color: var(--gold-300); }
+
+.btn-gold {
+    background-color: var(--gold-500);
+    border-color: var(--gold-500);
+    color: var(--navy-950);
+    font-weight: 700;
+}
+.btn-gold:hover { background-color: var(--gold-300); border-color: var(--gold-300); color: var(--navy-950); }
+
+.btn-outline-gold { border: 1.5px solid var(--gold-500); color: var(--gold-300); font-weight: 600; }
+.btn-outline-gold:hover { background-color: var(--gold-500); color: var(--navy-950); }
+
+.btn-outline-navy { border: 1.5px solid var(--navy-900); color: var(--navy-900); font-weight: 600; }
+.btn-outline-navy:hover { background-color: var(--navy-900); color: #fff; }
+
+/* ---------- Blueprint corner-tick (signature element) ---------- */
+.corner-tick { position: absolute; width: 18px; height: 18px; pointer-events: none; }
+.corner-tick::before, .corner-tick::after { content: ""; position: absolute; background: var(--gold-500); }
+.corner-tick::before { width: 100%; height: 2px; }
+.corner-tick::after  { width: 2px; height: 100%; }
+.corner-tick.tl { top: -2px; left: -2px; }
+.corner-tick.tr { top: -2px; right: -2px; }
+.corner-tick.tr::before { right: 0; }
+.corner-tick.tr::after  { right: 0; }
+.corner-tick.bl { bottom: -2px; left: -2px; }
+.corner-tick.bl::before { bottom: 0; }
+.corner-tick.bl::after  { bottom: 0; }
+.corner-tick.br { bottom: -2px; right: -2px; }
+.corner-tick.br::before { bottom: 0; right: 0; }
+.corner-tick.br::after  { bottom: 0; right: 0; }
+
+/* ---------- Form controls (dipakai di search card, sidebar filter, kontak, dst) ---------- */
+.field-panel .form-select,
+.field-panel .form-control,
+.field-panel textarea.form-control {
+    border: 1px solid #e3e1da;
+    border-radius: 3px;
+    padding: 0.55rem 0.75rem;
+    font-weight: 600;
+    color: var(--ink-900);
+}
+.field-panel .form-select:focus,
+.field-panel .form-control:focus {
+    border-color: var(--gold-500);
+    box-shadow: 0 0 0 0.2rem rgba(201,162,75,0.25);
+}
+.field-panel label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-500);
+    margin-bottom: 0.3rem;
+}
+
+/* ---------- Floating card (search box di hero) ---------- */
+.floating-card {
+    position: relative;
+    background: #fff;
+    border-radius: 4px;
+    padding: 1.75rem 1.75rem 1.5rem;
+    box-shadow: 0 24px 60px rgba(13,31,51,0.35);
+}
+
+/* ---------- Compact page header (halaman selain homepage) ---------- */
+.page-header {
+    background: var(--navy-950);
+    background-image: linear-gradient(135deg, var(--navy-950) 0%, var(--navy-900) 100%);
+    padding: 3.5rem 0 2.5rem;
+    position: relative;
+    overflow: hidden;
+}
+.page-header::after {
+    content: "";
+    position: absolute;
+    right: -60px; top: -60px;
+    width: 220px; height: 220px;
+    border: 1px solid rgba(201,162,75,0.18);
+    border-radius: 4px;
+    transform: rotate(12deg);
+}
+.page-header .eyebrow {
+    font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+    font-size: 0.76rem; color: var(--gold-300);
+}
+.page-header h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    color: #fff;
+    font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+}
+.page-header .breadcrumb-estate a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.85rem; }
+.page-header .breadcrumb-estate a:hover { color: var(--gold-300); }
+.page-header .breadcrumb-estate .sep { color: rgba(255,255,255,0.35); margin: 0 0.4rem; }
+.page-header .breadcrumb-estate .current { color: var(--gold-300); font-size: 0.85rem; }
+
+/* ---------- Stats band ---------- */
+.stats-band { background: var(--navy-950); padding: 2.75rem 0 2.25rem; }
+.stat-num { font-family: 'Fraunces', serif; font-weight: 600; font-size: 2.4rem; color: var(--gold-500); line-height: 1; }
+.stat-label { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.65); margin-top: 0.4rem; }
+
+/* ---------- Section heading ---------- */
+.section-eyebrow { font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; font-size: 0.76rem; color: var(--gold-500); }
+.section-title { font-family: 'Fraunces', serif; font-weight: 600; font-size: 2.1rem; color: var(--navy-900); }
+
+/* ---------- Sidebar filter (listing.php) ---------- */
+.sidebar-filter {
+    background: #fff;
+    border: 1px solid #ece9e1;
+    border-radius: 4px;
+    padding: 1.5rem;
+    position: sticky;
+    top: 100px;
+}
+.sidebar-filter h6 {
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-size: 0.76rem;
+    color: var(--navy-900);
+    border-bottom: 1px dashed #e3e1da;
+    padding-bottom: 0.65rem;
+    margin-bottom: 1rem;
+}
+
+/* ---------- Property card ---------- */
+.property-card {
+    position: relative;
+    background: #fff;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid #ece9e1;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    height: 100%;
+}
+.property-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(13,31,51,0.15); }
+.property-card .corner-tick { opacity: 0; transition: opacity 0.25s ease; }
+.property-card:hover .corner-tick { opacity: 1; }
+.property-card .thumb { height: 210px; background-size: cover; background-position: center; position: relative; }
+.property-card .price-tag {
+    position: absolute; bottom: 0.75rem; left: 0.75rem;
+    background: var(--navy-950); color: var(--gold-300);
+    font-family: 'Fraunces', serif; font-weight: 600; font-size: 1rem;
+    padding: 0.35rem 0.75rem; border-radius: 3px;
+}
+.property-card .type-tag {
+    position: absolute; top: 0.75rem; left: 0.75rem;
+    background: rgba(255,255,255,0.92); color: var(--navy-900);
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 0.25rem 0.6rem; border-radius: 3px;
+}
+.property-card .status-tag.terjual {
+    position: absolute; top: 0.75rem; right: 0.75rem;
+    background: #b3402f; color: #fff;
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 0.25rem 0.6rem; border-radius: 3px;
+}
+.property-card .card-body h3 { font-family: 'Fraunces', serif; font-size: 1.15rem; font-weight: 600; color: var(--navy-900); }
+.property-card .location { color: var(--ink-500); font-size: 0.85rem; }
+.property-card .specs { font-size: 0.82rem; color: var(--ink-500); border-top: 1px dashed #e3e1da; padding-top: 0.65rem; margin-top: 0.65rem; }
+.property-card .specs i { color: var(--gold-500); margin-right: 0.25rem; }
+.property-card .stretched-link::after { z-index: 2; }
+
+/* ---------- Pagination ---------- */
+.pagination-estate { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.pagination-estate a {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 38px; height: 38px;
+    border: 1px solid #e3e1da; border-radius: 3px;
+    color: var(--navy-900); font-weight: 700; font-size: 0.88rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+.pagination-estate a:hover { border-color: var(--gold-500); color: var(--gold-500); }
+.pagination-estate a.active { background: var(--navy-900); border-color: var(--navy-900); color: #fff; }
+
+/* ---------- CTA banner ---------- */
+.cta-banner {
+    background: var(--navy-900);
+    border-radius: 6px;
+    padding: 3rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+}
+.cta-banner::after {
+    content: "";
+    position: absolute; inset: 0;
+    border: 1px solid rgba(201,162,75,0.35);
+    margin: 10px; border-radius: 3px;
+    pointer-events: none;
+}
+.cta-banner h2 { font-family: 'Fraunces', serif; font-weight: 600; color: #fff; }
+
+/* ---------- Info card (kontak.php) ---------- */
+.info-card {
+    background: var(--navy-900);
+    color: #fff;
+    border-radius: 4px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+.info-card::after {
+    content: "";
+    position: absolute; left: -40px; bottom: -40px;
+    width: 160px; height: 160px;
+    border: 1px solid rgba(201,162,75,0.2);
+    border-radius: 4px;
+    transform: rotate(-10deg);
+}
+.info-card .item { position: relative; z-index: 1; }
+.info-card .item i { color: var(--gold-500); font-size: 1.1rem; }
+.info-card h5 { font-family: 'Fraunces', serif; font-weight: 600; }
+
+/* ---------- Footer ---------- */
+.site-footer { background: var(--navy-950); color: rgba(255,255,255,0.65); padding-top: 3rem; }
+.site-footer h5 { font-family: 'Fraunces', serif; color: #fff; font-weight: 600; }
+.site-footer a { color: rgba(255,255,255,0.65); text-decoration: none; font-size: 0.92rem; }
+.site-footer a:hover { color: var(--gold-300); }
+.site-footer hr { border-color: rgba(255,255,255,0.12); }
+
+/* ---------- Alerts (pesan sukses/error, dipakai banyak halaman) ---------- */
+.alert-estate-success { background: #eaf4ec; border: 1px solid #bfe0c6; color: #1e5c2c; border-radius: 4px; }
+.alert-estate-error   { background: #fbeceb; border: 1px solid #f0bdb9; color: #8a2c22; border-radius: 4px; }
+
+/* ---------- Detail properti: galeri ---------- */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 200px 100px;
+    gap: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+.gallery-grid .gallery-main {
+    grid-column: 1 / 5;
+    grid-row: 1 / 2;
+    background-size: cover;
+    background-position: center;
+}
+.gallery-grid .gallery-thumb {
+    grid-row: 2 / 3;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+.gallery-grid .gallery-thumb.more::after {
+    content: attr(data-more);
+    position: absolute; inset: 0;
+    background: rgba(13,31,51,0.65);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.9rem;
+}
+
+/* ---------- Detail properti: badge status ---------- */
+.badge-status {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 0.35rem 0.75rem; border-radius: 3px;
+}
+.badge-status.tersedia { background: #eaf4ec; color: #1e5c2c; }
+.badge-status.terjual  { background: #fbeceb; color: #8a2c22; }
+
+/* ---------- Detail properti: fasilitas ---------- */
+.facility-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+}
+.facility-list .facility-item {
+    display: flex; align-items: center; gap: 0.6rem;
+    background: #fff; border: 1px solid #ece9e1; border-radius: 4px;
+    padding: 0.85rem 1rem;
+}
+.facility-list .facility-item i { color: var(--gold-500); font-size: 1.2rem; }
+.facility-list .facility-item .val { font-weight: 700; color: var(--navy-900); display: block; font-size: 0.95rem; }
+.facility-list .facility-item .lbl { font-size: 0.72rem; color: var(--ink-500); text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* ---------- Detail properti: kartu agen ---------- */
+.agent-card {
+    background: #fff;
+    border: 1px solid #ece9e1;
+    border-radius: 4px;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+}
+.agent-card .avatar {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--navy-900); color: var(--gold-300);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.3rem;
+    flex-shrink: 0;
+    background-size: cover; background-position: center;
+}
+.agent-card .name { font-family: 'Fraunces', serif; font-weight: 600; color: var(--navy-900); }
+.agent-card .role { font-size: 0.75rem; color: var(--gold-500); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+.agent-card .contact { font-size: 0.85rem; color: var(--ink-500); }
+
+/* ---------- Detail properti: action panel (sticky) ---------- */
+.action-panel {
+    background: #fff;
+    border: 1px solid #ece9e1;
+    border-radius: 4px;
+    padding: 1.75rem;
+    position: sticky;
+    top: 100px;
+}
+.action-panel .price {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.9rem;
+    color: var(--navy-900);
+}
+.btn-wishlist {
+    border: 1.5px solid var(--navy-900);
+    color: var(--navy-900);
+    font-weight: 700;
+    background: #fff;
+}
+.btn-wishlist:hover, .btn-wishlist.active {
+    background: var(--navy-900);
+    color: #fff;
+}
+.btn-wishlist.active i { color: #e0645a; }
