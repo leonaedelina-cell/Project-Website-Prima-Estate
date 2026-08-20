@@ -4,9 +4,10 @@
  * Pakai mysqli (procedural) untuk semua query, termasuk CRUD.
  */
 
-// Base URL project - dipakai biar redirect/link selalu benar dari kedalaman folder manapun
-// (pages/user/, pages/admin/, dst). SESUAIKAN kalau path project kamu beda.
-define('BASE_URL', '/belajar-php/9-Ujian-Project/Project-Website/');
+// Base URL project. Dibuat dari URL halaman yang sedang dibuka supaya project
+// tetap berjalan walau nama folder di Laragon/XAMPP berubah.
+$base_path = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/')), '/');
+define('BASE_URL', ($base_path === '' || $base_path === '/') ? '/' : $base_path . '/');
 
 $DB_HOST = 'localhost';
 $DB_NAME = 'estate_prima';

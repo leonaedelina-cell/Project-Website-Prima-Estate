@@ -4,8 +4,8 @@
  * Tambah/hapus 1 foto dari galeri_properti.
  */
 
-require_once __DIR__ . '/../../config/database.php';
-require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/includes/auth.php';
 
 cek_admin();
 

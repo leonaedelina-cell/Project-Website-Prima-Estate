@@ -4,8 +4,8 @@
  * Lihat semua pesan masuk dari form kontak.
  */
 
-require_once __DIR__ . '/../../config/database.php';
-require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/includes/auth.php';
 
 cek_admin();
 

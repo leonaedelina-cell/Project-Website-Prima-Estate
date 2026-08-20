@@ -44,7 +44,7 @@ $page_title = $page_title ?? 'Estate Prima';
                 </ul>
                 <div class="d-flex align-items-center gap-2">
                     <?php if ($user): ?>
-                        <a href="<?= BASE_URL ?><?= $user['role'] === 'admin' ? 'pages/admin/admin-dashboard.php' : 'pages/user/dashboard-user.php' ?>"
+                        <a href="<?= BASE_URL ?><?= $user['role'] === 'admin' ? 'admin-dashboard.php' : 'dashboard-user.php' ?>"
                            class="btn btn-outline-gold btn-sm px-3">
                             <i class="bi bi-person-circle me-1"></i> <?= htmlspecialchars($user['nama']) ?>
                         </a>

@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Redirect beda tujuan tergantung role
         if ($user['role'] === 'admin') {
-            header('Location: ' . BASE_URL . 'pages/admin/admin-dashboard.php');
+            header('Location: ' . BASE_URL . 'admin-dashboard.php');
         } else {
             header('Location: ' . BASE_URL . 'index.php');
         }

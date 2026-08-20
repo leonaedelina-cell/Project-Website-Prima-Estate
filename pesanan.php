@@ -4,8 +4,8 @@
  * Status transaksi/pengajuan pembelian milik user yang login.
  */
 
-require_once __DIR__ . '/../../config/database.php';
-require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/includes/auth.php';
 
 cek_login();
 

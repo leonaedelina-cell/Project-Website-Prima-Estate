@@ -1,0 +1,238 @@
+/* ===================================================
+   MOCKUP — Estate Prima (Website Jual/Sewa Properti)
+   CSS tambahan di atas Bootstrap, dipake di semua halaman mockup.
+   =================================================== */
+
+:root {
+    --navy: #16324f;
+    --navy-dark: #0f2338;
+    --navy-light: #1f4a73;
+    --gold: #c9a24b;
+    --gold-dark: #a9832f;
+    --bg: #f6f7f9;
+}
+
+body {
+    background-color: var(--bg);
+}
+
+/* Navbar publik */
+.navbar-estate {
+    background-color: var(--navy);
+}
+
+/* Navbar transparan yang nempel di atas hero foto (index.html) --
+   solid pas discroll dikit, biar teks navbar tetep kebaca di atas foto */
+.navbar-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    background: linear-gradient(to bottom, rgba(15, 35, 56, 0.85), transparent);
+}
+
+.btn-gold {
+    background-color: var(--gold);
+    border-color: var(--gold);
+    color: #1a1a1a;
+    font-weight: 600;
+}
+
+.btn-gold:hover {
+    background-color: var(--gold-dark);
+    border-color: var(--gold-dark);
+    color: #1a1a1a;
+}
+
+.btn-outline-gold {
+    border-color: var(--gold);
+    color: var(--gold);
+    font-weight: 600;
+}
+
+.btn-outline-gold:hover {
+    background-color: var(--gold);
+    color: #1a1a1a;
+}
+
+.text-navy {
+    color: var(--navy);
+}
+
+.text-gold {
+    color: var(--gold);
+}
+
+/* Hero */
+.hero-estate {
+    background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 55%, var(--navy-light) 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-estate::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 80% 20%, rgba(201, 162, 75, 0.15), transparent 45%);
+}
+
+/* Hero foto rumah full-bleed (index.html) -- beda dari hero-estate
+   (gradient polos, dipake di login/register/dashboard) */
+.hero-photo {
+    min-height: 640px;
+    background-image: url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&q=80");
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.hero-photo-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(15, 35, 56, 0.75) 0%, rgba(15, 35, 56, 0.55) 55%, rgba(15, 35, 56, 0.85) 100%);
+}
+
+/* Search bar mengambang di hero */
+.hero-search-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+}
+
+/* Kartu kategori properti (Rumah/Apartemen/Ruko/Tanah) */
+.category-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 24px 12px;
+    box-shadow: 0 2px 10px rgba(15, 35, 56, 0.06);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.category-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(15, 35, 56, 0.14);
+}
+
+/* Badge "Pilihan" di properti unggulan */
+.badge-featured {
+    background-color: var(--gold);
+    color: #1a1a1a;
+}
+
+/* Panel filter kiri di listing.html -- pola khas listing properti,
+   beda dari search-bar-di-atas yang dipake toko buku */
+.filter-panel {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 10px rgba(15, 35, 56, 0.06);
+    position: sticky;
+    top: 20px;
+}
+
+/* Kartu properti */
+.property-card {
+    border: none;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(15, 35, 56, 0.08);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.property-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(15, 35, 56, 0.16);
+}
+
+.property-card .card-img-top {
+    height: 210px;
+    object-fit: cover;
+}
+
+.property-price {
+    color: var(--navy);
+    font-weight: 700;
+    font-size: 1.15rem;
+}
+
+.property-badge-type {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+}
+
+.property-badge-hunian {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+}
+
+.property-spec {
+    color: #667085;
+    font-size: 0.85rem;
+}
+
+.property-spec i {
+    color: var(--navy-light);
+}
+
+/* Wishlist icon-only button, sama pola kayak Sesi 7/8 */
+.btn-wishlist {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1.5px solid #dee2e6;
+    background: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: #c0392b;
+}
+
+.btn-wishlist.active {
+    background: #c0392b;
+    color: #fff;
+    border-color: #c0392b;
+}
+
+/* Sidebar (user & admin) */
+.sidebar-estate {
+    width: 260px;
+    min-height: 100vh;
+    background-color: var(--navy-dark);
+    color: #fff;
+}
+
+.sidebar-estate .nav-link {
+    color: rgba(255, 255, 255, 0.65);
+    border-radius: 8px;
+}
+
+.sidebar-estate .nav-link.active {
+    background-color: var(--gold);
+    color: #1a1a1a;
+    font-weight: 600;
+}
+
+.sidebar-estate .nav-link:hover:not(.active) {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #fff;
+}
+
+/* Status badge transaksi */
+.badge-menunggu { background-color: #fff3cd; color: #7a5b00; }
+.badge-diproses { background-color: #cfe2ff; color: #0a3f8f; }
+.badge-lunas { background-color: #d1e7dd; color: #0f5132; }
+
+/* Stat card dashboard */
+.stat-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}

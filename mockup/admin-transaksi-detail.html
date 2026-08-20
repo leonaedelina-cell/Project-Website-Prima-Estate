@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Detail Transaksi — Estate Prima</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="d-flex">
+        <div class="sidebar-estate p-3 d-flex flex-column flex-shrink-0">
+            <a href="index.html" class="d-flex align-items-center gap-2 mb-1 text-white text-decoration-none fs-5 fw-bold">
+                <i class="bi bi-buildings text-gold"></i> Estate Prima
+            </a>
+            <div class="text-white-50 small mb-3">Admin Panel</div>
+            <hr class="mt-0 border-secondary">
+            <ul class="nav nav-pills flex-column gap-1 mb-auto">
+                <li class="nav-item"><a href="index.html" class="nav-link"><i class="bi bi-house me-1"></i> Kembali ke Home</a></li>
+                <li><hr class="border-secondary my-2"></li>
+                <li class="nav-item"><a href="admin-dashboard.html" class="nav-link"><i class="bi bi-speedometer2 me-1"></i> Dashboard</a></li>
+                <li class="nav-item"><a href="admin-properti.html" class="nav-link"><i class="bi bi-buildings me-1"></i> Kelola Properti</a></li>
+                <li class="nav-item"><a href="admin-transaksi.html" class="nav-link active"><i class="bi bi-receipt me-1"></i> Kelola Transaksi</a></li>
+                <li class="nav-item"><a href="admin-users.html" class="nav-link"><i class="bi bi-people me-1"></i> Kelola Users</a></li>
+            </ul>
+            <hr class="border-secondary">
+            <a href="index.html" class="btn btn-outline-danger btn-sm d-flex align-items-center justify-content-center gap-1">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </a>
+        </div>
+
+        <main class="flex-grow-1 p-4">
+            <a href="admin-transaksi.html" class="text-decoration-none text-muted small d-inline-flex align-items-center gap-1 mb-3">
+                <i class="bi bi-arrow-left"></i> Kembali ke Kelola Transaksi
+            </a>
+            <h1 class="h3 mb-4">Detail Transaksi #003</h1>
+
+            <div class="row g-4">
+                <!-- Info transaksi -->
+                <div class="col-lg-5">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <h6 class="text-muted text-uppercase small mb-3">Info Pengajuan</h6>
+                            <dl class="row mb-0">
+                                <dt class="col-5 text-muted">Pemesan</dt>
+                                <dd class="col-7">Vanya (081234567890)</dd>
+                                <dt class="col-5 text-muted">Properti</dt>
+                                <dd class="col-7">Villa Asri Puncak View</dd>
+                                <dt class="col-5 text-muted">Tipe</dt>
+                                <dd class="col-7">Beli</dd>
+                                <dt class="col-5 text-muted">Harga</dt>
+                                <dd class="col-7 fw-bold">Rp 3.200.000.000</dd>
+                                <dt class="col-5 text-muted">Diajukan</dt>
+                                <dd class="col-7">5 Agustus 2026</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form update -->
+                <div class="col-lg-7">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <h6 class="text-muted text-uppercase small mb-3">Update Pembayaran</h6>
+                            <form>
+                                <div class="mb-3">
+                                    <label class="form-label">Metode Pembayaran</label>
+                                    <select class="form-select">
+                                        <option value="">— Belum dipilih —</option>
+                                        <option>Transfer Bank</option>
+                                        <option>Cash</option>
+                                        <option>E-Wallet</option>
+                                        <option selected>QRIS</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Status Pembayaran</label>
+                                    <select class="form-select">
+                                        <option>Menunggu</option>
+                                        <option selected>Diproses</option>
+                                        <option>Lunas</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Link Bukti Pembayaran (opsional)</label>
+                                    <input type="text" class="form-control" placeholder="https://...">
+                                    <div class="form-text">Tempel link foto/screenshot bukti transfer, boleh dikosongin.</div>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Catatan Internal (opsional)</label>
+                                    <textarea class="form-control" rows="3" placeholder="Catatan buat tim internal, gak keliatan sama user"></textarea>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-success d-flex align-items-center gap-1"><i class="bi bi-check-lg"></i> Simpan</button>
+                                    <a href="admin-transaksi.html" class="btn btn-outline-secondary">Batal</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

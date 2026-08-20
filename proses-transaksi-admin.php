@@ -5,8 +5,8 @@
  * Kalau status diubah jadi 'disetujui'/'selesai', properti terkait otomatis ditandai 'terjual'.
  */
 
-require_once __DIR__ . '/../../config/database.php';
-require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/includes/auth.php';
 
 cek_admin();
 

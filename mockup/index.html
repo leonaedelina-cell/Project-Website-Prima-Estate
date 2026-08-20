@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Estate Prima — Mockup</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- ============ NAVBAR (transparan, nempel di atas hero foto) ============ -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-overlay">
+        <div class="container">
+            <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="index.html">
+                <i class="bi bi-house-door-fill text-gold"></i> Estate Prima
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link active fw-bold" href="index.html">Beranda</a></li>
+                    <li class="nav-item"><a class="nav-link" href="listing.html">Cari Properti</a></li>
+                    <li class="nav-item"><a class="nav-link" href="kontak.html">Kontak</a></li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item me-2"><a href="login.html" class="btn btn-outline-light btn-sm">Login</a></li>
+                    <li class="nav-item"><a href="register.html" class="btn btn-gold btn-sm">Register</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ============ HERO — foto rumah full-bleed, bukan gradient polos ============ -->
+    <section class="hero-photo d-flex align-items-center">
+        <div class="hero-photo-overlay"></div>
+        <div class="container position-relative text-white text-center py-5">
+            <span class="badge bg-white text-navy px-3 py-2 mb-3"><i class="bi bi-award"></i> Terpercaya sejak 2015</span>
+            <h1 class="display-4 fw-bold mb-3">Rumah Impian Kamu,<br>Tinggal Selangkah Lagi</h1>
+            <p class="fs-5 text-white-50 mb-5">Cari, wishlist, dan ajukan langsung ke tim sales kami via WhatsApp.</p>
+
+            <!-- Search card, overlap dikit ke bawah hero -->
+            <div class="hero-search-card p-3 p-md-4 mx-auto text-start" style="max-width: 950px;">
+                <form class="row g-2 align-items-end" action="listing.html">
+                    <div class="col-12 col-md-4">
+                        <label class="form-label small fw-semibold text-navy mb-1">Lokasi / Kata Kunci</label>
+                        <input type="text" class="form-control" placeholder="Cth: Bandung Utara">
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <label class="form-label small fw-semibold text-navy mb-1">Tipe Transaksi</label>
+                        <select class="form-select">
+                            <option>Semua</option>
+                            <option>Jual</option>
+                            <option>Sewa</option>
+                        </select>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <label class="form-label small fw-semibold text-navy mb-1">Kategori</label>
+                        <select class="form-select">
+                            <option>Semua</option>
+                            <option>Rumah</option>
+                            <option>Apartemen</option>
+                            <option>Ruko</option>
+                            <option>Tanah</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-2">
+                        <button type="submit" class="btn btn-gold w-100"><i class="bi bi-search"></i> Cari</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ KATEGORI PROPERTI ============ -->
+    <section class="py-5 bg-white">
+        <div class="container">
+            <div class="text-center mb-4">
+                <h2 class="fw-bold text-navy h4">Cari Berdasarkan Kategori</h2>
+            </div>
+            <div class="row g-3 text-center">
+                <div class="col-6 col-md-3">
+                    <a href="listing.html" class="category-card d-block text-decoration-none">
+                        <i class="bi bi-house-door fs-1 text-navy"></i>
+                        <div class="fw-semibold text-dark mt-2">Rumah</div>
+                        <div class="text-muted small">64 unit</div>
+                    </a>
+                </div>
+                <div class="col-6 col-md-3">
+                    <a href="listing.html" class="category-card d-block text-decoration-none">
+                        <i class="bi bi-building fs-1 text-navy"></i>
+                        <div class="fw-semibold text-dark mt-2">Apartemen</div>
+                        <div class="text-muted small">21 unit</div>
+                    </a>
+                </div>
+                <div class="col-6 col-md-3">
+                    <a href="listing.html" class="category-card d-block text-decoration-none">
+                        <i class="bi bi-shop fs-1 text-navy"></i>
+                        <div class="fw-semibold text-dark mt-2">Ruko</div>
+                        <div class="text-muted small">15 unit</div>
+                    </a>
+                </div>
+                <div class="col-6 col-md-3">
+                    <a href="listing.html" class="category-card d-block text-decoration-none">
+                        <i class="bi bi-map fs-1 text-navy"></i>
+                        <div class="fw-semibold text-dark mt-2">Tanah</div>
+                        <div class="text-muted small">9 unit</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ PROPERTI PILIHAN ============ -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="h3 fw-bold text-navy mb-0">Properti Pilihan</h2>
+                    <p class="text-muted small mb-0">Rekomendasi terbaik minggu ini</p>
+                </div>
+                <a href="listing.html" class="text-decoration-none">Lihat Semua &rarr;</a>
+            </div>
+            <div class="row g-4">
+                <div class="col-12 col-md-4">
+                    <div class="card property-card h-100">
+                        <div class="position-relative">
+                            <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=500&q=80" class="card-img-top" alt="Rumah">
+                            <div class="position-absolute top-0 start-0 m-2 d-flex gap-1">
+                                <span class="badge badge-featured"><i class="bi bi-star-fill"></i> Pilihan</span>
+                                <span class="badge" style="background-color:#16324f;">Dijual</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title mb-1">Rumah Modern Green Valley</h5>
+                            <p class="property-spec mb-2"><i class="bi bi-geo-alt"></i> Bandung Utara</p>
+                            <div class="d-flex gap-3 property-spec mb-2">
+                                <span><i class="bi bi-door-closed"></i> 3 KT</span>
+                                <span><i class="bi bi-droplet"></i> 2 KM</span>
+                                <span><i class="bi bi-arrows-angle-expand"></i> 120 m&sup2;</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="property-price">Rp 1,8 M</span>
+                                <button class="btn-wishlist"><i class="bi bi-heart"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="card property-card h-100">
+                        <div class="position-relative">
+                            <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=500&q=80" class="card-img-top" alt="Rumah">
+                            <div class="position-absolute top-0 start-0 m-2">
+                                <span class="badge" style="background-color:#c9a24b; color:#1a1a1a;">Disewa</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title mb-1">Town House Cluster Asri</h5>
+                            <p class="property-spec mb-2"><i class="bi bi-geo-alt"></i> Tangerang Selatan</p>
+                            <div class="d-flex gap-3 property-spec mb-2">
+                                <span><i class="bi bi-door-closed"></i> 2 KT</span>
+                                <span><i class="bi bi-droplet"></i> 1 KM</span>
+                                <span><i class="bi bi-arrows-angle-expand"></i> 72 m&sup2;</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="property-price">Rp 35 Jt/thn</span>
+                                <button class="btn-wishlist active"><i class="bi bi-heart-fill"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="card property-card h-100">
+                        <div class="position-relative">
+                            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=500&q=80" class="card-img-top" alt="Rumah">
+                            <div class="position-absolute top-0 start-0 m-2 d-flex gap-1">
+                                <span class="badge badge-featured"><i class="bi bi-star-fill"></i> Pilihan</span>
+                                <span class="badge" style="background-color:#16324f;">Dijual</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title mb-1">Villa Asri Puncak View</h5>
+                            <p class="property-spec mb-2"><i class="bi bi-geo-alt"></i> Bogor</p>
+                            <div class="d-flex gap-3 property-spec mb-2">
+                                <span><i class="bi bi-door-closed"></i> 4 KT</span>
+                                <span><i class="bi bi-droplet"></i> 3 KM</span>
+                                <span><i class="bi bi-arrows-angle-expand"></i> 210 m&sup2;</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="property-price">Rp 3,2 M</span>
+                                <button class="btn-wishlist"><i class="bi bi-heart"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ KENAPA ESTATE PRIMA — angka + alasan sejajar ============ -->
+    <section class="py-5 bg-white">
+        <div class="container">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-5">
+                    <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=700&q=80" class="img-fluid rounded-4 shadow-sm" alt="Tim sales">
+                </div>
+                <div class="col-lg-7">
+                    <h2 class="fw-bold text-navy mb-3">Kenapa Cari Rumah di Estate Prima</h2>
+                    <div class="d-flex gap-3 mb-3">
+                        <i class="bi bi-whatsapp fs-3 text-success flex-shrink-0"></i>
+                        <div>
+                            <div class="fw-semibold">Konsultasi Langsung via WhatsApp</div>
+                            <div class="text-muted small">Tertarik satu unit? Klik sekali, langsung terhubung ke sales.</div>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-3 mb-3">
+                        <i class="bi bi-shield-check fs-3 text-navy flex-shrink-0"></i>
+                        <div>
+                            <div class="fw-semibold">Transaksi Tercatat & Transparan</div>
+                            <div class="text-muted small">Status pembayaran (menunggu/diproses/lunas) bisa dipantau langsung.</div>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-3">
+                        <i class="bi bi-heart fs-3 text-gold flex-shrink-0"></i>
+                        <div>
+                            <div class="fw-semibold">Wishlist & Bandingkan</div>
+                            <div class="text-muted small">Simpen properti favorit, putuskan pas udah yakin.</div>
+                        </div>
+                    </div>
+
+                    <div class="row text-center mt-5 g-3">
+                        <div class="col-4">
+                            <div class="fs-3 fw-bold text-navy">120+</div>
+                            <div class="text-muted small">Properti</div>
+                        </div>
+                        <div class="col-4">
+                            <div class="fs-3 fw-bold text-navy">85+</div>
+                            <div class="text-muted small">Terjual/Tersewa</div>
+                        </div>
+                        <div class="col-4">
+                            <div class="fs-3 fw-bold text-navy">300+</div>
+                            <div class="text-muted small">Pelanggan Puas</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ CTA ============ -->
+    <section class="text-white text-center py-5" style="background-color:#16324f;">
+        <div class="container">
+            <h2 class="fw-bold mb-2">Siap Cari Rumah Impian?</h2>
+            <p class="text-white-50 mb-4">Daftar gratis, wishlist properti favorit kamu sekarang.</p>
+            <a href="register.html" class="btn btn-gold btn-lg px-4">Daftar Sekarang</a>
+        </div>
+    </section>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="text-white pt-5 pb-4" style="background-color:#0f2338;">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <h5 class="fw-bold"><i class="bi bi-house-door-fill text-gold"></i> Estate Prima</h5>
+                    <p class="text-white-50 small">Mockup UI/UX buat soal ujian project — website jual/sewa properti. Bukan bisnis beneran.</p>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="fw-bold">Navigasi</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="index.html" class="link-light link-opacity-75 text-decoration-none">Beranda</a></li>
+                        <li><a href="listing.html" class="link-light link-opacity-75 text-decoration-none">Cari Properti</a></li>
+                        <li><a href="kontak.html" class="link-light link-opacity-75 text-decoration-none">Kontak</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="fw-bold">Kantor Pemasaran</h6>
+                    <ul class="list-unstyled small text-white-50">
+                        <li><i class="bi bi-whatsapp"></i> +62 812-3456-7890</li>
+                        <li><i class="bi bi-geo-alt"></i> Jl. Sudirman No. 88, Jakarta Pusat</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="border-secondary">
+            <p class="text-center text-white-50 small mb-0">&copy; 2026 Estate Prima &mdash; mockup soal ujian project.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
