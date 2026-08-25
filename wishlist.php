@@ -24,40 +24,76 @@ mysqli_stmt_execute($stmt);
 $daftar_wishlist = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
 mysqli_stmt_close($stmt);
 ?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Wishlist Saya - Estate Prima (data test)</title>
-</head>
-<body>
-    <p>
-        <a href="dashboard-user.php">&larr; Dashboard</a> |
-        <a href="pesanan.php">Pesanan Saya</a>
-    </p>
+<?php
+$user = user_login();
+$page_title = 'Wishlist Saya — Estate Prima';
+require_once __DIR__ . '/includes/header.php';
+?>
+<style>
+    .wishlist-card .thumb { height: 220px; }
+    .wishlist-card .card-body { position: relative; }
+    .wishlist-card .remove-form { position: relative; z-index: 3; }
+    .wishlist-card .remove-form .btn { border-color: #e3c3bd; color: #8a2c22; font-size: 0.78rem; font-weight: 700; }
+    .wishlist-card .remove-form .btn:hover { background: #fbeceb; }
+</style>
 
-    <h1>Wishlist Saya</h1>
+<header class="page-header">
+    <div class="container">
+        <p class="eyebrow mb-2">Koleksi Pribadi</p>
+        <h1 class="mb-2">Wishlist Saya</h1>
+        <p class="lead mb-0">Simpan properti yang menarik perhatian Anda untuk ditinjau kembali.</p>
+    </div>
+</header>
 
-    <?php if (empty($daftar_wishlist)): ?>
-        <p>Belum ada properti yang di-wishlist. <a href="<?= BASE_URL ?>listing.php">Cari properti &rarr;</a></p>
-    <?php else: ?>
-        <?php foreach ($daftar_wishlist as $w): ?>
-            <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
-                <h3>
-                    <a href="<?= BASE_URL ?>detail.php?id=<?= $w['properti_id'] ?>">
-                        <?= htmlspecialchars($w['judul']) ?>
-                    </a>
-                </h3>
-                <p>Rp <?= number_format($w['harga'], 0, ',', '.') ?> - <?= htmlspecialchars($w['kota']) ?></p>
-                <p>Status: <?= ucfirst($w['status']) ?></p>
-
-                <!-- Tombol hapus wishlist langsung dari halaman ini -->
-                <form method="POST" action="<?= BASE_URL ?>proses-wishlist.php">
-                    <input type="hidden" name="properti_id" value="<?= $w['properti_id'] ?>">
-                    <button type="submit">Hapus dari Wishlist</button>
-                </form>
+<main class="py-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
+            <div>
+                <p class="section-eyebrow mb-2">Properti Tersimpan</p>
+                <h2 class="section-title mb-0">Pilihan hunian Anda</h2>
             </div>
-        <?php endforeach; ?>
-    <?php endif; ?>
-</body>
-</html>
+            <div class="d-flex gap-2">
+                <a href="dashboard-user.php" class="btn btn-outline-navy"><i class="bi bi-grid-1x2 me-1"></i> Dashboard</a>
+                <a href="pesanan.php" class="btn btn-gold"><i class="bi bi-receipt me-1"></i> Pesanan</a>
+            </div>
+        </div>
+
+        <?php if (empty($daftar_wishlist)): ?>
+            <div class="cta-banner text-center">
+                <i class="bi bi-heart text-gold fs-1"></i>
+                <h2 class="mt-3 mb-2">Wishlist Anda masih kosong</h2>
+                <p class="text-white-50 mb-4">Temukan properti yang sesuai dan simpan untuk melihatnya lagi nanti.</p>
+                <a href="<?= BASE_URL ?>listing.php" class="btn btn-gold">Cari Properti <i class="bi bi-arrow-right ms-1"></i></a>
+            </div>
+        <?php else: ?>
+            <div class="row g-4">
+                <?php foreach ($daftar_wishlist as $w): ?>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="property-card wishlist-card">
+                            <span class="corner-tick tl"></span>
+                            <span class="corner-tick br"></span>
+                            <div class="thumb" style="background-image:url('<?= htmlspecialchars($w['gambar_url'] ?: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994') ?>');">
+                                <span class="type-tag"><i class="bi bi-heart-fill me-1"></i> Tersimpan</span>
+                                <span class="price-tag">Rp <?= number_format($w['harga'], 0, ',', '.') ?></span>
+                            </div>
+                            <div class="card-body p-3">
+                                <h3 class="mb-1"><?= htmlspecialchars($w['judul']) ?></h3>
+                                <p class="location mb-3"><i class="bi bi-geo-alt-fill"></i> <?= htmlspecialchars($w['kota']) ?></p>
+                                <div class="d-flex justify-content-between align-items-center gap-2">
+                                    <span class="badge-status <?= htmlspecialchars($w['status']) ?>"><i class="bi bi-circle-fill"></i> <?= ucfirst($w['status']) ?></span>
+                                    <form method="POST" action="<?= BASE_URL ?>proses-wishlist.php" class="remove-form">
+                                        <input type="hidden" name="properti_id" value="<?= $w['properti_id'] ?>">
+                                        <button type="submit" class="btn btn-sm"><i class="bi bi-trash3 me-1"></i> Hapus</button>
+                                    </form>
+                                </div>
+                                <a href="<?= BASE_URL ?>detail.php?id=<?= $w['properti_id'] ?>" class="stretched-link"></a>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </div>
+</main>
+
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

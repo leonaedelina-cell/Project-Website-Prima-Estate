@@ -5,8 +5,8 @@
  * Field form yang diharapkan: nama, email, password, konfirmasi_password, no_hp
  */
 
-session_start();
 require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/includes/auth.php';
 
 $errors = [];
 
@@ -72,4 +72,108 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Kalau sampai sini berarti ada $errors atau method GET (baru buka halaman)
 // -> nanti di sinilah tempat nge-include tampilan register.html / render pesan error
+
+$user = user_login();
+$page_title = 'Daftar Akun — Estate Prima';
+require_once __DIR__ . '/includes/header.php';
 ?>
+<style>
+    .hero-register {
+        position: relative;
+        min-height: 92vh;
+        display: flex;
+        align-items: center;
+        background-image:
+            linear-gradient(180deg, rgba(13,31,51,0.55) 0%, rgba(13,31,51,0.35) 40%, rgba(13,31,51,0.92) 100%),
+            url('https://images.unsplash.com/photo-1759238136854-a43787126db7?fm=jpg&q=80&w=2200&auto=format&fit=crop');
+        background-size: cover;
+        background-position: center;
+    }
+    .hero-register .breadcrumb-estate a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.85rem; }
+    .hero-register .breadcrumb-estate a:hover { color: var(--gold-300); }
+    .hero-register .breadcrumb-estate .sep { color: rgba(255,255,255,0.35); margin: 0 0.4rem; }
+    .hero-register .breadcrumb-estate .current { color: var(--gold-300); font-size: 0.85rem; }
+    .hero-register .hero-eyebrow { font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.78rem; color: var(--gold-300); }
+    .hero-register h1 { font-family: 'Fraunces', serif; font-weight: 600; font-size: clamp(2.4rem, 5vw, 3.9rem); line-height: 1.08; color: #fff; }
+    .hero-register h1 em { font-style: italic; color: var(--gold-300); }
+    .hero-register p.lead { color: rgba(255,255,255,0.85); font-size: 1.08rem; max-width: 34rem; }
+</style>
+
+    <!-- ============ HERO ============ -->
+    <header class="hero-register">
+        <div class="container pb-5 text-center">
+            <div class="breadcrumb-estate mb-3">
+                <a href="index.php">Beranda</a>
+                <span class="sep">/</span>
+                <span class="current">Daftar</span>
+            </div>
+            <p class="hero-eyebrow mb-3">Gabung Bersama Kami</p>
+            <h1 class="mb-3">Mulai perjalanan <em>memiliki hunian.</em></h1>
+            <p class="lead mb-4 mx-auto">
+                Daftar untuk menyimpan wishlist properti favoritmu dan mengajukan
+                pembelian langsung dari platform Estate Prima.
+            </p>
+
+            <!-- Form register, mengambang di tengah halaman -->
+            <div class="row justify-content-center">
+                <div class="col-lg-5">
+                    <div class="floating-card field-panel mt-4 text-start">
+                        <span class="corner-tick tl"></span>
+                        <span class="corner-tick tr"></span>
+                        <span class="corner-tick bl"></span>
+                        <span class="corner-tick br"></span>
+
+                        <p class="section-eyebrow mb-1">Buat Akun</p>
+                        <h2 class="mb-4" style="font-family:'Fraunces',serif; font-weight:600; font-size:1.4rem; color:var(--navy-900);">
+                            Daftar ke Estate Prima
+                        </h2>
+
+                        <?php if (!empty($errors)): ?>
+                            <div class="alert-estate-error p-3 mb-3">
+                                <ul class="mb-0 ps-3">
+                                    <?php foreach ($errors as $e): ?>
+                                        <li><?= htmlspecialchars($e) ?></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                        <?php endif; ?>
+
+                        <form method="POST" action="register.php">
+                            <div class="mb-3">
+                                <label class="d-block">Nama Lengkap</label>
+                                <input type="text" name="nama" class="form-control"
+                                       value="<?= htmlspecialchars($_POST['nama'] ?? '') ?>" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="d-block">Email</label>
+                                <input type="email" name="email" class="form-control"
+                                       value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="d-block">No. HP (opsional)</label>
+                                <input type="text" name="no_hp" class="form-control"
+                                       value="<?= htmlspecialchars($_POST['no_hp'] ?? '') ?>">
+                            </div>
+                            <div class="mb-3">
+                                <label class="d-block">Password</label>
+                                <input type="password" name="password" class="form-control" required>
+                                <small class="text-muted">Minimal 6 karakter.</small>
+                            </div>
+                            <div class="mb-4">
+                                <label class="d-block">Konfirmasi Password</label>
+                                <input type="password" name="konfirmasi_password" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-gold w-100 py-2 mb-3">
+                                <i class="bi bi-person-plus-fill me-1"></i> Daftar
+                            </button>
+                            <p class="text-center text-muted small mb-0">
+                                Sudah punya akun? <a href="login.php" class="text-gold fw-bold text-decoration-none">Masuk di sini</a>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

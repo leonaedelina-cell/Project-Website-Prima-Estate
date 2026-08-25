@@ -34,40 +34,83 @@ $label_status = [
     'selesai'   => ['Selesai',             'darkgreen'],
 ];
 ?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Pesanan Saya - Estate Prima (data test)</title>
-</head>
-<body>
-    <p>
-        <a href="dashboard-user.php">&larr; Dashboard</a> |
-        <a href="wishlist.php">Wishlist Saya</a>
-    </p>
+<?php
+$user = user_login();
+$page_title = 'Pesanan Saya — Estate Prima';
+require_once __DIR__ . '/includes/header.php';
+?>
+<style>
+    .order-panel { background: #fff; border: 1px solid var(--ivory-100); border-radius: 3px; overflow: hidden; }
+    .order-card { padding: 1.5rem; position: relative; border-bottom: 1px dashed var(--ivory-100); }
+    .order-card:last-child { border-bottom: 0; }
+    .order-card h2 { font-family: 'Fraunces', serif; font-size: 1.35rem; color: var(--navy-900); }
+    .order-price { font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 600; color: var(--navy-900); }
+    .order-meta { color: var(--ink-500); font-size: 0.86rem; }
+    .order-note { background: var(--ivory-50); border-left: 3px solid var(--gold-500); padding: 0.75rem 1rem; color: var(--ink-500); font-size: 0.86rem; }
+    .status-pill { display: inline-flex; align-items: center; gap: 0.35rem; border-radius: 2px; padding: 0.35rem 0.7rem; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; }
+    .status-pill.menunggu { background: #f1eee5; color: #766f60; }
+    .status-pill.diproses { background: #e8f0f8; color: #2c4f74; }
+    .status-pill.disetujui, .status-pill.selesai { background: #eaf4ec; color: #1e5c2c; }
+    .status-pill.ditolak { background: #fbeceb; color: #8a2c22; }
+</style>
 
-    <h1>Pesanan Saya</h1>
+<header class="page-header">
+    <div class="container">
+        <p class="eyebrow mb-2">Perjalanan Pembelian</p>
+        <h1 class="mb-2">Pesanan Saya</h1>
+        <p class="lead mb-0">Pantau perkembangan pengajuan pembelian properti Anda.</p>
+    </div>
+</header>
 
-    <?php if (empty($daftar_transaksi)): ?>
-        <p>Belum ada pengajuan pembelian. <a href="<?= BASE_URL ?>listing.php">Cari properti &rarr;</a></p>
-    <?php else: ?>
-        <?php foreach ($daftar_transaksi as $t): ?>
-            <?php [$label, $warna] = $label_status[$t['status']]; ?>
-            <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
-                <h3>
-                    <a href="<?= BASE_URL ?>detail.php?id=<?= $t['properti_id'] ?>">
-                        <?= htmlspecialchars($t['judul']) ?>
-                    </a>
-                </h3>
-                <p>Rp <?= number_format($t['harga'], 0, ',', '.') ?></p>
-                <p>Metode Bayar: <?= $t['metode_bayar'] ? ucwords(str_replace('_', ' ', $t['metode_bayar'])) : '-' ?></p>
-                <p>Status: <b style="color:<?= $warna ?>;"><?= $label ?></b></p>
-                <?php if ($t['catatan_admin']): ?>
-                    <p>Catatan Admin: <i><?= htmlspecialchars($t['catatan_admin']) ?></i></p>
-                <?php endif; ?>
-                <p><small>Diajukan pada: <?= $t['created_at'] ?></small></p>
+<main class="py-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
+            <div>
+                <p class="section-eyebrow mb-2">Riwayat Pengajuan</p>
+                <h2 class="section-title mb-0">Pesanan dan statusnya</h2>
             </div>
-        <?php endforeach; ?>
-    <?php endif; ?>
-</body>
-</html>
+            <div class="d-flex gap-2">
+                <a href="dashboard-user.php" class="btn btn-outline-navy"><i class="bi bi-grid-1x2 me-1"></i> Dashboard</a>
+                <a href="wishlist.php" class="btn btn-gold"><i class="bi bi-heart me-1"></i> Wishlist</a>
+            </div>
+        </div>
+
+        <?php if (empty($daftar_transaksi)): ?>
+            <div class="cta-banner text-center">
+                <i class="bi bi-receipt text-gold fs-1"></i>
+                <h2 class="mt-3 mb-2">Belum ada pengajuan pembelian</h2>
+                <p class="text-white-50 mb-4">Temukan properti pilihan dan mulai pengajuan pembelian Anda.</p>
+                <a href="<?= BASE_URL ?>listing.php" class="btn btn-gold">Cari Properti <i class="bi bi-arrow-right ms-1"></i></a>
+            </div>
+        <?php else: ?>
+            <div class="order-panel">
+                <?php foreach ($daftar_transaksi as $t): ?>
+                    <?php [$label, $warna] = $label_status[$t['status']]; ?>
+                    <article class="order-card">
+                        <span class="corner-tick tl"></span>
+                        <span class="corner-tick br"></span>
+                        <div class="row g-3 align-items-start">
+                            <div class="col-md-8">
+                                <p class="section-eyebrow mb-2">Pengajuan #<?= $t['id'] ?></p>
+                                <h2 class="mb-2"><a href="<?= BASE_URL ?>detail.php?id=<?= $t['properti_id'] ?>" class="text-decoration-none text-reset"><?= htmlspecialchars($t['judul']) ?></a></h2>
+                                <p class="order-price mb-3">Rp <?= number_format($t['harga'], 0, ',', '.') ?></p>
+                                <div class="d-flex flex-wrap gap-3 order-meta">
+                                    <span><i class="bi bi-wallet2 me-1"></i><?= $t['metode_bayar'] ? ucwords(str_replace('_', ' ', $t['metode_bayar'])) : '-' ?></span>
+                                    <span><i class="bi bi-calendar3 me-1"></i><?= htmlspecialchars($t['created_at']) ?></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-md-end">
+                                <span class="status-pill <?= htmlspecialchars($t['status']) ?>"><i class="bi bi-circle-fill"></i><?= htmlspecialchars($label) ?></span>
+                            </div>
+                        </div>
+                        <?php if ($t['catatan_admin']): ?>
+                            <div class="order-note mt-3"><strong>Catatan Admin:</strong> <i><?= htmlspecialchars($t['catatan_admin']) ?></i></div>
+                        <?php endif; ?>
+                    </article>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </div>
+</main>
+
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

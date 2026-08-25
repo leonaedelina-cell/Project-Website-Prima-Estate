@@ -12,6 +12,9 @@
  */
 
 $page_title = $page_title ?? 'Estate Prima';
+$dashboard_sidebar = $dashboard_sidebar ?? false;
+$dashboard_sidebar_active = $dashboard_sidebar_active ?? 'dashboard';
+$user = $user ?? null;
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -27,8 +30,27 @@ $page_title = $page_title ?? 'Estate Prima';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/style.css">
 </head>
-<body>
+<body class="<?= $dashboard_sidebar ? 'has-dashboard-sidebar' : '' ?>">
 
+<?php if ($dashboard_sidebar): ?>
+    <aside class="dashboard-sidebar">
+        <a class="dashboard-sidebar-brand" href="<?= BASE_URL ?>dashboard-user.php">ESTATE <span>PRIMA</span></a>
+        <div class="dashboard-sidebar-user">
+            <i class="bi bi-person-circle"></i>
+            <div><small>Selamat datang</small><strong><?= htmlspecialchars(isset($user['nama']) ? $user['nama'] : 'Pengguna') ?></strong></div>
+        </div>
+        <nav class="dashboard-sidebar-nav" aria-label="Navigasi dashboard">
+            <a href="<?= BASE_URL ?>dashboard-user.php" class="<?= $dashboard_sidebar_active === 'dashboard' ? 'active' : '' ?>"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a>
+            <a href="<?= BASE_URL ?>wishlist.php" class="<?= $dashboard_sidebar_active === 'wishlist' ? 'active' : '' ?>"><i class="bi bi-heart-fill"></i> Wishlist</a>
+            <a href="<?= BASE_URL ?>pesanan.php" class="<?= $dashboard_sidebar_active === 'pesanan' ? 'active' : '' ?>"><i class="bi bi-receipt"></i> Pesanan</a>
+            <a href="<?= BASE_URL ?>listing.php"><i class="bi bi-houses-fill"></i> Jelajahi Properti</a>
+        </nav>
+        <div class="dashboard-sidebar-bottom">
+            <a href="<?= BASE_URL ?>index.php"><i class="bi bi-arrow-left"></i> Kembali ke Beranda</a>
+            <a href="<?= BASE_URL ?>logout.php"><i class="bi bi-box-arrow-right"></i> Keluar</a>
+        </div>
+    </aside>
+<?php else: ?>
     <!-- ============ NAVBAR ============ -->
     <nav class="navbar navbar-expand-lg navbar-estate sticky-top">
         <div class="container">
@@ -57,3 +79,4 @@ $page_title = $page_title ?? 'Estate Prima';
             </div>
         </div>
     </nav>
+<?php endif; ?>

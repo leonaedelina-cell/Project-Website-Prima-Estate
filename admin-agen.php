@@ -1,6 +1,6 @@
 <?php
 /**
- * pages/admin/admin-agen.php - Estate Prima
+ * admin-agen.php - Estate Prima
  * List semua agen sales + tombol tambah/edit/hapus.
  */
 
@@ -19,52 +19,129 @@ $daftar_agen = mysqli_fetch_all(mysqli_query($koneksi,
 ), MYSQLI_ASSOC);
 
 $pesan = $_GET['pesan'] ?? '';
+
+$user = user_login();
+$page_title = 'Kelola Agen — Estate Prima';
+require_once __DIR__ . '/includes/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Kelola Agen - Estate Prima (data test)</title>
-</head>
-<body>
-    <p>
-        <a href="admin-dashboard.php">&larr; Dashboard</a> |
-        <a href="admin-properti.php">Kelola Properti</a> |
-        <a href="admin-transaksi.php">Kelola Transaksi</a> |
-        <a href="admin-pesan.php">Pesan Kontak</a>
-    </p>
+<style>
+    .page-header-photo {
+        background-image:
+            linear-gradient(180deg, rgba(13,31,51,0.72) 0%, rgba(13,31,51,0.6) 55%, rgba(13,31,51,0.94) 100%),
+            url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?fm=jpg&q=80&w=2000&auto=format&fit=crop');
+        background-size: cover;
+        background-position: center;
+    }
+    .admin-subnav { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1.25rem; }
+    .admin-subnav a {
+        padding: 0.5rem 1.1rem; border-radius: 3px; font-weight: 700; font-size: 0.85rem;
+        color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.25); text-decoration: none;
+        transition: all 0.2s ease;
+    }
+    .admin-subnav a:hover { border-color: var(--gold-500); color: var(--gold-300); }
+    .admin-subnav a.active { background: var(--gold-grad); border-color: var(--gold-600); color: var(--navy-950); }
+    .table-estate {
+        width: 100%; background: #fff; border-collapse: collapse;
+        border: 1px solid var(--ivory-100); border-radius: 3px; overflow: hidden;
+    }
+    .table-estate thead { background: var(--navy-950); }
+    .table-estate thead th {
+        color: rgba(255,255,255,0.85); font-size: 0.72rem; font-weight: 700;
+        letter-spacing: 0.08em; text-transform: uppercase; padding: 0.85rem 1rem; text-align: left;
+    }
+    .table-estate tbody td { padding: 0.85rem 1rem; border-top: 1px solid var(--ivory-100); font-size: 0.92rem; vertical-align: middle; }
+    .table-estate tbody tr:hover { background: #fbf8f1; }
+    .table-estate .btn-mini {
+        font-size: 0.78rem; padding: 0.3rem 0.7rem; border-radius: 3px; font-weight: 700;
+        text-decoration: none; display: inline-block; border: 1px solid var(--ivory-100);
+    }
+    .table-estate .btn-edit { color: var(--navy-900); }
+    .table-estate .btn-edit:hover { border-color: var(--gold-500); color: var(--gold-600); }
+    .table-estate .btn-hapus { color: #8a2c22; background: none; }
+    .table-estate .btn-hapus:hover { background: #fbeceb; border-color: #f0bdb9; }
+</style>
 
-    <h1>Kelola Agen Sales</h1>
+    <!-- ============ PAGE HEADER ============ -->
+    <div class="page-header page-header-photo">
+        <div class="container">
+            <p class="eyebrow mb-2">Panel Admin</p>
+            <h1 class="mb-2">Kelola Agen Sales</h1>
+            <div class="breadcrumb-estate">
+                <a href="<?= BASE_URL ?>index.php">Beranda</a>
+                <span class="sep">/</span>
+                <span class="current">Kelola Agen</span>
+            </div>
 
-    <?php if ($pesan === 'tambah-berhasil'): ?>
-        <p style="color:green;">Agen berhasil ditambahkan.</p>
-    <?php elseif ($pesan === 'edit-berhasil'): ?>
-        <p style="color:green;">Agen berhasil diupdate.</p>
-    <?php elseif ($pesan === 'hapus-berhasil'): ?>
-        <p style="color:green;">Agen berhasil dihapus.</p>
-    <?php endif; ?>
+            <div class="admin-subnav">
+                <a href="admin-dashboard.php"><i class="bi bi-speedometer2 me-1"></i> Dashboard</a>
+                <a href="admin-properti.php"><i class="bi bi-houses-fill me-1"></i> Kelola Properti</a>
+                <a href="admin-transaksi.php"><i class="bi bi-receipt me-1"></i> Kelola Transaksi</a>
+                <a href="admin-agen.php" class="active"><i class="bi bi-person-badge-fill me-1"></i> Kelola Agen</a>
+                <a href="admin-pesan.php"><i class="bi bi-envelope-fill me-1"></i> Pesan Kontak</a>
+            </div>
+        </div>
+    </div>
 
-    <p><a href="agen-tambah.php"><button>+ Tambah Agen</button></a></p>
+    <section class="py-5">
+        <div class="container">
 
-    <table border="1" cellpadding="8" cellspacing="0" style="width:100%; border-collapse:collapse;">
-        <tr><th>Nama</th><th>No. HP</th><th>Email</th><th>Jumlah Properti</th><th>Aksi</th></tr>
-        <?php foreach ($daftar_agen as $a): ?>
-            <tr>
-                <td><?= htmlspecialchars($a['nama']) ?></td>
-                <td><?= htmlspecialchars($a['no_hp'] ?? '-') ?></td>
-                <td><?= htmlspecialchars($a['email'] ?? '-') ?></td>
-                <td><?= $a['jumlah_properti'] ?></td>
-                <td>
-                    <a href="agen-edit.php?id=<?= $a['id'] ?>">Edit</a>
-                    <form method="POST" action="proses-agen.php" style="display:inline;"
-                          onsubmit="return confirm('<?= $a['jumlah_properti'] > 0 ? "Agen ini masih pegang {$a['jumlah_properti']} properti, propertinya akan jadi Tanpa Agen. " : '' ?>Yakin hapus agen ini?');">
-                        <input type="hidden" name="aksi" value="hapus">
-                        <input type="hidden" name="id" value="<?= $a['id'] ?>">
-                        <button type="submit">Hapus</button>
-                    </form>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-    </table>
-</body>
-</html>
+            <?php if ($pesan === 'tambah-berhasil'): ?>
+                <div class="alert-estate-success p-3 mb-4"><i class="bi bi-check-circle-fill me-1"></i> Agen berhasil ditambahkan.</div>
+            <?php elseif ($pesan === 'edit-berhasil'): ?>
+                <div class="alert-estate-success p-3 mb-4"><i class="bi bi-check-circle-fill me-1"></i> Agen berhasil diupdate.</div>
+            <?php elseif ($pesan === 'hapus-berhasil'): ?>
+                <div class="alert-estate-success p-3 mb-4"><i class="bi bi-check-circle-fill me-1"></i> Agen berhasil dihapus.</div>
+            <?php endif; ?>
+
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                <div>
+                    <p class="section-eyebrow mb-2">Daftar Agen</p>
+                    <h2 class="section-title mb-0" style="font-size:1.6rem;"><?= count($daftar_agen) ?> Agen Sales</h2>
+                </div>
+                <a href="agen-tambah.php" class="btn btn-gold px-4 py-2">
+                    <i class="bi bi-plus-lg me-1"></i> Tambah Agen
+                </a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table-estate">
+                    <thead>
+                        <tr>
+                            <th>Nama</th><th>No. HP</th><th>Email</th><th>Jumlah Properti</th><th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (empty($daftar_agen)): ?>
+                            <tr><td colspan="5" class="text-center text-muted py-4">Belum ada agen sales.</td></tr>
+                        <?php else: ?>
+                            <?php foreach ($daftar_agen as $a): ?>
+                                <tr>
+                                    <td class="fw-bold" style="color:var(--navy-900);"><?= htmlspecialchars($a['nama']) ?></td>
+                                    <td><?= htmlspecialchars($a['no_hp'] ?? '-') ?></td>
+                                    <td><?= htmlspecialchars($a['email'] ?? '-') ?></td>
+                                    <td><?= $a['jumlah_properti'] ?></td>
+                                    <td>
+                                        <div class="d-flex gap-2">
+                                            <a href="agen-edit.php?id=<?= $a['id'] ?>" class="btn-mini btn-edit">
+                                                <i class="bi bi-pencil-fill"></i> Edit
+                                            </a>
+                                            <form method="POST" action="proses-agen.php" class="d-inline"
+                                                  onsubmit="return confirm('<?= $a['jumlah_properti'] > 0 ? "Agen ini masih pegang {$a['jumlah_properti']} properti, propertinya akan jadi Tanpa Agen. " : '' ?>Yakin hapus agen ini?');">
+                                                <input type="hidden" name="aksi" value="hapus">
+                                                <input type="hidden" name="id" value="<?= $a['id'] ?>">
+                                                <button type="submit" class="btn-mini btn-hapus">
+                                                    <i class="bi bi-trash-fill"></i> Hapus
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+<?php require_once __DIR__ . '/includes/footer.php'; ?>
