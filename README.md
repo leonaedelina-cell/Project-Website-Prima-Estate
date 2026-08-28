@@ -8,6 +8,83 @@ Ujian penutup materi PHP Fullstack (Sesi 1-8). Dua bagian: **Soal Teori** (20 so
 
 > 💡 Ada **mockup tampilan statis** (HTML/CSS/Bootstrap, gak perlu database) di folder [`mockup/`](./mockup/) — buka `mockup/index.html` pakai Live Server buat liat gambaran akhir tampilan website-nya sebelum mulai coding. Cara jalaninnya ada di `mockup/README.md`.
 
+---
+
+## 📊 Status & Progress Project
+
+Bagian ini di luar soal ujian aslinya — ditambahin biar gampang lacak progress project ini dari waktu ke waktu, plus nunjuk ke dokumen-dokumen catatan yang udah dibuat sepanjang pengerjaan.
+
+### Daftar Dokumen
+
+| Dokumen | Isinya |
+| --- | --- |
+| [`fix-bugs.md`](./fix-bugs.md) | Catatan perbaikan **paling awal** (URL `Not Found`, `BASE_URL`, file kosong/salah nama). Sifatnya arsip — sebagian besar isinya udah kelar dan ketinggalan zaman dibanding progress sekarang, tapi dibiarin sebagai riwayat. |
+| [`notes-student.md`](./notes-student.md) | Review kode terbaru + daftar tugas dari mentor buat dikerjain student. Paling relevan buat tau **apa yang masih perlu dikerjain**. |
+| [`fix-stuff.md`](./fix-stuff.md) | Log detail tiap perbaikan/fitur yang udah dikerjain mentor di branch `mentor-fixes` (bukan `main`) — file mana yang berubah dan kenapa. Baca ini buat belajar dari implementasinya. |
+| `README.md` (dokumen ini) | Soal ujian asli (teori + project) dari instruktur, plus bagian status ini. |
+
+### Ringkasan Status
+
+- **Struktur aktif**: flat di root (`admin-*.php`, `proses-*.php`, dst) — lihat [Struktur Project Aktual](#struktur-project-aktual) di bawah. Ini beda dari struktur folder yang disaranin di bagian [2. Struktur Folder](#2-struktur-folder) (folder `admin/` terpisah) — soal ujian nyaranin itu di awal sebelum mulai ngoding, tapi implementasi akhirnya jadi flat, dan itu gak masalah selama pola CRUD/auth/role-nya tetep bener.
+- **Fitur inti sesuai spec** (auth, CRUD properti, wishlist, transaksi + WhatsApp, kelola user, search/filter/pagination, Google Maps) — udah semua ada.
+- **Keamanan**: CSRF token di semua form POST, session di-harden, prepared statement + `htmlspecialchars()` konsisten.
+- **Progress terbaru** ada di branch terpisah `mentor-fixes` (belum di-merge ke `main`) — isinya perbaikan bug, fitur cetak bukti transaksi (PDF/print), sidebar collapse, dan beres-beres CSS/JS. Detail lengkap di `fix-stuff.md`.
+- Yang masih PR (pull request / belum kelar) dicatat di `notes-student.md`, termasuk checklist test manual sebelum submit final.
+
+### Struktur Project Aktual
+
+Struktur beneran yang aktif sekarang (bukan yang disaranin di bagian 2 di bawah):
+
+```text
+Project-Website-Prima-Estate/
+├── config/
+│   └── database.php          Koneksi mysqli + APP_ROOT + BASE_URL (auto-detect lokasi project)
+├── includes/
+│   ├── auth.php               cek_login(), cek_admin(), csrf_token(), cek_csrf(), user_login()
+│   ├── header.php              <head> + navbar publik ATAU sidebar admin/user (tergantung variabel $admin_sidebar/$dashboard_sidebar)
+│   ├── footer.php               Footer lengkap — dipakai halaman PUBLIK doang
+│   └── dashboard-footer.php      Footer tanpa <footer> — dipakai halaman dashboard admin/user
+├── assets/
+│   ├── css/style.css          Satu file CSS buat semua halaman (lihat komentar per section)
+│   ├── js/                     sidebar-toggle.js, properti-form.js, wishlist.js, print-receipt.js
+│   └── uploads/                 File hasil upload (foto agen/properti, bukti bayar) — gak ke-commit ke git
+│
+│   ── Halaman publik (siapa aja bisa akses) ──
+├── index.php                  Beranda
+├── listing.php                  Semua properti — search + filter + pagination
+├── detail.php                    Detail 1 properti — wishlist, ajukan beli/sewa
+├── kontak.php                     Form kontak + Google Maps embed
+├── login.php / register.php / logout.php
+│
+│   ── Halaman customer (login role user) ──
+├── dashboard-user.php          Ringkasan wishlist + pesanan
+├── wishlist.php                  Daftar wishlist (hapus via AJAX)
+├── pesanan.php                    Riwayat transaksi milik sendiri + cetak bukti kalau selesai
+├── profil.php                      Edit profil sendiri
+│
+│   ── Halaman admin (login role admin) ──
+├── admin-dashboard.php         Statistik keseluruhan
+├── admin-properti.php / properti-tambah.php / properti-edit.php / properti-galeri.php
+├── admin-transaksi.php / admin-transaksi-detail.php    List + kelola pembayaran & status, cetak bukti
+├── admin-agen.php / agen-tambah.php / agen-edit.php
+├── admin-pesan.php               Pesan masuk dari form kontak
+├── admin-users.php / admin-user-tambah.php / admin-user-edit.php   Kelola role & data akun
+│
+│   ── Handler POST/CRUD (dipanggil dari form, gak punya tampilan sendiri) ──
+├── proses-properti.php / proses-galeri.php / proses-agen.php
+├── proses-transaksi.php           Insert transaksi + redirect WhatsApp
+├── proses-transaksi-admin.php      (legacy, logic utama sekarang ada di admin-transaksi-detail.php)
+├── proses-pesan.php / proses-users.php / proses-wishlist.php
+│
+├── setup.sql                  CREATE TABLE + data contoh (7 tabel: users, agen, properti, galeri_properti, wishlist, transaksi, pesan_kontak)
+├── mockup/                     Referensi desain statis (HTML/CSS), BUKAN bagian aplikasi aktif
+└── *.md                         Dokumen catatan (lihat tabel di atas)
+```
+
+Pola tiap halaman: satu file PHP isinya query database (backend) + langsung nge-render HTML (frontend) — bukan dipisah API/frontend kayak arsitektur modern, ini standar buat native PHP di level ujian ini.
+
+---
+
 ## 🚀 Mulai Dari Sini
 
 Dokumen ini panjang — jangan dibaca sekaligus dari atas ke bawah. Ikutin urutan ini:
