@@ -189,6 +189,21 @@ require_once __DIR__ . '/includes/header.php';
         .transaction-detail-head .d-flex { justify-content:flex-start !important; margin-top:1rem; }
         .transaction-detail-head .btn { width:100%; }
     }
+
+    /* Struk cetak - tersembunyi di layar, cuma tampil pas print/PDF */
+    #print-area { display:none; }
+    .print-row { display:flex; justify-content:space-between; gap:1rem; padding:0.5rem 0; border-bottom:1px solid #e3e1da; }
+    .print-row .lbl { color:#766f60; }
+    .print-row .val { font-weight:700; text-align:right; }
+    @media print {
+        .dashboard-sidebar, .page-header, .breadcrumb-estate,
+        .transaction-detail-head .btn, .payment-editor, .alert-estate-success, .alert-estate-error,
+        #print-toolbar { display:none !important; }
+        body.has-dashboard-sidebar { padding:0 !important; }
+        .transaction-detail-card { box-shadow:none !important; border:none !important; }
+        #print-area { display:block !important; padding:1.5rem 0; }
+        #print-area h1 { font-family:'Fraunces',serif; font-size:1.4rem; margin-bottom:0.25rem; }
+    }
 </style>
 <div class="page-header page-header-photo">
     <div class="container">
@@ -218,10 +233,34 @@ require_once __DIR__ . '/includes/header.php';
                     <div class="transaction-id">Nomor transaksi #<?= $transaksi['id'] ?></div>
                     <div class="mt-3"><span class="badge-status" style="background:<?= $status_warna[$transaksi['status']] ?>;color:<?= $status_teks[$transaksi['status']] ?>;"><i class="bi bi-circle-fill"></i> <?= ucfirst($transaksi['status']) ?></span></div>
                 </div>
-                <div class="d-flex gap-2 flex-wrap justify-content-end">
+                <div class="d-flex gap-2 flex-wrap justify-content-end" id="print-toolbar">
+                    <?php if ($transaksi['status'] === 'selesai'): ?>
+                        <button type="button" class="btn btn-outline-gold" onclick="window.print()"><i class="bi bi-printer-fill me-1"></i> Cetak Bukti</button>
+                    <?php endif; ?>
                     <a href="admin-transaksi.php" class="btn btn-outline-gold"><i class="bi bi-arrow-left me-1"></i> Kembali</a>
                 </div>
             </div>
+
+            <?php if ($transaksi['status'] === 'selesai'): ?>
+                <div id="print-area" class="px-3 px-md-4">
+                    <h1>Bukti Transaksi — Estate Prima</h1>
+                    <p class="text-muted small mb-4">Nomor Transaksi #<?= $transaksi['id'] ?> &middot; Dicetak <?= date('d M Y, H:i') ?></p>
+                    <div class="print-row"><span class="lbl">Status</span><span class="val">Lunas / Selesai</span></div>
+                    <div class="print-row"><span class="lbl">Nama Pemohon</span><span class="val"><?= htmlspecialchars($transaksi['nama_user']) ?></span></div>
+                    <div class="print-row"><span class="lbl">Email</span><span class="val"><?= htmlspecialchars($transaksi['email_user']) ?></span></div>
+                    <div class="print-row"><span class="lbl">No. HP</span><span class="val"><?= htmlspecialchars($transaksi['no_hp_user'] ?: '-') ?></span></div>
+                    <div class="print-row"><span class="lbl">Properti</span><span class="val"><?= htmlspecialchars($transaksi['judul_properti']) ?></span></div>
+                    <div class="print-row"><span class="lbl">Alamat</span><span class="val"><?= htmlspecialchars($transaksi['alamat_properti']) ?>, <?= htmlspecialchars($transaksi['kota_properti']) ?></span></div>
+                    <div class="print-row"><span class="lbl">Harga</span><span class="val">Rp <?= number_format($transaksi['harga_properti'], 0, ',', '.') ?></span></div>
+                    <div class="print-row"><span class="lbl">Metode Pembayaran</span><span class="val"><?= $transaksi['metode_bayar'] ? ucwords(str_replace('_', ' ', $transaksi['metode_bayar'])) : '-' ?></span></div>
+                    <div class="print-row"><span class="lbl">Diajukan</span><span class="val"><?= htmlspecialchars($transaksi['created_at']) ?></span></div>
+                    <div class="print-row"><span class="lbl">Terakhir Diperbarui</span><span class="val"><?= htmlspecialchars($transaksi['updated_at']) ?></span></div>
+                    <?php if ($transaksi['catatan_admin']): ?>
+                        <div class="mt-3"><span class="lbl d-block mb-1">Catatan Admin</span><?= nl2br(htmlspecialchars($transaksi['catatan_admin'])) ?></div>
+                    <?php endif; ?>
+                    <p class="text-muted small mt-4 mb-0">Dokumen ini dicetak otomatis dari sistem Estate Prima sebagai bukti transaksi telah selesai.</p>
+                </div>
+            <?php endif; ?>
 
             <div class="p-3 p-md-4">
                 <div class="row g-3 mb-4">

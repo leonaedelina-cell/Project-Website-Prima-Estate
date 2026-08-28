@@ -89,6 +89,13 @@ Sebelumnya halaman ini isinya HTML satu baris panjang (susah dibaca/di-maintain)
 
 ---
 
+## 12. Cetak Bukti Transaksi (`admin-transaksi-detail.php`)
+
+- Tombol "Cetak Bukti" cuma muncul kalau status transaksi `selesai` (lunas). Belum lunas, tombolnya gak ada — gak masuk akal ngasih bukti transaksi yang belum kelar.
+- Tombol pakai `onclick="window.print()"` — panggil dialog print bawaan browser (dari situ user bisa print ke printer beneran atau "Save as PDF").
+- Ada blok `<div id="print-area">` terpisah yang isinya struk ringkas (nomor transaksi, nama pemohon, properti, harga, metode bayar, tanggal, catatan). Blok ini `display:none` di layar biasa, cuma muncul pas mode print lewat CSS `@media print`.
+- Sidebar, header foto, breadcrumb, form edit pembayaran, dan tombol-tombol disembunyikan otomatis pas print (`@media print { ... display:none !important; }`) — biar hasil print bersih, cuma struknya doang yang kecetak, bukan seluruh halaman admin.
+
 ## Yang BELUM dikerjain (giliran kamu)
 
 - **Sidebar collapse/expand** pakai toggle ikon `<<`/`>>` — belum ada sama sekali, ini murni kerjaan kamu. Lihat juga `notes-student.md` bagian "Yang masih perlu kamu kerjain sendiri".
