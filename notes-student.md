@@ -56,7 +56,7 @@ Semua ini statusnya **selesai di branch `mentor-fixes`**, belum masuk `main` kam
 
 1. Cek ulang semua halaman admin/user di browser buat mastiin tampilan gak ada yang kepotong/rusak — terutama form yang barusan ditambah field baru (properti, transaksi-detail, users).
 2. Kalau mau, rapikan CSS icon di stat card statistik transaksi (`admin-dashboard.php`) — sekarang fungsional tapi belum ada warna/size khusus per status, masih polos.
-3. **Halaman "Cara Kerja" (baru, belum ada sama sekali)** — buat halaman publik yang jelasin proses beli/sewa properti step-by-step buat guest/customer. Beberapa keputusan yang udah didiskusiin, tinggal eksekusi:
+3. **Halaman "Cara Kerja" (baru, belum ada sama sekali)** — buat halaman publik yang jelasin proses beli/sewa properti step-by-step buat guest/customer. **Mockup-nya udah dibikin** di `mockup/cara-kerja.html` (buka bareng mockup lain, link "Cara Kerja" juga udah ditambah ke navbar `index.html`/`listing.html`/`detail.html`/`kontak.html`) — tinggal dikonversi ke PHP beneran (`cara-kerja.php`) pakai layout/data asli, sama kayak halaman publik lain. Keputusan yang udah didiskusiin, tinggal eksekusi:
    - **Halaman terpisah**, jangan digabung ke `listing.php` atau `kontak.php` — konteksnya beda (edukasi proses, bukan belanja atau kontak).
    - **Nama di navbar**: `Cara Kerja` (pendek, jelas — gaya sama kayak "Cara Beli" di situs properti lain). Alternatif: `Panduan`.
    - **FAQ** ditaro sebagai section DI DALAM halaman ini (accordion Bootstrap misalnya), bukan menu navbar terpisah — biar navbar gak kepanjangan.

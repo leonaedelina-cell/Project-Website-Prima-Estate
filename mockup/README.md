@@ -18,6 +18,7 @@ Kalau gak ada Live Server, buka `index.html` langsung 2x klik juga bisa (semua f
 | `index.html` | Homepage — hero + search + statistik + properti terbaru |
 | `listing.html` | Semua properti — search + filter + pagination |
 | `detail.html` | Detail 1 properti — galeri, fasilitas, tombol Wishlist & Ajukan Beli |
+| `cara-kerja.html` | Cara kerja beli/sewa (4 langkah), carousel foto agen, FAQ, CTA hubungi sales via WhatsApp |
 | `login.html` / `register.html` | Form auth, split-screen |
 | `kontak.html` | Halaman contact sales |
 | `dashboard-user.html` | Dashboard user — stat wishlist/pesanan, sidebar |
