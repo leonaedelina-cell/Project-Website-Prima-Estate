@@ -82,6 +82,10 @@ Sebelumnya admin cuma bisa ubah role & hapus user. Sekarang:
 
 Sebelumnya halaman ini isinya HTML satu baris panjang (susah dibaca/di-maintain). Ditulis ulang jadi struktur multi-baris standar (`<thead>`/`<tbody>` rapi) sama kayak tabel admin lainnya, sekalian nambahin nomor urut, pagination, search, dan tombol "Tambah User" + "Edit" di poin 4-5 di atas.
 
+**Update (revisi kecil):** rewrite awal ternyata masih tampil polos tanpa border/warna header, walau struktur `<table>`-nya udah bener. Penyebabnya: style `.table-estate` (warna header navy, padding, hover row) **gak ada di `assets/css/style.css` global** — tiap halaman admin (`admin-agen.php`, `admin-properti.php`, `admin-transaksi.php`) nulis `<style>.table-estate{...}</style>` sendiri-sendiri di dalam filenya. `admin-users.php` versi asli (sebelum ditulis ulang) gak pernah punya blok `<style>` itu sama sekali karena originalnya satu baris tanpa styling section, jadi pas ditulis ulang, stylingnya ketinggalan. Fix: tambahin blok `<style>` yang sama ke `admin-users.php`.
+
+**Catatan buat kamu:** ini pola duplikasi CSS yang riskan — 3 file beda punya salinan `.table-estate` yang sama persis. Kalau nanti bikin halaman tabel baru dan lupa copy blok `<style>`-nya, bakal kejadian bug yang sama lagi. Lebih aman kalau `.table-estate` dipindah ke `assets/css/style.css` sekali aja, terus semua halaman admin otomatis kepakai tanpa perlu copy-paste `<style>` di tiap file.
+
 ---
 
 ## Yang BELUM dikerjain (giliran kamu)
