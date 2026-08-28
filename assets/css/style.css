@@ -168,6 +168,10 @@ body {
     color: #fff;
     font-size: clamp(1.8rem, 3.4vw, 2.6rem);
 }
+.page-header .lead,
+.page-header p {
+    color: rgba(255,255,255,0.75);
+}
 .page-header .breadcrumb-estate a,
 header .breadcrumb-estate a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.85rem; }
 .page-header .breadcrumb-estate a:hover,

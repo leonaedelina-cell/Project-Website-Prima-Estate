@@ -96,6 +96,11 @@ Sebelumnya halaman ini isinya HTML satu baris panjang (susah dibaca/di-maintain)
 - Ada blok `<div id="print-area">` terpisah yang isinya struk/invoice rapi (kop surat navy+gold, nomor transaksi format `#TRX0001`, strip status "Lunas/Selesai", section Data Pemohon/Properti/Waktu, kotak total nilai transaksi, catatan admin kalau ada, area tanda tangan admin). Blok ini `display:none` di layar biasa, cuma muncul pas mode print lewat CSS `@media print`.
 - Sidebar, header foto, breadcrumb, form edit pembayaran, dan tombol-tombol disembunyikan otomatis pas print (`@media print { ... display:none !important; }`) — biar hasil print bersih, cuma struknya doang yang kecetak, bukan seluruh halaman admin.
 
+## 13. Teks Subjudul di `.page-header` Gak Kebaca
+
+- `assets/css/style.css` gak pernah punya rule warna buat `<p class="lead">` / `<p>` polos di dalam `.page-header` — jadi teksnya kepake warna default Bootstrap (abu-abu gelap) di atas background navy gelap, kontrasnya jelek/gak kebaca. Ini bug global, kena semua halaman yang pakai `.page-header` (admin-properti, admin-users, admin-transaksi, dst), bukan cuma satu tempat.
+- Fix: nambah `.page-header .lead, .page-header p { color: rgba(255,255,255,0.75); }` di `style.css`. Teks eyebrow (`<p class="eyebrow">`) tetep warna gold soalnya rule-nya lebih spesifik (`.page-header .eyebrow`), gak ketimpa.
+
 ## Yang BELUM dikerjain (giliran kamu)
 
 - **Sidebar collapse/expand** pakai toggle ikon `<<`/`>>` — belum ada sama sekali, ini murni kerjaan kamu. Lihat juga `notes-student.md` bagian "Yang masih perlu kamu kerjain sendiri".
