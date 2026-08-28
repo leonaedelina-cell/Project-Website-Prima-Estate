@@ -121,17 +121,7 @@ function is_selected($a, $b) {
         </div>
         <div class="form-actions"><button type="submit" class="btn btn-gold px-4"><i class="bi bi-check2-circle me-1"></i> Update Properti</button></div>
                 </form>
-                <script>
-                    (function () {
-                        var tipeTransaksi = document.getElementById('tipe_transaksi');
-                        var wrapDurasi = document.getElementById('wrap-durasi-minimal');
-                        function toggleDurasi() {
-                            wrapDurasi.style.display = tipeTransaksi.value === 'sewa' ? '' : 'none';
-                        }
-                        tipeTransaksi.addEventListener('change', toggleDurasi);
-                        toggleDurasi();
-                    })();
-                </script>
+                <script src="<?= BASE_URL ?>assets/js/properti-form.js?v=<?= filemtime(__DIR__ . '/assets/js/properti-form.js') ?>"></script>
             </div>
         </div>
     </main>

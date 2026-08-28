@@ -58,27 +58,6 @@ $user = user_login();
 $page_title = 'Masuk — Estate Prima';
 require_once __DIR__ . '/includes/header.php';
 ?>
-<style>
-    .hero-login {
-        position: relative;
-        min-height: 92vh;
-        display: flex;
-        align-items: center;
-        background-image:
-            linear-gradient(180deg, rgba(13,31,51,0.55) 0%, rgba(13,31,51,0.35) 40%, rgba(13,31,51,0.92) 100%),
-            url('https://images.unsplash.com/photo-1759238136854-a43787126db7?fm=jpg&q=80&w=2200&auto=format&fit=crop');
-        background-size: cover;
-        background-position: center;
-    }
-    .hero-login .breadcrumb-estate a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.85rem; }
-    .hero-login .breadcrumb-estate a:hover { color: var(--gold-300); }
-    .hero-login .breadcrumb-estate .sep { color: rgba(255,255,255,0.35); margin: 0 0.4rem; }
-    .hero-login .breadcrumb-estate .current { color: var(--gold-300); font-size: 0.85rem; }
-    .hero-login .hero-eyebrow { font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.78rem; color: var(--gold-300); }
-    .hero-login h1 { font-family: 'Fraunces', serif; font-weight: 600; font-size: clamp(2.4rem, 5vw, 3.9rem); line-height: 1.08; color: #fff; }
-    .hero-login h1 em { font-style: italic; color: var(--gold-300); }
-    .hero-login p.lead { color: rgba(255,255,255,0.85); font-size: 1.08rem; max-width: 34rem; }
-</style>
 
     <!-- ============ HERO ============ -->
     <header class="hero-login">

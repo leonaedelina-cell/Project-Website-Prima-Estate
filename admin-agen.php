@@ -58,34 +58,6 @@ $admin_sidebar = true;
 $dashboard_sidebar_active = 'agen';
 require_once __DIR__ . '/includes/header.php';
 ?>
-<style>
-    .page-header-photo {
-        background-image:
-            linear-gradient(180deg, rgba(13,31,51,0.72) 0%, rgba(13,31,51,0.6) 55%, rgba(13,31,51,0.94) 100%),
-            url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?fm=jpg&q=80&w=2000&auto=format&fit=crop');
-        background-size: cover;
-        background-position: center;
-    }
-    .table-estate {
-        width: 100%; background: #fff; border-collapse: collapse;
-        border: 1px solid var(--ivory-100); border-radius: 3px; overflow: hidden;
-    }
-    .table-estate thead { background: var(--navy-950); }
-    .table-estate thead th {
-        color: rgba(255,255,255,0.85); font-size: 0.72rem; font-weight: 700;
-        letter-spacing: 0.08em; text-transform: uppercase; padding: 0.85rem 1rem; text-align: left;
-    }
-    .table-estate tbody td { padding: 0.85rem 1rem; border-top: 1px solid var(--ivory-100); font-size: 0.92rem; vertical-align: middle; }
-    .table-estate tbody tr:hover { background: #fbf8f1; }
-    .table-estate .btn-mini {
-        font-size: 0.78rem; padding: 0.3rem 0.7rem; border-radius: 3px; font-weight: 700;
-        text-decoration: none; display: inline-block; border: 1px solid var(--ivory-100);
-    }
-    .table-estate .btn-edit { color: var(--navy-900); }
-    .table-estate .btn-edit:hover { border-color: var(--gold-500); color: var(--gold-600); }
-    .table-estate .btn-hapus { color: #8a2c22; background: none; }
-    .table-estate .btn-hapus:hover { background: #fbeceb; border-color: #f0bdb9; }
-</style>
 
     <!-- ============ PAGE HEADER ============ -->
     <div class="page-header page-header-photo">

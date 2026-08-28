@@ -117,27 +117,6 @@ $user = user_login();
 $page_title = 'Semua Properti — Estate Prima';
 require_once __DIR__ . '/includes/header.php';
 ?>
-<style>
-    .hero-listing {
-        position: relative;
-        min-height: 56vh;
-        display: flex;
-        align-items: center;
-        background-image:
-            linear-gradient(180deg, rgba(10,24,38,0.65) 0%, rgba(10,24,38,0.5) 40%, rgba(10,24,38,0.95) 100%),
-            url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?fm=jpg&q=80&w=2200&auto=format&fit=crop');
-        background-size: cover;
-        background-position: center;
-    }
-    .hero-listing .breadcrumb-estate a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.85rem; }
-    .hero-listing .breadcrumb-estate a:hover { color: var(--gold-300); }
-    .hero-listing .breadcrumb-estate .sep { color: rgba(255,255,255,0.35); margin: 0 0.4rem; }
-    .hero-listing .breadcrumb-estate .current { color: var(--gold-300); font-size: 0.85rem; }
-    .hero-listing .hero-eyebrow { font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.78rem; color: var(--gold-300); }
-    .hero-listing h1 { font-family: 'Fraunces', serif; font-weight: 600; font-size: clamp(2rem, 4vw, 3rem); line-height: 1.1; color: #fff; }
-    .hero-listing h1 em { font-style: italic; color: var(--gold-300); }
-    .hero-listing p.lead { color: rgba(255,255,255,0.88); font-size: 1.02rem; max-width: 36rem; }
-</style>
 
     <!-- ============ HERO ============ -->
     <header class="hero-listing">

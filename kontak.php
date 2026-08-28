@@ -37,15 +37,6 @@ $user = user_login();
 $page_title = 'Hubungi Kami — Estate Prima';
 require_once __DIR__ . '/includes/header.php';
 ?>
-<style>
-    .page-header-photo {
-        background-image:
-            linear-gradient(180deg, rgba(13,31,51,0.72) 0%, rgba(13,31,51,0.6) 55%, rgba(13,31,51,0.94) 100%),
-            url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?fm=jpg&q=80&w=2000&auto=format&fit=crop');
-        background-size: cover;
-        background-position: center;
-    }
-</style>
 
     <!-- ============ PAGE HEADER ============ -->
     <div class="page-header page-header-photo">

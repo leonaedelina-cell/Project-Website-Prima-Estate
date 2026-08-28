@@ -19,37 +19,6 @@ $admin_sidebar = true;
 $dashboard_sidebar_active = 'pesan';
 require_once __DIR__ . '/includes/header.php';
 ?>
-<style>
-    .page-header-photo {
-        background-image:
-            linear-gradient(180deg, rgba(13,31,51,0.72) 0%, rgba(13,31,51,0.6) 55%, rgba(13,31,51,0.94) 100%),
-            url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?fm=jpg&q=80&w=2000&auto=format&fit=crop');
-        background-size: cover;
-        background-position: center;
-    }
-
-    .pesan-card {
-        background: #fff; border: 1px solid var(--ivory-100); border-radius: 3px;
-        padding: 1.25rem 1.5rem; margin-bottom: 1rem; position: relative;
-    }
-    .pesan-card.belum-dibaca { border-left: 3px solid var(--gold-500); background: #fdf9f0; }
-    .pesan-card .nama { font-family: 'Fraunces', serif; font-weight: 600; color: var(--navy-900); }
-    .pesan-card .meta { font-size: 0.82rem; color: var(--ink-500); }
-    .badge-belum {
-        background: var(--gold-grad); color: var(--navy-950); font-size: 0.66rem; font-weight: 800;
-        letter-spacing: 0.06em; text-transform: uppercase; padding: 0.25rem 0.6rem; border-radius: 3px;
-        margin-left: 0.5rem;
-    }
-    .pesan-card .isi-pesan { color: var(--ink-900); font-size: 0.92rem; margin: 0.85rem 0; line-height: 1.6; }
-    .btn-mini {
-        font-size: 0.78rem; padding: 0.35rem 0.8rem; border-radius: 3px; font-weight: 700;
-        border: 1px solid var(--ivory-100); text-decoration: none; display: inline-block;
-    }
-    .btn-tandai { color: var(--navy-900); background: #fff; }
-    .btn-tandai:hover { border-color: var(--gold-500); color: var(--gold-600); }
-    .btn-hapus-pesan { color: #8a2c22; background: #fff; }
-    .btn-hapus-pesan:hover { background: #fbeceb; border-color: #f0bdb9; }
-</style>
 
     <!-- ============ PAGE HEADER ============ -->
     <div class="page-header page-header-photo">

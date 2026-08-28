@@ -93,18 +93,7 @@ require_once __DIR__ . '/includes/header.php';
         </div>
         <div class="form-actions"><button type="submit" class="btn btn-gold px-4"><i class="bi bi-house-add-fill me-1"></i> Simpan Properti</button></div>
                 </form>
-                <script>
-                    // Field "Durasi Minimal" cuma relevan kalau tipe transaksi = sewa
-                    (function () {
-                        var tipeTransaksi = document.getElementById('tipe_transaksi');
-                        var wrapDurasi = document.getElementById('wrap-durasi-minimal');
-                        function toggleDurasi() {
-                            wrapDurasi.style.display = tipeTransaksi.value === 'sewa' ? '' : 'none';
-                        }
-                        tipeTransaksi.addEventListener('change', toggleDurasi);
-                        toggleDurasi();
-                    })();
-                </script>
+                <script src="<?= BASE_URL ?>assets/js/properti-form.js?v=<?= filemtime(__DIR__ . '/assets/js/properti-form.js') ?>"></script>
             </div>
         </div>
     </main>

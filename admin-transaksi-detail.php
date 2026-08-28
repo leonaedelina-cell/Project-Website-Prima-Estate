@@ -167,82 +167,6 @@ $admin_sidebar = true;
 $dashboard_sidebar_active = 'transaksi';
 require_once __DIR__ . '/includes/header.php';
 ?>
-<style>
-    .transaction-detail-card { background:#fff; border:1px solid var(--ivory-100); border-radius:3px; box-shadow:0 16px 38px rgba(10,24,38,0.06); overflow:hidden; }
-    .transaction-detail-head { background:var(--navy-950); color:#fff; padding:clamp(1.35rem,3vw,2.25rem); position:relative; }
-    .transaction-detail-head::after { content:""; position:absolute; right:-48px; top:-70px; width:190px; height:190px; border:1px solid rgba(227,200,150,0.2); transform:rotate(18deg); pointer-events:none; }
-    .transaction-detail-head > * { position:relative; z-index:1; }
-    .transaction-detail-head .section-eyebrow { color:var(--gold-300); }
-    .transaction-detail-head .section-title { color:#fff; }
-    .transaction-id { color:rgba(255,255,255,0.6); font-size:0.82rem; letter-spacing:0.08em; text-transform:uppercase; }
-    .detail-block { height:100%; padding:1.25rem; border:1px solid var(--ivory-100); border-radius:3px; background:#fff; }
-    .detail-block .detail-label { color:var(--ink-500); font-size:0.72rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; }
-    .detail-block .detail-value { color:var(--navy-900); font-weight:700; }
-    .detail-block .detail-value a { color:var(--gold-600); }
-    .detail-block .detail-value a:hover { color:var(--navy-900); }
-    .detail-note { min-height:92px; white-space:pre-line; }
-    .payment-editor { background:#fbf8f1; border:1px solid var(--ivory-100); border-radius:3px; padding:1.25rem; }
-    .payment-editor .form-control, .payment-editor .form-select { border-color:var(--ivory-100); border-radius:3px; }
-    .payment-editor .form-control:focus, .payment-editor .form-select:focus { border-color:var(--gold-500); box-shadow:0 0 0 0.2rem rgba(201,162,75,0.2); }
-    @media (max-width:575.98px) {
-        .transaction-detail-head { display:block !important; }
-        .transaction-detail-head .d-flex { justify-content:flex-start !important; margin-top:1rem; }
-        .transaction-detail-head .btn { width:100%; }
-    }
-
-    /* ============ Struk Cetak ============ */
-    /* Tersembunyi di layar biasa, cuma tampil pas print/save-as-PDF (lihat @media print) */
-    #print-area { display:none; }
-    .print-sheet {
-        max-width: 640px; margin: 0 auto; border: 1px solid #d9d5c7;
-        font-family: 'Manrope', sans-serif; color: #24261f;
-    }
-    .print-letterhead {
-        background: var(--navy-950); color: #fff; padding: 1.75rem 2rem;
-        display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;
-    }
-    .print-letterhead .brand { font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.3rem; letter-spacing: 0.02em; }
-    .print-letterhead .brand span { color: var(--gold-300); }
-    .print-letterhead .brand-sub { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.55); margin-top: 0.15rem; }
-    .print-letterhead .doc-label { text-align: right; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold-300); }
-    .print-letterhead .doc-number { font-family: 'Fraunces', serif; font-size: 1.15rem; font-weight: 600; margin-top: 0.2rem; }
-    .print-status-strip {
-        display: flex; justify-content: space-between; align-items: center;
-        padding: 0.7rem 2rem; background: #eaf4ec; color: #1e5c2c;
-        font-size: 0.78rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
-        border-bottom: 1px solid #d9d5c7;
-    }
-    .print-body { padding: 1.75rem 2rem; }
-    .print-section-title {
-        font-size: 0.68rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
-        color: #a39d87; margin: 1.4rem 0 0.6rem; border-bottom: 1px solid #ece8dc; padding-bottom: 0.4rem;
-    }
-    .print-section-title:first-child { margin-top: 0; }
-    .print-row { display: flex; justify-content: space-between; gap: 1.5rem; padding: 0.4rem 0; font-size: 0.88rem; }
-    .print-row .lbl { color: #766f60; }
-    .print-row .val { font-weight: 700; text-align: right; }
-    .print-total-row {
-        display: flex; justify-content: space-between; align-items: center;
-        margin-top: 0.5rem; padding: 0.85rem 1rem; background: #fbf8f1; border: 1px solid #ece8dc; border-radius: 4px;
-    }
-    .print-total-row .lbl { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: #766f60; }
-    .print-total-row .val { font-family: 'Fraunces', serif; font-size: 1.35rem; font-weight: 700; color: var(--navy-900); }
-    .print-note-box { border: 1px solid #ece8dc; border-radius: 4px; padding: 0.85rem 1rem; font-size: 0.85rem; white-space: pre-line; background: #fbf8f1; }
-    .print-signature { display: flex; justify-content: flex-end; margin-top: 2.5rem; text-align: center; }
-    .print-signature .box { width: 200px; }
-    .print-signature .line { border-top: 1px solid #a39d87; margin-top: 3.2rem; padding-top: 0.4rem; font-size: 0.78rem; color: #766f60; }
-    .print-footnote { text-align: center; font-size: 0.72rem; color: #a39d87; padding: 1rem 2rem 1.75rem; }
-
-    @media print {
-        .dashboard-sidebar, .page-header, .breadcrumb-estate,
-        .transaction-detail-head .btn, .payment-editor, .alert-estate-success, .alert-estate-error,
-        #print-toolbar { display:none !important; }
-        body.has-dashboard-sidebar { padding:0 !important; }
-        .transaction-detail-card { box-shadow:none !important; border:none !important; }
-        #print-area { display:block !important; padding:1.5rem 0; }
-        .print-sheet { border-color:#000; }
-    }
-</style>
 <div class="page-header page-header-photo">
     <div class="container">
         <p class="eyebrow mb-2">Panel Admin</p>
@@ -269,14 +193,14 @@ require_once __DIR__ . '/includes/header.php';
                 </div>
                 <div class="d-flex gap-2 flex-wrap justify-content-end" id="print-toolbar">
                     <?php if ($transaksi['status'] === 'selesai'): ?>
-                        <button type="button" class="btn btn-outline-gold" onclick="window.print()"><i class="bi bi-printer-fill me-1"></i> Cetak Bukti</button>
+                        <button type="button" class="btn btn-outline-gold" onclick="cetakBukti(<?= $transaksi['id'] ?>)"><i class="bi bi-printer-fill me-1"></i> Cetak Bukti</button>
                     <?php endif; ?>
                     <a href="admin-transaksi.php" class="btn btn-outline-gold"><i class="bi bi-arrow-left me-1"></i> Kembali</a>
                 </div>
             </div>
 
             <?php if ($transaksi['status'] === 'selesai'): ?>
-                <div id="print-area">
+                <div class="print-receipt" id="print-receipt-<?= $transaksi['id'] ?>">
                     <div class="print-sheet">
                         <div class="print-letterhead">
                             <div>
@@ -377,4 +301,5 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 </main>
 
+<script src="<?= BASE_URL ?>assets/js/print-receipt.js?v=<?= filemtime(__DIR__ . '/assets/js/print-receipt.js') ?>"></script>
 <?php require_once __DIR__ . '/includes/dashboard-footer.php'; ?>

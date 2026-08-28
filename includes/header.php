@@ -109,29 +109,5 @@ $user = $user ?? null;
     </nav>
 <?php endif; ?>
 <?php if ($admin_sidebar || $dashboard_sidebar): ?>
-<script>
-    // Sidebar collapse/expand - state disimpan di localStorage per browser, gak ngaruh ke user lain
-    (function () {
-        var sidebar = document.querySelector('.dashboard-sidebar');
-        if (!sidebar) return;
-        var STORAGE_KEY = 'estateprima-sidebar-collapsed';
-        var collapsed = false;
-        try { collapsed = localStorage.getItem(STORAGE_KEY) === '1'; } catch (e) {}
-
-        function terapkan(state) {
-            sidebar.classList.toggle('collapsed', state);
-            document.body.classList.toggle('sidebar-collapsed', state);
-        }
-        terapkan(collapsed);
-
-        var tombol = document.getElementById('sidebarToggleBtn');
-        if (tombol) {
-            tombol.addEventListener('click', function () {
-                collapsed = !collapsed;
-                terapkan(collapsed);
-                try { localStorage.setItem(STORAGE_KEY, collapsed ? '1' : '0'); } catch (e) {}
-            });
-        }
-    })();
-</script>
+<script src="<?= BASE_URL ?>assets/js/sidebar-toggle.js?v=<?= filemtime(__DIR__ . '/../assets/js/sidebar-toggle.js') ?>"></script>
 <?php endif; ?>

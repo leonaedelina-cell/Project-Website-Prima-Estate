@@ -47,19 +47,6 @@ $admin_sidebar = true;
 $dashboard_sidebar_active = 'users';
 require_once __DIR__ . '/includes/header.php';
 ?>
-<style>
-    .table-estate {
-        width: 100%; background: #fff; border-collapse: collapse;
-        border: 1px solid var(--ivory-100); border-radius: 3px; overflow: hidden;
-    }
-    .table-estate thead { background: var(--navy-950); }
-    .table-estate thead th {
-        color: rgba(255,255,255,0.85); font-size: 0.72rem; font-weight: 700;
-        letter-spacing: 0.08em; text-transform: uppercase; padding: 0.85rem 1rem; text-align: left;
-    }
-    .table-estate tbody td { padding: 0.85rem 1rem; border-top: 1px solid var(--ivory-100); font-size: 0.92rem; vertical-align: middle; }
-    .table-estate tbody tr:hover { background: #fbf8f1; }
-</style>
 <div class="page-header"><div class="container"><p class="eyebrow mb-2">Panel Admin</p><h1 class="mb-2">Kelola Users</h1><p class="lead mb-0">Atur role dan akses akun pengguna.</p></div></div>
 <main class="py-5"><div class="container">
 <?php if (in_array($pesan, ['role-berhasil', 'hapus-berhasil', 'tambah-berhasil', 'edit-berhasil'], true)): ?><div class="alert-estate-success p-3 mb-4">Perubahan user berhasil disimpan.</div><?php endif; ?>

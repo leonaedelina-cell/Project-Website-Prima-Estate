@@ -45,23 +45,6 @@ $user = user_login();
 $page_title = 'Estate Prima — Temukan Hunian Impian Anda';
 require_once __DIR__ . '/includes/header.php';
 ?>
-<style>
-    .hero {
-        position: relative;
-        min-height: 92vh;
-        display: flex;
-        align-items: center;
-        background-image:
-            linear-gradient(180deg, rgba(13,31,51,0.55) 0%, rgba(13,31,51,0.35) 40%, rgba(13,31,51,0.92) 100%),
-            url('https://images.unsplash.com/photo-1757359056339-22968344cce6?fm=jpg&q=80&w=2200&auto=format&fit=crop');
-        background-size: cover;
-        background-position: center;
-    }
-    .hero-eyebrow { font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.78rem; color: var(--gold-300); }
-    .hero h1 { font-family: 'Fraunces', serif; font-weight: 600; font-size: clamp(2.4rem, 5vw, 3.9rem); line-height: 1.08; color: #fff; }
-    .hero h1 em { font-style: italic; color: var(--gold-300); }
-    .hero p.lead { color: rgba(255,255,255,0.85); font-size: 1.08rem; max-width: 34rem; }
-</style>
 
     <!-- ============ HERO ============ -->
     <header class="hero">

@@ -31,13 +31,6 @@ $dashboard_sidebar = true;
 $dashboard_sidebar_active = 'wishlist';
 require_once __DIR__ . '/includes/header.php';
 ?>
-<style>
-    .wishlist-card .thumb { height: 220px; }
-    .wishlist-card .card-body { position: relative; }
-    .wishlist-card .remove-form { position: relative; z-index: 3; }
-    .wishlist-card .remove-form .btn { border-color: #e3c3bd; color: #8a2c22; font-size: 0.78rem; font-weight: 700; }
-    .wishlist-card .remove-form .btn:hover { background: #fbeceb; }
-</style>
 
 <header class="page-header">
     <div class="container">
@@ -68,7 +61,7 @@ require_once __DIR__ . '/includes/header.php';
                 <a href="<?= BASE_URL ?>listing.php" class="btn btn-gold">Cari Properti <i class="bi bi-arrow-right ms-1"></i></a>
             </div>
         <?php else: ?>
-            <div class="row g-4" id="wishlist-grid">
+            <div class="row g-4" id="wishlist-grid" data-csrf-token="<?= htmlspecialchars(csrf_token()) ?>" data-endpoint="<?= BASE_URL ?>proses-wishlist.php">
                 <?php foreach ($daftar_wishlist as $w): ?>
                     <div class="col-md-6 col-lg-4" data-wishlist-item="<?= $w['properti_id'] ?>">
                         <div class="property-card wishlist-card">
@@ -103,42 +96,6 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 </main>
 
-<script>
-// Hapus wishlist tanpa reload halaman (AJAX). Card dihapus dari DOM begitu server konfirmasi sukses.
-const csrfToken = <?= json_encode(csrf_token()) ?>;
-document.querySelectorAll('[data-wishlist-remove]').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-        const propertiId = btn.getAttribute('data-wishlist-remove');
-        const card = btn.closest('[data-wishlist-item]');
-        btn.disabled = true;
-
-        fetch('<?= BASE_URL ?>proses-wishlist.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-Requested-With': 'XMLHttpRequest',
-            },
-            body: new URLSearchParams({ csrf_token: csrfToken, properti_id: propertiId }),
-        })
-            .then(function (res) { return res.json(); })
-            .then(function (data) {
-                if (data.sukses && !data.ada_di_wishlist) {
-                    card.remove();
-                    const grid = document.getElementById('wishlist-grid');
-                    if (grid && grid.children.length === 0) {
-                        grid.classList.add('d-none');
-                        document.getElementById('wishlist-empty-state').classList.remove('d-none');
-                    }
-                } else {
-                    btn.disabled = false;
-                }
-            })
-            .catch(function () {
-                btn.disabled = false;
-                alert('Gagal menghapus wishlist. Coba lagi.');
-            });
-    });
-});
-</script>
+<script src="<?= BASE_URL ?>assets/js/wishlist.js?v=<?= filemtime(__DIR__ . '/assets/js/wishlist.js') ?>"></script>
 
 <?php require_once __DIR__ . '/includes/dashboard-footer.php'; ?>

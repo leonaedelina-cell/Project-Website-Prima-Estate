@@ -48,15 +48,6 @@ $admin_sidebar = true;
 $dashboard_sidebar_active = 'properti';
 require_once __DIR__ . '/includes/header.php';
 ?>
-<style>
-    .page-header-photo { background-image: linear-gradient(180deg, rgba(13,31,51,0.72), rgba(13,31,51,0.94)), url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?fm=jpg&q=80&w=2000&auto=format&fit=crop'); background-size:cover; background-position:center; }
-    .table-estate { width:100%; background:#fff; border:1px solid var(--ivory-100); border-radius:3px; overflow:hidden; }
-    .table-estate thead { background:var(--navy-950); }
-    .table-estate th { color:rgba(255,255,255,0.85); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; padding:.85rem 1rem; white-space:nowrap; }
-    .table-estate td { padding:.85rem 1rem; border-top:1px solid var(--ivory-100); vertical-align:middle; }
-    .table-estate tbody tr:hover { background:#fbf8f1; }
-    .property-name { color:var(--navy-900); font-weight:700; }
-</style>
 
 <div class="page-header page-header-photo">
     <div class="container">

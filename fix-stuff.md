@@ -121,6 +121,30 @@ Halaman publik (`detail.php`, `listing.php`, `kontak.php`, `login.php`, `registe
 - CSS `.table-estate tr:hover { background:#fbf8f1; }` di `admin-properti.php` gak di-scope ke `tbody`, jadi kena baris `<thead>` juga. Pas kursor lewat header tabel, background header (harusnya navy gelap) ketiban jadi warna terang, sementara teks header tetep putih — jadinya teks header invisible pas di-hover.
 - File lain (`admin-agen.php`, `admin-transaksi.php`, `admin-users.php`) udah bener dari awal (`.table-estate tbody tr:hover`), cuma `admin-properti.php` yang kelewatan. Fix: tambahin `tbody` di selector-nya.
 
+## 17. CSS & JS Dipisah dari File PHP
+
+Sebelumnya 15 halaman PHP punya `<style>` sendiri-sendiri nempel di tengah markup, dan 4 halaman punya `<script>` inline juga. Sekarang semua dipindah:
+
+- **CSS**: 15 blok `<style>` (dari `admin-agen.php`, `admin-dashboard.php`, `admin-pesan.php`, `admin-properti.php`, `admin-transaksi.php`, `admin-transaksi-detail.php`, `admin-users.php`, `dashboard-user.php`, `index.php`, `kontak.php`, `listing.php`, `login.php`, `pesanan.php`, `register.php`, `wishlist.php`) dipindah ke `assets/css/style.css`, masing-masing dikasih komentar header `/* ---------- Halaman xxx.php: ... ---------- */` biar jelas asal dan fungsinya.
+- **Dedup**: pas mindahin ketauan 4 halaman (`admin-agen`, `admin-properti`, `admin-transaksi`, `admin-users`) punya style `.table-estate` yang HAMPIR SAMA PERSIS, cuma beda dikit-dikit (font-size 0.9 vs 0.92rem, ada yang pakai `.table-estate th` ada yang `.table-estate thead th`). Ini bukan cuma soal rapi — begitu digabung ke satu file, aturan yang sama spesifisitasnya bakal saling timpa (yang paling akhir menang), jadi 4 salinan itu digabung jadi **1 blok `.table-estate` canonical**, sama `.btn-mini`/`.btn-edit`/`.btn-hapus` yang tadinya diulang di beberapa tempat.
+- **JS**: 4 script dipindah ke file terpisah dengan komentar penjelasan di headernya:
+  - `assets/js/sidebar-toggle.js` — logic collapse/expand sidebar (dari `includes/header.php`).
+  - `assets/js/properti-form.js` — toggle field "Durasi Minimal" (dari `properti-tambah.php` & `properti-edit.php`, sekarang 1 file dipakai bareng soalnya isinya identik).
+  - `assets/js/wishlist.js` — hapus wishlist via AJAX (dari `wishlist.php`).
+  - `assets/js/print-receipt.js` — cetak struk transaksi (dipakai `admin-transaksi-detail.php` DAN `pesanan.php`, lihat poin 18).
+- **Trik buat script yang butuh nilai dari PHP** (CSRF token, `BASE_URL`): dulu nilainya ditulis langsung di `<script>` inline pakai `<?= ... ?>`. Sekarang dioper lewat `data-*` attribute di HTML (contoh: `<div id="wishlist-grid" data-csrf-token="..." data-endpoint="...">`), terus file JS eksternal baca via `element.getAttribute(...)` / `.dataset`. Ini pola standar buat misahin PHP (backend) dari JS (frontend) tanpa kehilangan data dinamis yang dibutuhin.
+- Semua `<script src="...">` pakai cache-busting `?v=<?= filemtime(...) ?>` — pola yang sama kayak yang udah dipakai buat `style.css`, biar browser gak nge-cache versi lama pas file JS-nya diubah.
+
+## 18. Cetak Bukti Transaksi Juga Bisa dari Sisi User
+
+- `pesanan.php` (dashboard customer) sekarang punya tombol "Cetak Bukti" per pesanan, **cuma muncul kalau status pesanan itu `selesai`** — sama kayak aturan di panel admin.
+- Struk yang dicetak isinya sama persis kayak yang di `admin-transaksi-detail.php` (kop surat, status, data pemohon, data properti, total, tanda tangan).
+- Karena `pesanan.php` nampilin BANYAK pesanan sekaligus (beda sama halaman admin yang cuma 1 transaksi), gak bisa pakai `id="print-area"` doang kayak sebelumnya — kalau banyak elemen id sama, cuma yang pertama valid, sisanya HTML jadi gak valid. Makanya di-refactor jadi:
+  - Tiap struk pakai `class="print-receipt"` (boleh dobel/banyak) + `id="print-receipt-<id-transaksi>"` (unik per transaksi, valid).
+  - Fungsi `cetakBukti(id)` di `assets/js/print-receipt.js` nempelin class `.printing` ke struk yang mau dicetak SEBELUM manggil `window.print()`, terus dicopot lagi otomatis setelah dialog print ditutup (event `afterprint`).
+  - CSS `@media print` cuma nampilin `.print-receipt.printing`, yang lain (termasuk daftar pesanan aslinya) disembunyiin.
+- `admin-transaksi-detail.php` ikut di-refactor ke pola yang sama (dari `#print-area` fix id jadi class+id per transaksi) biar konsisten sama `pesanan.php` dan gampang dipahami dua-duanya pakai mekanisme yang sama.
+
 ## Yang BELUM dikerjain (giliran kamu)
 
 - **Sidebar collapse/expand** pakai toggle ikon `<<`/`>>` — belum ada sama sekali, ini murni kerjaan kamu. Lihat juga `notes-student.md` bagian "Yang masih perlu kamu kerjain sendiri".

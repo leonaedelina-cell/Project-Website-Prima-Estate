@@ -47,6 +47,10 @@ Semua ini statusnya **selesai di branch `mentor-fixes`**, belum masuk `main` kam
 - [x] Breadcrumb di halaman admin diganti jadi deskripsi singkat "halaman ini bisa ngapain" (halaman publik tetep pakai breadcrumb, karena emang butuh nav berlapis).
 - [x] Fix bug: hover di header tabel `admin-properti.php` bikin teksnya invisible (CSS hover-nya kena baris header, bukan cuma baris data).
 - [x] Fix bug: subjudul (`<p class="lead">`) di semua halaman admin gak kebaca di atas background navy gelap.
+- [x] Semua CSS/JS yang tadinya nyampur di dalam file PHP (15 `<style>`, 4 `<script>`) dipisah ke `assets/css/style.css` dan `assets/js/*.js`, masing-masing dikasih komentar. Ketauan juga 4 halaman punya style `.table-estate` yang diulang-ulang, sekarang digabung jadi satu.
+- [x] User juga bisa cetak bukti transaksi sendiri di `pesanan.php` (tombol muncul kalau status `selesai`), bukan cuma admin.
+
+**Kalau mau lihat kode CSS/JS-nya:** `assets/css/style.css` (tiap bagian dikasih komentar `/* ---------- Halaman xxx.php ---------- */`) dan folder `assets/js/` (tiap file `.js` ada komentar header jelasin dipakai di halaman mana & buat apa).
 
 ## Yang masih perlu kamu kerjain sendiri
 

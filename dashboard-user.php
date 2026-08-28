@@ -56,23 +56,6 @@ $dashboard_sidebar = true;
 $dashboard_sidebar_active = 'dashboard';
 require_once __DIR__ . '/includes/header.php';
 ?>
-<style>
-    .dashboard-hero { background: var(--navy-950); background-image: linear-gradient(135deg, rgba(18,42,67,0.98), rgba(10,24,38,0.98)); }
-    .dashboard-hero h1 { font-size: clamp(2rem, 4vw, 3.2rem); }
-    .dashboard-stat { background: #fff; border: 1px solid var(--ivory-100); border-radius: 3px; padding: 1.35rem; height: 100%; position: relative; overflow: hidden; }
-    .dashboard-stat::after { content: ""; position: absolute; right: -22px; bottom: -30px; width: 92px; height: 92px; border: 1px solid rgba(199,164,104,0.25); transform: rotate(18deg); }
-    .dashboard-stat i { color: var(--gold-600); font-size: 1.25rem; }
-    .dashboard-stat .stat-num { color: var(--navy-900); background: none; -webkit-text-fill-color: initial; font-size: 2rem; }
-    .dashboard-stat .stat-label { color: var(--ink-500); margin-top: 0.35rem; }
-    .dashboard-panel { background: #fff; border: 1px solid var(--ivory-100); border-radius: 3px; padding: 1.5rem; }
-    .dashboard-panel h2 { font-family: 'Fraunces', serif; color: var(--navy-900); font-size: 1.55rem; }
-    .activity-row { display: flex; align-items: center; gap: 1rem; border-top: 1px dashed var(--ivory-100); padding: 1rem 0; }
-    .activity-row:first-child { border-top: 0; padding-top: 0; }
-    .activity-icon { width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center; background: var(--navy-900); color: var(--gold-300); border-radius: 50%; flex-shrink: 0; }
-    .activity-title { color: var(--navy-900); font-weight: 700; }
-    .activity-date { color: var(--ink-500); font-size: 0.78rem; }
-    .status-pill { display: inline-block; background: var(--ivory-100); color: var(--navy-900); border-radius: 2px; padding: 0.25rem 0.55rem; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; }
-</style>
 
 <header class="page-header dashboard-hero">
     <div class="container">
