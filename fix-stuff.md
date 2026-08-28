@@ -93,7 +93,7 @@ Sebelumnya halaman ini isinya HTML satu baris panjang (susah dibaca/di-maintain)
 
 - Tombol "Cetak Bukti" cuma muncul kalau status transaksi `selesai` (lunas). Belum lunas, tombolnya gak ada — gak masuk akal ngasih bukti transaksi yang belum kelar.
 - Tombol pakai `onclick="window.print()"` — panggil dialog print bawaan browser (dari situ user bisa print ke printer beneran atau "Save as PDF").
-- Ada blok `<div id="print-area">` terpisah yang isinya struk ringkas (nomor transaksi, nama pemohon, properti, harga, metode bayar, tanggal, catatan). Blok ini `display:none` di layar biasa, cuma muncul pas mode print lewat CSS `@media print`.
+- Ada blok `<div id="print-area">` terpisah yang isinya struk/invoice rapi (kop surat navy+gold, nomor transaksi format `#TRX0001`, strip status "Lunas/Selesai", section Data Pemohon/Properti/Waktu, kotak total nilai transaksi, catatan admin kalau ada, area tanda tangan admin). Blok ini `display:none` di layar biasa, cuma muncul pas mode print lewat CSS `@media print`.
 - Sidebar, header foto, breadcrumb, form edit pembayaran, dan tombol-tombol disembunyikan otomatis pas print (`@media print { ... display:none !important; }`) — biar hasil print bersih, cuma struknya doang yang kecetak, bukan seluruh halaman admin.
 
 ## Yang BELUM dikerjain (giliran kamu)

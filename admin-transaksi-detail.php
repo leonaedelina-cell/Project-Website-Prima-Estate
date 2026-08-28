@@ -190,11 +190,49 @@ require_once __DIR__ . '/includes/header.php';
         .transaction-detail-head .btn { width:100%; }
     }
 
-    /* Struk cetak - tersembunyi di layar, cuma tampil pas print/PDF */
+    /* ============ Struk Cetak ============ */
+    /* Tersembunyi di layar biasa, cuma tampil pas print/save-as-PDF (lihat @media print) */
     #print-area { display:none; }
-    .print-row { display:flex; justify-content:space-between; gap:1rem; padding:0.5rem 0; border-bottom:1px solid #e3e1da; }
-    .print-row .lbl { color:#766f60; }
-    .print-row .val { font-weight:700; text-align:right; }
+    .print-sheet {
+        max-width: 640px; margin: 0 auto; border: 1px solid #d9d5c7;
+        font-family: 'Manrope', sans-serif; color: #24261f;
+    }
+    .print-letterhead {
+        background: var(--navy-950); color: #fff; padding: 1.75rem 2rem;
+        display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;
+    }
+    .print-letterhead .brand { font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.3rem; letter-spacing: 0.02em; }
+    .print-letterhead .brand span { color: var(--gold-300); }
+    .print-letterhead .brand-sub { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.55); margin-top: 0.15rem; }
+    .print-letterhead .doc-label { text-align: right; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold-300); }
+    .print-letterhead .doc-number { font-family: 'Fraunces', serif; font-size: 1.15rem; font-weight: 600; margin-top: 0.2rem; }
+    .print-status-strip {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 0.7rem 2rem; background: #eaf4ec; color: #1e5c2c;
+        font-size: 0.78rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
+        border-bottom: 1px solid #d9d5c7;
+    }
+    .print-body { padding: 1.75rem 2rem; }
+    .print-section-title {
+        font-size: 0.68rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
+        color: #a39d87; margin: 1.4rem 0 0.6rem; border-bottom: 1px solid #ece8dc; padding-bottom: 0.4rem;
+    }
+    .print-section-title:first-child { margin-top: 0; }
+    .print-row { display: flex; justify-content: space-between; gap: 1.5rem; padding: 0.4rem 0; font-size: 0.88rem; }
+    .print-row .lbl { color: #766f60; }
+    .print-row .val { font-weight: 700; text-align: right; }
+    .print-total-row {
+        display: flex; justify-content: space-between; align-items: center;
+        margin-top: 0.5rem; padding: 0.85rem 1rem; background: #fbf8f1; border: 1px solid #ece8dc; border-radius: 4px;
+    }
+    .print-total-row .lbl { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: #766f60; }
+    .print-total-row .val { font-family: 'Fraunces', serif; font-size: 1.35rem; font-weight: 700; color: var(--navy-900); }
+    .print-note-box { border: 1px solid #ece8dc; border-radius: 4px; padding: 0.85rem 1rem; font-size: 0.85rem; white-space: pre-line; background: #fbf8f1; }
+    .print-signature { display: flex; justify-content: flex-end; margin-top: 2.5rem; text-align: center; }
+    .print-signature .box { width: 200px; }
+    .print-signature .line { border-top: 1px solid #a39d87; margin-top: 3.2rem; padding-top: 0.4rem; font-size: 0.78rem; color: #766f60; }
+    .print-footnote { text-align: center; font-size: 0.72rem; color: #a39d87; padding: 1rem 2rem 1.75rem; }
+
     @media print {
         .dashboard-sidebar, .page-header, .breadcrumb-estate,
         .transaction-detail-head .btn, .payment-editor, .alert-estate-success, .alert-estate-error,
@@ -202,7 +240,7 @@ require_once __DIR__ . '/includes/header.php';
         body.has-dashboard-sidebar { padding:0 !important; }
         .transaction-detail-card { box-shadow:none !important; border:none !important; }
         #print-area { display:block !important; padding:1.5rem 0; }
-        #print-area h1 { font-family:'Fraunces',serif; font-size:1.4rem; margin-bottom:0.25rem; }
+        .print-sheet { border-color:#000; }
     }
 </style>
 <div class="page-header page-header-photo">
@@ -242,23 +280,55 @@ require_once __DIR__ . '/includes/header.php';
             </div>
 
             <?php if ($transaksi['status'] === 'selesai'): ?>
-                <div id="print-area" class="px-3 px-md-4">
-                    <h1>Bukti Transaksi — Estate Prima</h1>
-                    <p class="text-muted small mb-4">Nomor Transaksi #<?= $transaksi['id'] ?> &middot; Dicetak <?= date('d M Y, H:i') ?></p>
-                    <div class="print-row"><span class="lbl">Status</span><span class="val">Lunas / Selesai</span></div>
-                    <div class="print-row"><span class="lbl">Nama Pemohon</span><span class="val"><?= htmlspecialchars($transaksi['nama_user']) ?></span></div>
-                    <div class="print-row"><span class="lbl">Email</span><span class="val"><?= htmlspecialchars($transaksi['email_user']) ?></span></div>
-                    <div class="print-row"><span class="lbl">No. HP</span><span class="val"><?= htmlspecialchars($transaksi['no_hp_user'] ?: '-') ?></span></div>
-                    <div class="print-row"><span class="lbl">Properti</span><span class="val"><?= htmlspecialchars($transaksi['judul_properti']) ?></span></div>
-                    <div class="print-row"><span class="lbl">Alamat</span><span class="val"><?= htmlspecialchars($transaksi['alamat_properti']) ?>, <?= htmlspecialchars($transaksi['kota_properti']) ?></span></div>
-                    <div class="print-row"><span class="lbl">Harga</span><span class="val">Rp <?= number_format($transaksi['harga_properti'], 0, ',', '.') ?></span></div>
-                    <div class="print-row"><span class="lbl">Metode Pembayaran</span><span class="val"><?= $transaksi['metode_bayar'] ? ucwords(str_replace('_', ' ', $transaksi['metode_bayar'])) : '-' ?></span></div>
-                    <div class="print-row"><span class="lbl">Diajukan</span><span class="val"><?= htmlspecialchars($transaksi['created_at']) ?></span></div>
-                    <div class="print-row"><span class="lbl">Terakhir Diperbarui</span><span class="val"><?= htmlspecialchars($transaksi['updated_at']) ?></span></div>
-                    <?php if ($transaksi['catatan_admin']): ?>
-                        <div class="mt-3"><span class="lbl d-block mb-1">Catatan Admin</span><?= nl2br(htmlspecialchars($transaksi['catatan_admin'])) ?></div>
-                    <?php endif; ?>
-                    <p class="text-muted small mt-4 mb-0">Dokumen ini dicetak otomatis dari sistem Estate Prima sebagai bukti transaksi telah selesai.</p>
+                <div id="print-area">
+                    <div class="print-sheet">
+                        <div class="print-letterhead">
+                            <div>
+                                <div class="brand">ESTATE <span>PRIMA</span></div>
+                                <div class="brand-sub">Bukti Transaksi Properti</div>
+                            </div>
+                            <div class="doc-label">
+                                No. Transaksi
+                                <div class="doc-number">#TRX<?= str_pad((string) $transaksi['id'], 4, '0', STR_PAD_LEFT) ?></div>
+                            </div>
+                        </div>
+                        <div class="print-status-strip">
+                            <span><i class="bi bi-check-circle-fill me-1"></i> Lunas / Selesai</span>
+                            <span>Dicetak <?= date('d M Y, H:i') ?></span>
+                        </div>
+                        <div class="print-body">
+                            <p class="print-section-title">Data Pemohon</p>
+                            <div class="print-row"><span class="lbl">Nama</span><span class="val"><?= htmlspecialchars($transaksi['nama_user']) ?></span></div>
+                            <div class="print-row"><span class="lbl">Email</span><span class="val"><?= htmlspecialchars($transaksi['email_user']) ?></span></div>
+                            <div class="print-row"><span class="lbl">No. HP</span><span class="val"><?= htmlspecialchars($transaksi['no_hp_user'] ?: '-') ?></span></div>
+
+                            <p class="print-section-title">Data Properti</p>
+                            <div class="print-row"><span class="lbl">Properti</span><span class="val"><?= htmlspecialchars($transaksi['judul_properti']) ?></span></div>
+                            <div class="print-row"><span class="lbl">Alamat</span><span class="val"><?= htmlspecialchars($transaksi['alamat_properti']) ?>, <?= htmlspecialchars($transaksi['kota_properti']) ?></span></div>
+                            <div class="print-row"><span class="lbl">Metode Pembayaran</span><span class="val"><?= $transaksi['metode_bayar'] ? ucwords(str_replace('_', ' ', $transaksi['metode_bayar'])) : '-' ?></span></div>
+
+                            <p class="print-section-title">Waktu</p>
+                            <div class="print-row"><span class="lbl">Diajukan</span><span class="val"><?= htmlspecialchars($transaksi['created_at']) ?></span></div>
+                            <div class="print-row"><span class="lbl">Terakhir Diperbarui</span><span class="val"><?= htmlspecialchars($transaksi['updated_at']) ?></span></div>
+
+                            <div class="print-total-row">
+                                <span class="lbl">Total Nilai Transaksi</span>
+                                <span class="val">Rp <?= number_format($transaksi['harga_properti'], 0, ',', '.') ?></span>
+                            </div>
+
+                            <?php if ($transaksi['catatan_admin']): ?>
+                                <p class="print-section-title">Catatan Admin</p>
+                                <div class="print-note-box"><?= nl2br(htmlspecialchars($transaksi['catatan_admin'])) ?></div>
+                            <?php endif; ?>
+
+                            <div class="print-signature">
+                                <div class="box">
+                                    <div class="line">Estate Prima — Admin</div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="print-footnote">Dokumen ini dicetak otomatis dari sistem Estate Prima sebagai bukti transaksi telah selesai.</p>
+                    </div>
                 </div>
             <?php endif; ?>
 
