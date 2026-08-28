@@ -33,6 +33,7 @@ if ($existing) {
     mysqli_stmt_close($stmt);
 
     $pesan = 'wishlist-dihapus';
+    $ada_di_wishlist = false;
 } else {
     // Belum ada -> tambah (toggle on)
     $stmt = mysqli_prepare($koneksi, "INSERT INTO wishlist (user_id, properti_id) VALUES (?, ?)");
@@ -41,6 +42,15 @@ if ($existing) {
     mysqli_stmt_close($stmt);
 
     $pesan = 'wishlist-ditambah';
+    $ada_di_wishlist = true;
+}
+
+// Kalau dipanggil lewat AJAX (fetch dari wishlist.php), balikin JSON, jangan redirect.
+// Header ini dikirim manual dari JS karena browser gak otomatis ngirim X-Requested-With.
+if (($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'XMLHttpRequest') {
+    header('Content-Type: application/json');
+    echo json_encode(['sukses' => true, 'ada_di_wishlist' => $ada_di_wishlist]);
+    exit;
 }
 
 header("Location: detail.php?id={$properti_id}&pesan={$pesan}");

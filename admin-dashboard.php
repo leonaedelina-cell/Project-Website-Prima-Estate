@@ -148,22 +148,22 @@ require_once __DIR__ . '/includes/header.php';
                     <h2 class="section-title mb-4" style="font-size:1.6rem;">Statistik Transaksi</h2>
                     <div class="row g-3">
                         <div class="col-6 col-md-4">
-                            <div class="stat-card"><div class="num"><?= $stat_transaksi['menunggu'] ?></div><div class="lbl">Menunggu</div></div>
+                            <div class="stat-card"><i class="bi bi-hourglass-split d-block mb-1"></i><div class="num"><?= $stat_transaksi['menunggu'] ?></div><div class="lbl">Menunggu</div></div>
                         </div>
                         <div class="col-6 col-md-4">
-                            <div class="stat-card"><div class="num"><?= $stat_transaksi['diproses'] ?></div><div class="lbl">Diproses</div></div>
+                            <div class="stat-card"><i class="bi bi-arrow-repeat d-block mb-1"></i><div class="num"><?= $stat_transaksi['diproses'] ?></div><div class="lbl">Diproses</div></div>
                         </div>
                         <div class="col-6 col-md-4">
-                            <div class="stat-card"><div class="num"><?= $stat_transaksi['disetujui'] ?></div><div class="lbl">Disetujui</div></div>
+                            <div class="stat-card"><i class="bi bi-check-circle-fill d-block mb-1"></i><div class="num"><?= $stat_transaksi['disetujui'] ?></div><div class="lbl">Disetujui</div></div>
                         </div>
                         <div class="col-6 col-md-4">
-                            <div class="stat-card"><div class="num"><?= $stat_transaksi['ditolak'] ?></div><div class="lbl">Ditolak</div></div>
+                            <div class="stat-card"><i class="bi bi-x-circle-fill d-block mb-1"></i><div class="num"><?= $stat_transaksi['ditolak'] ?></div><div class="lbl">Ditolak</div></div>
                         </div>
                         <div class="col-6 col-md-4">
-                            <div class="stat-card"><div class="num"><?= $stat_transaksi['selesai'] ?></div><div class="lbl">Selesai</div></div>
+                            <div class="stat-card"><i class="bi bi-check2-circle d-block mb-1"></i><div class="num"><?= $stat_transaksi['selesai'] ?></div><div class="lbl">Selesai</div></div>
                         </div>
                         <div class="col-6 col-md-4">
-                            <div class="stat-card"><div class="num"><?= $total_user ?></div><div class="lbl">Total User</div></div>
+                            <div class="stat-card"><i class="bi bi-people-fill d-block mb-1"></i><div class="num"><?= $total_user ?></div><div class="lbl">Total User</div></div>
                         </div>
                     </div>
                 </div>
@@ -192,4 +192,4 @@ require_once __DIR__ . '/includes/header.php';
         </div>
     </main>
 
-<?php require_once __DIR__ . '/includes/footer.php'; ?>
+<?php require_once __DIR__ . '/includes/dashboard-footer.php'; ?>

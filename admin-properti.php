@@ -9,13 +9,34 @@ require_once __DIR__ . '/includes/auth.php';
 
 cek_admin();
 
+$q = trim($_GET['q'] ?? '');
 $data_per_halaman = 10;
 $halaman = max((int)($_GET['page'] ?? 1), 1);
 $offset = ($halaman - 1) * $data_per_halaman;
-$total_properti = (int)mysqli_fetch_assoc(mysqli_query($koneksi, 'SELECT COUNT(*) AS total FROM properti'))['total'];
+
+$where_sql = '';
+$parameter = [];
+$tipe_data = '';
+if ($q !== '') {
+    $where_sql = 'WHERE judul LIKE ? OR kota LIKE ?';
+    $keyword = "%{$q}%";
+    $parameter = [$keyword, $keyword];
+    $tipe_data = 'ss';
+}
+
+$stmt_total = mysqli_prepare($koneksi, "SELECT COUNT(*) AS total FROM properti {$where_sql}");
+if (!empty($parameter)) {
+    mysqli_stmt_bind_param($stmt_total, $tipe_data, ...$parameter);
+}
+mysqli_stmt_execute($stmt_total);
+$total_properti = (int) mysqli_fetch_assoc(mysqli_stmt_get_result($stmt_total))['total'];
 $total_halaman = max((int)ceil($total_properti / $data_per_halaman), 1);
-$stmt = mysqli_prepare($koneksi, 'SELECT id, judul, harga, tipe, kota, status FROM properti ORDER BY created_at DESC LIMIT ? OFFSET ?');
-mysqli_stmt_bind_param($stmt, 'ii', $data_per_halaman, $offset);
+mysqli_stmt_close($stmt_total);
+
+$stmt = mysqli_prepare($koneksi, "SELECT id, judul, harga, tipe, kota, status FROM properti {$where_sql} ORDER BY created_at DESC LIMIT ? OFFSET ?");
+$tipe_data_full = $tipe_data . 'ii';
+$parameter_full = array_merge($parameter, [$data_per_halaman, $offset]);
+mysqli_stmt_bind_param($stmt, $tipe_data_full, ...$parameter_full);
 mysqli_stmt_execute($stmt);
 $daftar_properti = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
 mysqli_stmt_close($stmt);
@@ -51,17 +72,24 @@ require_once __DIR__ . '/includes/header.php';
             <div class="alert-estate-success p-3 mb-4"><i class="bi bi-check-circle-fill me-1"></i> Perubahan properti berhasil disimpan.</div>
         <?php endif; ?>
         <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-            <div><p class="section-eyebrow mb-2">Daftar Properti</p><h2 class="section-title mb-0" style="font-size:1.6rem;"><?= count($daftar_properti) ?> Properti</h2></div>
-            <a href="properti-tambah.php" class="btn btn-gold"><i class="bi bi-plus-lg me-1"></i> Tambah Properti</a>
+            <div><p class="section-eyebrow mb-2">Daftar Properti</p><h2 class="section-title mb-0" style="font-size:1.6rem;"><?= $total_properti ?> Properti</h2></div>
+            <div class="d-flex gap-2 flex-wrap">
+                <form method="GET" class="d-flex gap-2">
+                    <input type="search" name="q" class="form-control" placeholder="Cari judul/kota..." value="<?= htmlspecialchars($q) ?>">
+                    <button type="submit" class="btn btn-outline-navy"><i class="bi bi-search"></i></button>
+                </form>
+                <a href="properti-tambah.php" class="btn btn-gold"><i class="bi bi-plus-lg me-1"></i> Tambah Properti</a>
+            </div>
         </div>
             <div class="table-responsive">
             <table class="table-estate">
-                <thead><tr><th>Judul</th><th>Harga</th><th>Tipe</th><th>Kota</th><th>Status</th><th>Aksi</th></tr></thead>
+                <thead><tr><th>No</th><th>Judul</th><th>Harga</th><th>Tipe</th><th>Kota</th><th>Status</th><th>Aksi</th></tr></thead>
                 <tbody>
                 <?php if (empty($daftar_properti)): ?>
-                    <tr><td colspan="6" class="text-center text-muted py-4">Belum ada properti.</td></tr>
-                <?php else: foreach ($daftar_properti as $properti): ?>
+                    <tr><td colspan="7" class="text-center text-muted py-4">Tidak ada properti ditemukan.</td></tr>
+                <?php else: $nomor = $offset + 1; foreach ($daftar_properti as $properti): ?>
                     <tr>
+                        <td><?= $nomor++ ?></td>
                         <td class="property-name"><?= htmlspecialchars($properti['judul']) ?></td>
                         <td>Rp <?= number_format($properti['harga'], 0, ',', '.') ?></td>
                         <td><?= ucfirst($properti['tipe']) ?></td>
@@ -73,8 +101,8 @@ require_once __DIR__ . '/includes/header.php';
                 </tbody>
             </table>
         </div>
-        <?php if ($total_halaman > 1): ?><nav class="pagination-estate mt-4" aria-label="Halaman properti"><?php for ($i = 1; $i <= $total_halaman; $i++): ?><a href="admin-properti.php?page=<?= $i ?>" class="<?= $i === $halaman ? 'active' : '' ?>" aria-label="Halaman <?= $i ?>"><?= $i ?></a><?php endfor; ?></nav><?php endif; ?>
+        <?php if ($total_halaman > 1): ?><nav class="pagination-estate mt-4" aria-label="Halaman properti"><?php for ($i = 1; $i <= $total_halaman; $i++): ?><a href="admin-properti.php?page=<?= $i ?><?= $q !== '' ? '&q=' . urlencode($q) : '' ?>" class="<?= $i === $halaman ? 'active' : '' ?>" aria-label="Halaman <?= $i ?>"><?= $i ?></a><?php endfor; ?></nav><?php endif; ?>
     </div>
 </main>
 
-<?php require_once __DIR__ . '/includes/footer.php'; ?>
+<?php require_once __DIR__ . '/includes/dashboard-footer.php'; ?>

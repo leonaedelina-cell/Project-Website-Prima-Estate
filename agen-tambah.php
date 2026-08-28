@@ -20,4 +20,4 @@ require_once __DIR__ . '/includes/header.php';
         <div class="form-actions"><button type="submit" class="btn btn-gold px-4"><i class="bi bi-person-plus-fill me-1"></i> Simpan Agen</button></div>
     </form>
     </div></div></main>
-<?php require_once __DIR__ . '/includes/footer.php'; ?>
+<?php require_once __DIR__ . '/includes/dashboard-footer.php'; ?>

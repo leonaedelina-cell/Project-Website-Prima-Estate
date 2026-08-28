@@ -61,4 +61,4 @@ require_once __DIR__ . '/includes/header.php';
 <div class="col-md-6 field-panel"><label class="form-label" for="konfirmasi_password">Konfirmasi Password</label><input class="form-control" id="konfirmasi_password" type="password" name="konfirmasi_password"></div>
 </div><div class="form-actions"><button class="btn btn-gold" type="submit"><i class="bi bi-check2-circle me-1"></i> Simpan Profil</button></div></form>
 </div></div></main>
-<?php require_once __DIR__ . '/includes/footer.php'; ?>
+<?php require_once __DIR__ . '/includes/dashboard-footer.php'; ?>

@@ -20,6 +20,7 @@ require_once __DIR__ . '/includes/auth.php';
 // ------------------------------------------------------------------
 $q         = trim($_GET['q'] ?? '');
 $tipe      = trim($_GET['tipe'] ?? '');
+$tipe_transaksi = trim($_GET['tipe_transaksi'] ?? '');
 $kota      = trim($_GET['kota'] ?? '');
 $harga_min = $_GET['harga_min'] ?? '';
 $harga_max = $_GET['harga_max'] ?? '';
@@ -47,6 +48,12 @@ if ($q !== '') {
 if ($tipe !== '' && in_array($tipe, ['rumah', 'apartemen', 'tanah', 'ruko'])) {
     $kondisi[]  = "tipe = ?";
     $parameter[] = $tipe;
+    $tipe_data  .= 's';
+}
+
+if ($tipe_transaksi !== '' && in_array($tipe_transaksi, ['jual', 'sewa'], true)) {
+    $kondisi[]  = "tipe_transaksi = ?";
+    $parameter[] = $tipe_transaksi;
     $tipe_data  .= 's';
 }
 
@@ -86,7 +93,7 @@ mysqli_stmt_close($stmt_total);
 // ------------------------------------------------------------------
 // 4. Ambil data properti sesuai filter + pagination
 // ------------------------------------------------------------------
-$query_data = "SELECT id, judul, harga, tipe, kota, kamar_tidur, kamar_mandi, luas_bangunan, gambar_url
+$query_data = "SELECT id, judul, harga, tipe, tipe_transaksi, kota, kamar_tidur, kamar_mandi, luas_bangunan, gambar_url
                FROM properti
                WHERE {$where_sql}
                ORDER BY created_at DESC
@@ -172,6 +179,14 @@ require_once __DIR__ . '/includes/header.php';
                                 </select>
                             </div>
                             <div class="col-md-2">
+                                <label class="d-block">Jual/Sewa</label>
+                                <select name="tipe_transaksi" class="form-select">
+                                    <option value="">Semua</option>
+                                    <option value="jual" <?= $tipe_transaksi === 'jual' ? 'selected' : '' ?>>Jual</option>
+                                    <option value="sewa" <?= $tipe_transaksi === 'sewa' ? 'selected' : '' ?>>Sewa</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
                                 <label class="d-block">Kota</label>
                                 <select name="kota" class="form-select">
                                     <option value="">Semua Kota</option>
@@ -198,7 +213,7 @@ require_once __DIR__ . '/includes/header.php';
                                 </button>
                             </div>
                         </form>
-                        <?php if ($q !== '' || $tipe !== '' || $kota !== '' || $harga_min !== '' || $harga_max !== ''): ?>
+                        <?php if ($q !== '' || $tipe !== '' || $tipe_transaksi !== '' || $kota !== '' || $harga_min !== '' || $harga_max !== ''): ?>
                             <div class="mt-3">
                                 <a href="listing.php" class="btn btn-outline-navy btn-sm px-3">
                                     <i class="bi bi-x-circle me-1"></i> Reset Filter
@@ -238,7 +253,7 @@ require_once __DIR__ . '/includes/header.php';
                                 <span class="corner-tick br"></span>
 
                                 <div class="thumb" style="background-image:url('<?= htmlspecialchars($p['gambar_url'] ?: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994') ?>');">
-                                    <span class="type-tag"><?= ucfirst($p['tipe']) ?></span>
+                                    <span class="type-tag"><?= ucfirst($p['tipe']) ?> · <?= $p['tipe_transaksi'] === 'sewa' ? 'Sewa' : 'Jual' ?></span>
                                     <span class="price-tag">Rp <?= number_format($p['harga'], 0, ',', '.') ?></span>
                                 </div>
                                 <div class="card-body p-3">

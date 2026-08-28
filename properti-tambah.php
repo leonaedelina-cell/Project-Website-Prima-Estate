@@ -37,11 +37,12 @@ require_once __DIR__ . '/includes/header.php';
                     <div><p class="section-eyebrow mb-2">Data Properti</p><h2 class="section-title mb-0">Tambah Properti Baru</h2></div>
                     <a href="admin-properti.php" class="btn btn-outline-navy"><i class="bi bi-arrow-left me-1"></i> Kembali</a>
                 </div>
-                <form method="POST" action="proses-properti.php">
+                <form method="POST" action="proses-properti.php" enctype="multipart/form-data">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
         <input type="hidden" name="aksi" value="tambah">
 
-        <div class="row g-3">
+        <p class="section-eyebrow mb-2">Info Dasar</p>
+        <div class="row g-3 mb-4">
             <div class="col-12 field-panel"><label class="form-label">Judul</label><input class="form-control" type="text" name="judul" required></div>
             <div class="col-12 field-panel"><label class="form-label">Deskripsi</label><textarea class="form-control" name="deskripsi" rows="4"></textarea></div>
             <div class="col-md-6 field-panel"><label class="form-label">Harga (Rp)</label><input class="form-control" type="number" name="harga" required min="0"></div>
@@ -51,8 +52,20 @@ require_once __DIR__ . '/includes/header.php';
                 <option value="tanah">Tanah</option>
                 <option value="ruko">Ruko</option>
             </select></div>
+            <div class="col-md-6 field-panel"><label class="form-label">Tipe Transaksi</label><select class="form-select" name="tipe_transaksi" id="tipe_transaksi" required>
+                <option value="jual">Jual</option>
+                <option value="sewa">Sewa</option>
+            </select></div>
+            <div class="col-md-6 field-panel" id="wrap-durasi-minimal" style="display:none;"><label class="form-label">Durasi Minimal Sewa</label><select class="form-select" name="durasi_minimal">
+                <option value="6 bulan">6 Bulan</option>
+                <option value="1 tahun">1 Tahun</option>
+            </select></div>
             <div class="col-md-8 field-panel"><label class="form-label">Alamat</label><input class="form-control" type="text" name="alamat" required></div>
             <div class="col-md-4 field-panel"><label class="form-label">Kota</label><input class="form-control" type="text" name="kota" required></div>
+        </div>
+
+        <p class="section-eyebrow mb-2">Detail Fisik</p>
+        <div class="row g-3 mb-4">
             <div class="col-md-6 field-panel"><label class="form-label">Latitude (opsional, buat Maps)</label><input class="form-control" type="text" name="lat"></div>
             <div class="col-md-6 field-panel"><label class="form-label">Longitude (opsional, buat Maps)</label><input class="form-control" type="text" name="lng"></div>
             <div class="col-md-4 field-panel"><label class="form-label">Luas Tanah (m2)</label><input class="form-control" type="number" name="luas_tanah"></div>
@@ -60,17 +73,43 @@ require_once __DIR__ . '/includes/header.php';
             <div class="col-md-4 field-panel"><label class="form-label">Kamar Tidur</label><input class="form-control" type="number" name="kamar_tidur" value="0"></div>
             <div class="col-md-4 field-panel"><label class="form-label">Kamar Mandi</label><input class="form-control" type="number" name="kamar_mandi" value="0"></div>
             <div class="col-md-4 field-panel"><label class="form-label">Carport</label><input class="form-control" type="number" name="carport" value="0"></div>
-            <div class="col-md-4 field-panel"><label class="form-label">URL Gambar Utama</label><input class="form-control" type="text" name="gambar_url" placeholder="https://..."></div>
-            <div class="col-12 field-panel"><label class="form-label">Agen</label><select class="form-select" name="agen_id">
+        </div>
+
+        <p class="section-eyebrow mb-2">Fasilitas &amp; Status</p>
+        <div class="row g-3 mb-4">
+            <div class="col-12 field-panel"><label class="form-label">Fasilitas (pisahkan pakai koma)</label><input class="form-control" type="text" name="fasilitas" placeholder="AC, Garasi, Kolam Renang"></div>
+            <div class="col-md-6 field-panel"><label class="form-label">Status Hunian</label><select class="form-select" name="status_hunian">
+                <option value="kosong">Kosong</option>
+                <option value="terisi">Terisi</option>
+            </select></div>
+            <div class="col-md-6 field-panel"><label class="form-label">Agen</label><select class="form-select" name="agen_id">
                 <option value="">- Tanpa Agen -</option>
                 <?php foreach ($daftar_agen as $a): ?>
                     <option value="<?= $a['id'] ?>"><?= htmlspecialchars($a['nama']) ?></option>
                 <?php endforeach; ?>
             </select></div>
         </div>
+
+        <p class="section-eyebrow mb-2">Gambar Utama</p>
+        <div class="row g-3">
+            <div class="col-md-6 field-panel"><label class="form-label">Upload Gambar (JPG/PNG/WEBP, maks 2MB)</label><input class="form-control" type="file" name="gambar" accept="image/jpeg,image/png,image/webp"></div>
+            <div class="col-md-6 field-panel"><label class="form-label">Atau URL Gambar</label><input class="form-control" type="text" name="gambar_url" placeholder="https://..."></div>
+        </div>
         <div class="form-actions"><button type="submit" class="btn btn-gold px-4"><i class="bi bi-house-add-fill me-1"></i> Simpan Properti</button></div>
                 </form>
+                <script>
+                    // Field "Durasi Minimal" cuma relevan kalau tipe transaksi = sewa
+                    (function () {
+                        var tipeTransaksi = document.getElementById('tipe_transaksi');
+                        var wrapDurasi = document.getElementById('wrap-durasi-minimal');
+                        function toggleDurasi() {
+                            wrapDurasi.style.display = tipeTransaksi.value === 'sewa' ? '' : 'none';
+                        }
+                        tipeTransaksi.addEventListener('change', toggleDurasi);
+                        toggleDurasi();
+                    })();
+                </script>
             </div>
         </div>
     </main>
-<?php require_once __DIR__ . '/includes/footer.php'; ?>
+<?php require_once __DIR__ . '/includes/dashboard-footer.php'; ?>

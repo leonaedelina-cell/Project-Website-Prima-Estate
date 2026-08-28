@@ -154,5 +154,5 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 </main>
 
-<?php require_once __DIR__ . '/includes/footer.php'; ?>
+<?php require_once __DIR__ . '/includes/dashboard-footer.php'; ?>
 

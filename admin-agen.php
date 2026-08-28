@@ -9,14 +9,46 @@ require_once __DIR__ . '/includes/auth.php';
 
 cek_admin();
 
+$q = trim($_GET['q'] ?? '');
+$data_per_halaman = 10;
+$halaman = max((int)($_GET['page'] ?? 1), 1);
+$offset = ($halaman - 1) * $data_per_halaman;
+
+$where_sql = '';
+$parameter = [];
+$tipe_data = '';
+if ($q !== '') {
+    $where_sql = 'WHERE a.nama LIKE ? OR a.email LIKE ?';
+    $keyword = "%{$q}%";
+    $parameter = [$keyword, $keyword];
+    $tipe_data = 'ss';
+}
+
+$stmt_total = mysqli_prepare($koneksi, "SELECT COUNT(*) AS total FROM agen a {$where_sql}");
+if (!empty($parameter)) {
+    mysqli_stmt_bind_param($stmt_total, $tipe_data, ...$parameter);
+}
+mysqli_stmt_execute($stmt_total);
+$total_agen = (int) mysqli_fetch_assoc(mysqli_stmt_get_result($stmt_total))['total'];
+$total_halaman = max((int)ceil($total_agen / $data_per_halaman), 1);
+mysqli_stmt_close($stmt_total);
+
 // Sekalian hitung berapa properti yang dipegang tiap agen (biar admin tau dampak sebelum hapus)
-$daftar_agen = mysqli_fetch_all(mysqli_query($koneksi,
+$stmt = mysqli_prepare($koneksi,
     "SELECT a.id, a.nama, a.no_hp, a.email, COUNT(p.id) AS jumlah_properti
      FROM agen a
      LEFT JOIN properti p ON p.agen_id = a.id
+     {$where_sql}
      GROUP BY a.id, a.nama, a.no_hp, a.email
-     ORDER BY a.nama"
-), MYSQLI_ASSOC);
+     ORDER BY a.nama
+     LIMIT ? OFFSET ?"
+);
+$tipe_data_full = $tipe_data . 'ii';
+$parameter_full = array_merge($parameter, [$data_per_halaman, $offset]);
+mysqli_stmt_bind_param($stmt, $tipe_data_full, ...$parameter_full);
+mysqli_stmt_execute($stmt);
+$daftar_agen = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
+mysqli_stmt_close($stmt);
 
 $pesan = $_GET['pesan'] ?? '';
 
@@ -83,26 +115,33 @@ require_once __DIR__ . '/includes/header.php';
             <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
                 <div>
                     <p class="section-eyebrow mb-2">Daftar Agen</p>
-                    <h2 class="section-title mb-0" style="font-size:1.6rem;"><?= count($daftar_agen) ?> Agen Sales</h2>
+                    <h2 class="section-title mb-0" style="font-size:1.6rem;"><?= $total_agen ?> Agen Sales</h2>
                 </div>
-                <a href="agen-tambah.php" class="btn btn-gold px-4 py-2">
-                    <i class="bi bi-plus-lg me-1"></i> Tambah Agen
-                </a>
+                <div class="d-flex gap-2 flex-wrap">
+                    <form method="GET" class="d-flex gap-2">
+                        <input type="search" name="q" class="form-control" placeholder="Cari nama/email..." value="<?= htmlspecialchars($q) ?>">
+                        <button type="submit" class="btn btn-outline-navy"><i class="bi bi-search"></i></button>
+                    </form>
+                    <a href="agen-tambah.php" class="btn btn-gold px-4 py-2">
+                        <i class="bi bi-plus-lg me-1"></i> Tambah Agen
+                    </a>
+                </div>
             </div>
 
             <div class="table-responsive">
                 <table class="table-estate">
                     <thead>
                         <tr>
-                            <th>Nama</th><th>No. HP</th><th>Email</th><th>Jumlah Properti</th><th>Aksi</th>
+                            <th>No</th><th>Nama</th><th>No. HP</th><th>Email</th><th>Jumlah Properti</th><th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (empty($daftar_agen)): ?>
-                            <tr><td colspan="5" class="text-center text-muted py-4">Belum ada agen sales.</td></tr>
+                            <tr><td colspan="6" class="text-center text-muted py-4">Tidak ada agen ditemukan.</td></tr>
                         <?php else: ?>
-                            <?php foreach ($daftar_agen as $a): ?>
+                            <?php $nomor = $offset + 1; foreach ($daftar_agen as $a): ?>
                                 <tr>
+                                    <td><?= $nomor++ ?></td>
                                     <td class="fw-bold" style="color:var(--navy-900);"><?= htmlspecialchars($a['nama']) ?></td>
                                     <td><?= htmlspecialchars($a['no_hp'] ?? '-') ?></td>
                                     <td><?= htmlspecialchars($a['email'] ?? '-') ?></td>
@@ -112,24 +151,50 @@ require_once __DIR__ . '/includes/header.php';
                                             <a href="agen-edit.php?id=<?= $a['id'] ?>" class="btn-mini btn-edit">
                                                 <i class="bi bi-pencil-fill"></i> Edit
                                             </a>
-                                            <form method="POST" action="proses-agen.php" class="d-inline"
-                                                  onsubmit="return confirm('<?= $a['jumlah_properti'] > 0 ? "Agen ini masih pegang {$a['jumlah_properti']} properti, propertinya akan jadi Tanpa Agen. " : '' ?>Yakin hapus agen ini?');">
-                                                                                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
-                                                <input type="hidden" name="aksi" value="hapus">
-                                                <input type="hidden" name="id" value="<?= $a['id'] ?>">
-                                                <button type="submit" class="btn-mini btn-hapus">
-                                                    <i class="bi bi-trash-fill"></i> Hapus
-                                                </button>
-                                            </form>
+                                            <button type="button" class="btn-mini btn-hapus" data-bs-toggle="modal" data-bs-target="#modalHapusAgen<?= $a['id'] ?>">
+                                                <i class="bi bi-trash-fill"></i> Hapus
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
+                                <div class="modal fade" id="modalHapusAgen<?= $a['id'] ?>" tabindex="-1" aria-labelledby="labelHapusAgen<?= $a['id'] ?>" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h2 class="modal-title fs-5" id="labelHapusAgen<?= $a['id'] ?>">Hapus Agen?</h2>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Agen <strong><?= htmlspecialchars($a['nama']) ?></strong> akan dihapus.
+                                                <?php if ($a['jumlah_properti'] > 0): ?>
+                                                    <p class="text-muted small mt-2 mb-0">Agen ini masih pegang <?= (int) $a['jumlah_properti'] ?> properti — propertinya akan jadi "Tanpa Agen".</p>
+                                                <?php endif; ?>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-outline-navy" data-bs-dismiss="modal">Batal</button>
+                                                <form method="POST" action="proses-agen.php">
+                                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
+                                                    <input type="hidden" name="aksi" value="hapus">
+                                                    <input type="hidden" name="id" value="<?= $a['id'] ?>">
+                                                    <button type="submit" class="btn btn-danger">Hapus</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </tbody>
                 </table>
             </div>
+            <?php if ($total_halaman > 1): ?>
+                <nav class="pagination-estate mt-4" aria-label="Halaman agen">
+                    <?php for ($i = 1; $i <= $total_halaman; $i++): ?>
+                        <a href="admin-agen.php?page=<?= $i ?><?= $q !== '' ? '&q=' . urlencode($q) : '' ?>" class="<?= $i === $halaman ? 'active' : '' ?>" aria-label="Halaman <?= $i ?>"><?= $i ?></a>
+                    <?php endfor; ?>
+                </nav>
+            <?php endif; ?>
         </div>
     </main>
 
-<?php require_once __DIR__ . '/includes/footer.php'; ?>
+<?php require_once __DIR__ . '/includes/dashboard-footer.php'; ?>

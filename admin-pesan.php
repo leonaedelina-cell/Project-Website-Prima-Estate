@@ -108,15 +108,29 @@ require_once __DIR__ . '/includes/header.php';
                                 </form>
                             <?php endif; ?>
 
-                            <form method="POST" action="proses-pesan.php" class="d-inline"
-                                  onsubmit="return confirm('Hapus pesan ini?');">
-                                                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
-                                <input type="hidden" name="aksi" value="hapus">
-                                <input type="hidden" name="id" value="<?= $p['id'] ?>">
-                                <button type="submit" class="btn-mini btn-hapus-pesan">
-                                    <i class="bi bi-trash-fill me-1"></i> Hapus
-                                </button>
-                            </form>
+                            <button type="button" class="btn-mini btn-hapus-pesan" data-bs-toggle="modal" data-bs-target="#modalHapusPesan<?= $p['id'] ?>">
+                                <i class="bi bi-trash-fill me-1"></i> Hapus
+                            </button>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="modalHapusPesan<?= $p['id'] ?>" tabindex="-1" aria-labelledby="labelHapusPesan<?= $p['id'] ?>" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2 class="modal-title fs-5" id="labelHapusPesan<?= $p['id'] ?>">Hapus Pesan?</h2>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                                </div>
+                                <div class="modal-body">Pesan dari <strong><?= htmlspecialchars($p['nama']) ?></strong> akan dihapus permanen.</div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-navy" data-bs-dismiss="modal">Batal</button>
+                                    <form method="POST" action="proses-pesan.php">
+                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
+                                        <input type="hidden" name="aksi" value="hapus">
+                                        <input type="hidden" name="id" value="<?= $p['id'] ?>">
+                                        <button type="submit" class="btn btn-danger">Hapus</button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -124,4 +138,4 @@ require_once __DIR__ . '/includes/header.php';
         </div>
     </main>
 
-<?php require_once __DIR__ . '/includes/footer.php'; ?>
+<?php require_once __DIR__ . '/includes/dashboard-footer.php'; ?>

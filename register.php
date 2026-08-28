@@ -60,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         mysqli_stmt_execute($stmt);
 
         // Langsung login-kan user setelah register (opsional, tapi umum dipakai)
+        session_regenerate_id(true);
         $_SESSION['user_id'] = mysqli_insert_id($koneksi);
         $_SESSION['nama']    = $nama;
         $_SESSION['email']   = $email;

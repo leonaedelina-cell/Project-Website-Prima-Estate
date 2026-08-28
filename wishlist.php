@@ -68,9 +68,9 @@ require_once __DIR__ . '/includes/header.php';
                 <a href="<?= BASE_URL ?>listing.php" class="btn btn-gold">Cari Properti <i class="bi bi-arrow-right ms-1"></i></a>
             </div>
         <?php else: ?>
-            <div class="row g-4">
+            <div class="row g-4" id="wishlist-grid">
                 <?php foreach ($daftar_wishlist as $w): ?>
-                    <div class="col-md-6 col-lg-4">
+                    <div class="col-md-6 col-lg-4" data-wishlist-item="<?= $w['properti_id'] ?>">
                         <div class="property-card wishlist-card">
                             <span class="corner-tick tl"></span>
                             <span class="corner-tick br"></span>
@@ -83,11 +83,9 @@ require_once __DIR__ . '/includes/header.php';
                                 <p class="location mb-3"><i class="bi bi-geo-alt-fill"></i> <?= htmlspecialchars($w['kota']) ?></p>
                                 <div class="d-flex justify-content-between align-items-center gap-2">
                                     <span class="badge-status <?= htmlspecialchars($w['status']) ?>"><i class="bi bi-circle-fill"></i> <?= ucfirst($w['status']) ?></span>
-                                    <form method="POST" action="<?= BASE_URL ?>proses-wishlist.php" class="remove-form">
-                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
-                                        <input type="hidden" name="properti_id" value="<?= $w['properti_id'] ?>">
-                                        <button type="submit" class="btn btn-sm"><i class="bi bi-trash3 me-1"></i> Hapus</button>
-                                    </form>
+                                    <div class="remove-form">
+                                        <button type="button" class="btn btn-sm" data-wishlist-remove="<?= $w['properti_id'] ?>"><i class="bi bi-trash3 me-1"></i> Hapus</button>
+                                    </div>
                                 </div>
                                 <a href="<?= BASE_URL ?>detail.php?id=<?= $w['properti_id'] ?>" class="stretched-link"></a>
                             </div>
@@ -95,8 +93,52 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
                 <?php endforeach; ?>
             </div>
+            <div class="cta-banner text-center d-none" id="wishlist-empty-state">
+                <i class="bi bi-heart text-gold fs-1"></i>
+                <h2 class="mt-3 mb-2">Wishlist Anda masih kosong</h2>
+                <p class="text-white-50 mb-4">Temukan properti yang sesuai dan simpan untuk melihatnya lagi nanti.</p>
+                <a href="<?= BASE_URL ?>listing.php" class="btn btn-gold">Cari Properti <i class="bi bi-arrow-right ms-1"></i></a>
+            </div>
         <?php endif; ?>
     </div>
 </main>
 
-<?php require_once __DIR__ . '/includes/footer.php'; ?>
+<script>
+// Hapus wishlist tanpa reload halaman (AJAX). Card dihapus dari DOM begitu server konfirmasi sukses.
+const csrfToken = <?= json_encode(csrf_token()) ?>;
+document.querySelectorAll('[data-wishlist-remove]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+        const propertiId = btn.getAttribute('data-wishlist-remove');
+        const card = btn.closest('[data-wishlist-item]');
+        btn.disabled = true;
+
+        fetch('<?= BASE_URL ?>proses-wishlist.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: new URLSearchParams({ csrf_token: csrfToken, properti_id: propertiId }),
+        })
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+                if (data.sukses && !data.ada_di_wishlist) {
+                    card.remove();
+                    const grid = document.getElementById('wishlist-grid');
+                    if (grid && grid.children.length === 0) {
+                        grid.classList.add('d-none');
+                        document.getElementById('wishlist-empty-state').classList.remove('d-none');
+                    }
+                } else {
+                    btn.disabled = false;
+                }
+            })
+            .catch(function () {
+                btn.disabled = false;
+                alert('Gagal menghapus wishlist. Coba lagi.');
+            });
+    });
+});
+</script>
+
+<?php require_once __DIR__ . '/includes/dashboard-footer.php'; ?>

@@ -58,16 +58,31 @@ require_once __DIR__ . '/includes/header.php';
         <div class="gallery-admin-grid">
         <?php foreach ($galeri as $g): ?>
             <div class="gallery-admin-item"><img src="<?= htmlspecialchars($g['gambar_url']) ?>" alt="Galeri <?= htmlspecialchars($properti['judul']) ?>"><div class="item-footer"><div class="url mb-2" title="<?= htmlspecialchars($g['gambar_url']) ?>"><?= htmlspecialchars($g['gambar_url']) ?></div>
-                <form method="POST" action="proses-galeri.php" onsubmit="return confirm('Hapus foto ini dari galeri?');">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
-                    <input type="hidden" name="aksi" value="hapus">
-                    <input type="hidden" name="id" value="<?= $g['id'] ?>">
-                    <input type="hidden" name="properti_id" value="<?= $properti_id ?>">
-                    <button type="submit" class="btn btn-sm btn-outline-danger w-100"><i class="bi bi-trash3 me-1"></i> Hapus Foto</button>
-                </form>
+                <button type="button" class="btn btn-sm btn-outline-danger w-100" data-bs-toggle="modal" data-bs-target="#modalHapusFoto<?= $g['id'] ?>"><i class="bi bi-trash3 me-1"></i> Hapus Foto</button>
             </div></div>
+            <div class="modal fade" id="modalHapusFoto<?= $g['id'] ?>" tabindex="-1" aria-labelledby="labelHapusFoto<?= $g['id'] ?>" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2 class="modal-title fs-5" id="labelHapusFoto<?= $g['id'] ?>">Hapus Foto?</h2>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                        </div>
+                        <div class="modal-body">Foto ini akan dihapus dari galeri <strong><?= htmlspecialchars($properti['judul']) ?></strong>.</div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-navy" data-bs-dismiss="modal">Batal</button>
+                            <form method="POST" action="proses-galeri.php">
+                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
+                                <input type="hidden" name="aksi" value="hapus">
+                                <input type="hidden" name="id" value="<?= $g['id'] ?>">
+                                <input type="hidden" name="properti_id" value="<?= $properti_id ?>">
+                                <button type="submit" class="btn btn-danger">Hapus</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         <?php endforeach; ?>
         </div>
     <?php endif; ?>
     </div></main>
-<?php require_once __DIR__ . '/includes/footer.php'; ?>
+<?php require_once __DIR__ . '/includes/dashboard-footer.php'; ?>

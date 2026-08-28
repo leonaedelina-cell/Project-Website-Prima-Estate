@@ -23,7 +23,7 @@ if ($properti_id <= 0 || !in_array($metode_bayar, $metode_valid)) {
 
 mysqli_begin_transaction($koneksi);
 try {
-    $stmt = mysqli_prepare($koneksi, "SELECT status FROM properti WHERE id = ? FOR UPDATE");
+    $stmt = mysqli_prepare($koneksi, "SELECT status, tipe_transaksi FROM properti WHERE id = ? FOR UPDATE");
     mysqli_stmt_bind_param($stmt, "i", $properti_id);
     mysqli_stmt_execute($stmt);
     $properti = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
@@ -64,13 +64,14 @@ try {
     die($error->getMessage());
 }
 
-$stmt = mysqli_prepare($koneksi, "SELECT judul FROM properti WHERE id = ?");
+$stmt = mysqli_prepare($koneksi, "SELECT judul, tipe_transaksi FROM properti WHERE id = ?");
 mysqli_stmt_bind_param($stmt, "i", $properti_id);
 mysqli_stmt_execute($stmt);
 $properti_data = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 mysqli_stmt_close($stmt);
 
-$pesan_wa = 'Halo, saya ingin mengajukan pembelian properti "' . ($properti_data['judul'] ?? 'Properti') . '" (ID: ' . $properti_id . ').';
+$aksi_teks = ($properti_data['tipe_transaksi'] ?? 'jual') === 'sewa' ? 'menyewa' : 'membeli';
+$pesan_wa = 'Halo, saya ingin mengajukan ' . $aksi_teks . ' properti "' . ($properti_data['judul'] ?? 'Properti') . '" (ID: ' . $properti_id . ').';
 $wa_link = 'https://wa.me/' . WHATSAPP_ADMIN . '?text=' . urlencode($pesan_wa);
 header('Location: ' . $wa_link);
 exit;

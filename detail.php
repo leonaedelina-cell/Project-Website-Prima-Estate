@@ -124,6 +124,9 @@ require_once __DIR__ . '/includes/header.php';
                         <span class="badge-status" style="background:#f1eee5; color:var(--navy-900);">
                             <i class="bi bi-tag-fill"></i> <?= ucfirst($properti['tipe']) ?>
                         </span>
+                        <span class="badge-status" style="background:#eaf1f8; color:var(--navy-900);">
+                            <i class="bi bi-cash-coin"></i> <?= $properti['tipe_transaksi'] === 'sewa' ? 'Disewakan' : 'Dijual' ?><?= $properti['tipe_transaksi'] === 'sewa' && $properti['durasi_minimal'] ? ' (min. ' . htmlspecialchars($properti['durasi_minimal']) . ')' : '' ?>
+                        </span>
                     </div>
 
                     <!-- Fasilitas -->
@@ -151,6 +154,16 @@ require_once __DIR__ . '/includes/header.php';
                             <div><span class="val"><?= $properti['luas_bangunan'] ?? '-' ?> m&sup2;</span><span class="lbl">Luas Bangunan</span></div>
                         </div>
                     </div>
+
+                    <?php $daftar_fasilitas = array_filter(array_map('trim', explode(',', (string) ($properti['fasilitas'] ?? '')))); ?>
+                    <?php if (!empty($daftar_fasilitas)): ?>
+                        <p class="section-eyebrow mb-2">Fasilitas Tambahan</p>
+                        <div class="d-flex flex-wrap gap-2 mb-4">
+                            <?php foreach ($daftar_fasilitas as $f): ?>
+                                <span class="badge-status" style="background:#f1eee5;color:var(--navy-900);"><i class="bi bi-check2"></i> <?= htmlspecialchars($f) ?></span>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
 
                     <!-- Deskripsi -->
                     <p class="section-eyebrow mb-2">Tentang Properti</p>
@@ -225,7 +238,7 @@ require_once __DIR__ . '/includes/header.php';
                                         <option value="tunai">Tunai</option>
                                     </select>
                                     <button type="submit" class="btn btn-outline-navy w-100 py-2">
-                                        <i class="bi bi-send-check-fill me-1"></i> Ajukan Beli
+                                        <i class="bi bi-send-check-fill me-1"></i> <?= $properti['tipe_transaksi'] === 'sewa' ? 'Ajukan Sewa' : 'Ajukan Beli' ?>
                                     </button>
                                 </form>
                             <?php else: ?>

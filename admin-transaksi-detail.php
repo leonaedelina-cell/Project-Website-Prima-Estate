@@ -27,7 +27,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $status = $_POST['status'] ?? '';
     $catatan_admin = trim($_POST['catatan_admin'] ?? '');
 
-    if ($status === '' || !in_array($status, $status_valid, true)) {
+    // Upload file bukti bayar (opsional) - kalau ada file baru, dipakai; kalau enggak, tetep pakai URL yang diisi manual
+    $bukti_baru = $_FILES['bukti_bayar_file'] ?? null;
+    if ($bukti_baru && $bukti_baru['error'] !== UPLOAD_ERR_NO_FILE) {
+        if ($bukti_baru['error'] !== UPLOAD_ERR_OK) {
+            $pesan_error = 'Upload bukti pembayaran gagal.';
+        } elseif ($bukti_baru['size'] > 2 * 1024 * 1024) {
+            $pesan_error = 'Ukuran bukti pembayaran maksimal 2 MB.';
+        } else {
+            $info_bukti = @getimagesize($bukti_baru['tmp_name']);
+            $tipe_bukti = $info_bukti['mime'] ?? '';
+            $tipe_diizinkan = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
+            if (!$info_bukti || !isset($tipe_diizinkan[$tipe_bukti])) {
+                $pesan_error = 'Format bukti pembayaran harus JPG, PNG, atau WEBP.';
+            } else {
+                $nama_file = bin2hex(random_bytes(16)) . '.' . $tipe_diizinkan[$tipe_bukti];
+                $folder_upload = __DIR__ . '/assets/uploads/bukti-bayar/';
+                if (!is_dir($folder_upload) && !mkdir($folder_upload, 0755, true)) {
+                    $pesan_error = 'Folder upload bukti pembayaran tidak dapat dibuat.';
+                } elseif (!move_uploaded_file($bukti_baru['tmp_name'], $folder_upload . $nama_file)) {
+                    $pesan_error = 'Bukti pembayaran gagal disimpan.';
+                } else {
+                    $bukti_bayar = BASE_URL . 'assets/uploads/bukti-bayar/' . $nama_file;
+                }
+            }
+        }
+    }
+
+    if ($pesan_error !== '') {
+        // upload bukti bayar gagal, lewati proses update
+    } elseif ($status === '' || !in_array($status, $status_valid, true)) {
         $pesan_error = 'Status transaksi tidak valid.';
     } elseif ($metode_bayar !== '' && !in_array($metode_bayar, $metode_valid, true)) {
         $pesan_error = 'Metode pembayaran tidak valid.';
@@ -219,13 +248,14 @@ require_once __DIR__ . '/includes/header.php';
                         <div><p class="section-eyebrow mb-1">Pengelolaan Pembayaran</p><h2 class="section-title mb-0" style="font-size:1.45rem;">Perbarui Status Transaksi</h2></div>
                         <span class="small text-muted">Status properti: <strong><?= ucfirst($transaksi['status_properti']) ?></strong></span>
                     </div>
-                    <form method="POST" action="admin-transaksi-detail.php?id=<?= $transaksi['id'] ?>">
+                    <form method="POST" action="admin-transaksi-detail.php?id=<?= $transaksi['id'] ?>" enctype="multipart/form-data">
                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
                         <input type="hidden" name="id" value="<?= $transaksi['id'] ?>">
                         <div class="row g-3">
                             <div class="col-md-6 field-panel"><label class="form-label" for="metode_bayar">Metode Pembayaran</label><select class="form-select" id="metode_bayar" name="metode_bayar"><option value="">- Belum dipilih -</option><option value="transfer_bank" <?= $transaksi['metode_bayar'] === 'transfer_bank' ? 'selected' : '' ?>>Transfer Bank</option><option value="cicilan_kpr" <?= $transaksi['metode_bayar'] === 'cicilan_kpr' ? 'selected' : '' ?>>Cicilan KPR</option><option value="tunai" <?= $transaksi['metode_bayar'] === 'tunai' ? 'selected' : '' ?>>Tunai</option></select></div>
                             <div class="col-md-6 field-panel"><label class="form-label" for="status">Status Pembayaran</label><select class="form-select" id="status" name="status" required><?php foreach ($status_valid as $status): ?><option value="<?= $status ?>" <?= $transaksi['status'] === $status ? 'selected' : '' ?>><?= ucfirst($status) ?><?= $status === 'selesai' ? ' (Lunas)' : '' ?></option><?php endforeach; ?></select></div>
-                            <div class="col-12 field-panel"><label class="form-label" for="bukti_bayar">URL Bukti Pembayaran</label><input class="form-control" id="bukti_bayar" type="text" name="bukti_bayar" value="<?= htmlspecialchars($transaksi['bukti_bayar'] ?? '') ?>" placeholder="https://..."></div>
+                            <div class="col-md-6 field-panel"><label class="form-label" for="bukti_bayar_file">Upload Bukti Pembayaran (JPG/PNG/WEBP, maks 2MB)</label><input class="form-control" id="bukti_bayar_file" type="file" name="bukti_bayar_file" accept="image/jpeg,image/png,image/webp"></div>
+                            <div class="col-md-6 field-panel"><label class="form-label" for="bukti_bayar">Atau URL Bukti Pembayaran</label><input class="form-control" id="bukti_bayar" type="text" name="bukti_bayar" value="<?= htmlspecialchars($transaksi['bukti_bayar'] ?? '') ?>" placeholder="https://..."></div>
                             <div class="col-12 field-panel"><label class="form-label" for="catatan_admin">Catatan Admin</label><textarea class="form-control" id="catatan_admin" name="catatan_admin" rows="4"><?= htmlspecialchars($transaksi['catatan_admin'] ?? '') ?></textarea></div>
                         </div>
                         <div class="form-actions"><button type="submit" class="btn btn-gold px-4"><i class="bi bi-check2-circle me-1"></i> Simpan Perubahan</button></div>
@@ -242,4 +272,4 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 </main>
 
-<?php require_once __DIR__ . '/includes/footer.php'; ?>
+<?php require_once __DIR__ . '/includes/dashboard-footer.php'; ?>

@@ -37,7 +37,11 @@ CREATE TABLE properti (
     deskripsi TEXT NULL,
     harga DECIMAL(15, 2) NOT NULL,
     tipe ENUM('rumah', 'apartemen', 'tanah', 'ruko') NOT NULL DEFAULT 'rumah',
+    tipe_transaksi ENUM('jual', 'sewa') NOT NULL DEFAULT 'jual',
+    durasi_minimal ENUM('6 bulan', '1 tahun') NULL, -- cuma keisi kalau tipe_transaksi = 'sewa'
     status ENUM('tersedia', 'terjual') NOT NULL DEFAULT 'tersedia',
+    status_hunian ENUM('kosong', 'terisi') NOT NULL DEFAULT 'kosong',
+    fasilitas TEXT NULL, -- dipisah koma, misal: "AC, Garasi, Kolam Renang"
     alamat VARCHAR(255) NOT NULL,
     kota VARCHAR(100) NOT NULL,
     lat DECIMAL(10, 7) NULL,
@@ -149,6 +153,19 @@ VALUES
 ('Villa Lembah Salak', 'Villa luas untuk tempat tinggal atau liburan dengan udara sejuk dan panorama pegunungan.', 2450000000, 'rumah', 'tersedia', 'Jl. Ciapus No. 7', 'Bogor', -6.6865000, 106.7569000, 360, 240, 4, 3, 2, 'https://images.unsplash.com/photo-1602343168117-bb8ffe3e2e9f?auto=format&fit=crop&w=1200&q=80', 3),
 ('Apartemen Kemang Residence', 'Unit apartemen nyaman di kawasan lifestyle dengan fasilitas gym dan kolam renang.', 1100000000, 'apartemen', 'tersedia', 'Jl. Kemang Raya No. 99', 'Jakarta Selatan', -6.2609000, 106.8144000, 52, 52, 2, 1, 1, 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=80', 2),
 ('Rumah Modern Kota Baru', 'Rumah modern siap huni dengan ruang kerja, taman kecil, dan keamanan lingkungan.', 1780000000, 'rumah', 'tersedia', 'Jl. Kota Baru Parahyangan No. 20', 'Bandung Barat', -6.8596000, 107.4758000, 140, 165, 3, 2, 2, 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1200&q=80', 1);
+
+-- Semua baris di atas defaultnya tipe_transaksi = 'jual' (dari DEFAULT kolom).
+-- Beberapa dijadikan contoh properti sewa + isi fasilitas & status hunian, biar ada data buat testing alur sewa.
+UPDATE properti SET tipe_transaksi = 'sewa', durasi_minimal = '1 tahun',
+    fasilitas = 'AC, Kitchen Set, Wifi, Keamanan 24 Jam', status_hunian = 'kosong'
+    WHERE judul = 'Apartemen Skyline Residence';
+UPDATE properti SET tipe_transaksi = 'sewa', durasi_minimal = '6 bulan',
+    fasilitas = 'AC, Furnished, Akses Kolam Renang', status_hunian = 'terisi'
+    WHERE judul = 'Apartemen City View Bandung';
+UPDATE properti SET fasilitas = 'Kolam Renang Pribadi, Taman, Carport 2 Mobil'
+    WHERE judul = 'Rumah Modern Green Valley';
+UPDATE properti SET fasilitas = 'Garasi, Taman Bermain, Ruang Keluarga Luas'
+    WHERE judul = 'Rumah Keluarga Citra Garden';
 
 INSERT INTO galeri_properti (properti_id, gambar_url) VALUES
 (1, 'https://images.unsplash.com/photo-1600585152915-d208bec867a1?auto=format&fit=crop&w=1200&q=80'),
