@@ -54,7 +54,7 @@ require_once __DIR__ . '/includes/header.php';
     .table-estate thead { background:var(--navy-950); }
     .table-estate th { color:rgba(255,255,255,0.85); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; padding:.85rem 1rem; white-space:nowrap; }
     .table-estate td { padding:.85rem 1rem; border-top:1px solid var(--ivory-100); vertical-align:middle; }
-    .table-estate tr:hover { background:#fbf8f1; }
+    .table-estate tbody tr:hover { background:#fbf8f1; }
     .property-name { color:var(--navy-900); font-weight:700; }
 </style>
 

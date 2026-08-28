@@ -38,7 +38,7 @@ $dashboard_sidebar_active = 'properti';
 require_once __DIR__ . '/includes/header.php';
 ?>
     <div class="page-header page-header-photo"><div class="container">
-        <p class="eyebrow mb-2">Panel Admin</p><h1 class="mb-2">Kelola Galeri</h1><div class="breadcrumb-estate"><a href="<?= BASE_URL ?>index.php">Beranda</a><span class="sep">/</span><a href="admin-properti.php">Kelola Properti</a><span class="sep">/</span><span class="current"><?= htmlspecialchars($properti['judul']) ?></span></div>
+        <p class="eyebrow mb-2">Panel Admin</p><h1 class="mb-2">Kelola Galeri</h1><p class="lead mb-0">Kelola koleksi foto tambahan buat properti <?= htmlspecialchars($properti['judul']) ?>.</p>
     </div></div>
     <main class="py-5"><div class="container"><div class="admin-form-card mb-4">
         <div class="d-flex justify-content-between align-items-start gap-3 mb-4"><div><p class="section-eyebrow mb-2">Properti</p><h2 class="section-title mb-0">Galeri Foto</h2><p class="text-muted mb-0 mt-2"><?= htmlspecialchars($properti['judul']) ?></p></div><a href="admin-properti.php" class="btn btn-outline-navy"><i class="bi bi-arrow-left me-1"></i> Kembali</a></div>

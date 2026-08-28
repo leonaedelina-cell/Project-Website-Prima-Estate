@@ -41,11 +41,7 @@ function is_selected($a, $b) {
         <div class="container">
             <p class="eyebrow mb-2">Panel Admin</p>
             <h1 class="mb-2">Edit Properti</h1>
-            <div class="breadcrumb-estate">
-                <a href="<?= BASE_URL ?>index.php">Beranda</a><span class="sep">/</span>
-                <a href="admin-properti.php">Kelola Properti</a><span class="sep">/</span>
-                <span class="current"><?= htmlspecialchars($properti['judul']) ?></span>
-            </div>
+            <p class="lead mb-0">Ubah detail, harga, dan status properti <?= htmlspecialchars($properti['judul']) ?>.</p>
         </div>
     </div>
 

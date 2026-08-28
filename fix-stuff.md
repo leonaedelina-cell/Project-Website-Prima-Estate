@@ -101,6 +101,26 @@ Sebelumnya halaman ini isinya HTML satu baris panjang (susah dibaca/di-maintain)
 - `assets/css/style.css` gak pernah punya rule warna buat `<p class="lead">` / `<p>` polos di dalam `.page-header` — jadi teksnya kepake warna default Bootstrap (abu-abu gelap) di atas background navy gelap, kontrasnya jelek/gak kebaca. Ini bug global, kena semua halaman yang pakai `.page-header` (admin-properti, admin-users, admin-transaksi, dst), bukan cuma satu tempat.
 - Fix: nambah `.page-header .lead, .page-header p { color: rgba(255,255,255,0.75); }` di `style.css`. Teks eyebrow (`<p class="eyebrow">`) tetep warna gold soalnya rule-nya lebih spesifik (`.page-header .eyebrow`), gak ketimpa.
 
+## 14. Breadcrumb Diganti Deskripsi Singkat (Halaman Admin)
+
+12 halaman admin yang tadinya cuma nampilin breadcrumb ("Beranda / Kelola Properti / ...") di bawah judul sekarang diganti `<p class="lead">` deskripsi singkat "halaman ini bisa ngapain" — nyamain pola yang udah lebih dulu ada di `admin-properti.php`/`admin-users.php`. File yang kena: `admin-dashboard.php`, `admin-agen.php`, `admin-pesan.php`, `admin-transaksi.php`, `admin-transaksi-detail.php`, `admin-user-edit.php`, `admin-user-tambah.php`, `agen-edit.php`, `agen-tambah.php`, `properti-edit.php`, `properti-galeri.php`, `properti-tambah.php`.
+
+Halaman publik (`detail.php`, `listing.php`, `kontak.php`, `login.php`, `register.php`) **sengaja gak diubah** — di situ breadcrumb emang berguna karena nav-nya berlapis (contoh: Beranda / Properti / Detail Properti), beda sama halaman admin yang cuma 1-2 level dan user udah tau lagi di panel admin dari sidebar.
+
+## 15. Sidebar Collapse/Expand
+
+- Tombol toggle (icon `bi-chevron-double-left`, bentuk lingkaran kecil nempel di tepi kanan sidebar) ditambah di `includes/header.php`, muncul di kedua varian sidebar (admin & user).
+- Semua teks label di sidebar (brand, nama user, teks menu, teks tombol bawah) dibungkus `<span class="sidebar-label">`, biar bisa disembunyikan lewat CSS (`display:none`) pas collapsed — ikon-nya tetep keliatan.
+- CSS: `.dashboard-sidebar.collapsed` bikin sidebar jadi 84px (cuma ikon), konten utama (`body.has-dashboard-sidebar.sidebar-collapsed > ...`) otomatis nyesuain margin-left/width-nya. Ada `transition` biar animasinya halus, bukan langsung loncat.
+- JS: script kecil di `includes/header.php`, jalan abis markup sidebar. Baca/simpan state ke `localStorage` (key `estateprima-sidebar-collapsed`) — jadi kalau kamu collapse terus pindah halaman, sidebar tetep collapsed (localStorage per browser, gak ke-share ke user lain).
+- Di layar sempit (<1200px, sama kayak breakpoint mobile yang udah ada), tombol toggle disembunyikan dan sidebar balik ke layout stack horizontal yang emang udah dirancang buat mobile — collapse cuma relevan buat desktop.
+- **Keterbatasan kecil**: pas collapsed, area brand "ESTATE PRIMA" jadi strip kosong (teksnya disembunyikan, belum ada logo mini pengganti). Kalau mau lebih rapi, bisa ditambah logo/inisial kecil yang cuma muncul pas collapsed.
+
+## 16. Bug Fix: Hover Header Tabel Bikin Teks Hilang (`admin-properti.php`)
+
+- CSS `.table-estate tr:hover { background:#fbf8f1; }` di `admin-properti.php` gak di-scope ke `tbody`, jadi kena baris `<thead>` juga. Pas kursor lewat header tabel, background header (harusnya navy gelap) ketiban jadi warna terang, sementara teks header tetep putih — jadinya teks header invisible pas di-hover.
+- File lain (`admin-agen.php`, `admin-transaksi.php`, `admin-users.php`) udah bener dari awal (`.table-estate tbody tr:hover`), cuma `admin-properti.php` yang kelewatan. Fix: tambahin `tbody` di selector-nya.
+
 ## Yang BELUM dikerjain (giliran kamu)
 
 - **Sidebar collapse/expand** pakai toggle ikon `<<`/`>>` — belum ada sama sekali, ini murni kerjaan kamu. Lihat juga `notes-student.md` bagian "Yang masih perlu kamu kerjain sendiri".

@@ -22,11 +22,7 @@ require_once __DIR__ . '/includes/header.php';
         <div class="container">
             <p class="eyebrow mb-2">Panel Admin</p>
             <h1 class="mb-2">Tambah Properti</h1>
-            <div class="breadcrumb-estate">
-                <a href="<?= BASE_URL ?>index.php">Beranda</a><span class="sep">/</span>
-                <a href="admin-properti.php">Kelola Properti</a><span class="sep">/</span>
-                <span class="current">Tambah Properti</span>
-            </div>
+            <p class="lead mb-0">Isi detail lengkap buat menambah listing properti baru.</p>
         </div>
     </div>
 

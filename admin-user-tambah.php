@@ -14,7 +14,7 @@ $dashboard_sidebar_active = 'users';
 require_once __DIR__ . '/includes/header.php';
 ?>
     <div class="page-header page-header-photo"><div class="container">
-        <p class="eyebrow mb-2">Panel Admin</p><h1 class="mb-2">Tambah User</h1><div class="breadcrumb-estate"><a href="<?= BASE_URL ?>index.php">Beranda</a><span class="sep">/</span><a href="admin-users.php">Kelola Users</a><span class="sep">/</span><span class="current">Tambah User</span></div>
+        <p class="eyebrow mb-2">Panel Admin</p><h1 class="mb-2">Tambah User</h1><p class="lead mb-0">Buat akun baru dan tentukan role-nya langsung.</p>
     </div></div>
     <main class="py-5"><div class="container"><div class="admin-form-card"><div class="d-flex justify-content-between align-items-start gap-3 mb-4"><div><p class="section-eyebrow mb-2">Data Akun</p><h2 class="section-title mb-0">Tambah User Baru</h2></div><a href="admin-users.php" class="btn btn-outline-navy"><i class="bi bi-arrow-left me-1"></i> Kembali</a></div>
     <form method="POST" action="proses-users.php">

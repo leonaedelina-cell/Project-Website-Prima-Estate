@@ -42,13 +42,17 @@ Semua ini statusnya **selesai di branch `mentor-fixes`**, belum masuk `main` kam
 - [x] Search per-tabel — udah ada di 4 tabel admin, digabung sama pagination lewat query string.
 - [x] Icon per status di statistik transaksi (`admin-dashboard.php`) — optional tapi udah ditambahin sekalian karena murah.
 - [x] Tampilan tabel `admin-users.php` dirapihin total — sebelumnya satu baris HTML panjang, sekarang struktur `<table>` sama rapinya kayak tabel admin lain.
+- [x] Sidebar admin & user sekarang bisa di-collapse/expand pakai tombol toggle (ikon `<<`), state disimpan di `localStorage`.
+- [x] Cetak bukti transaksi (PDF/print) buat transaksi yang statusnya `selesai`, di `admin-transaksi-detail.php`.
+- [x] Breadcrumb di halaman admin diganti jadi deskripsi singkat "halaman ini bisa ngapain" (halaman publik tetep pakai breadcrumb, karena emang butuh nav berlapis).
+- [x] Fix bug: hover di header tabel `admin-properti.php` bikin teksnya invisible (CSS hover-nya kena baris header, bukan cuma baris data).
+- [x] Fix bug: subjudul (`<p class="lead">`) di semua halaman admin gak kebaca di atas background navy gelap.
 
 ## Yang masih perlu kamu kerjain sendiri
 
-1. **Sidebar admin & user belum bisa di-collapse/expand.** Tambahin tombol toggle (ikon `<<` / `>>`) di sidebar biar bisa dibuka-tutup, terutama berguna di layar kecil/medium. Simpan state collapse di `localStorage` biar gak balik ke default tiap pindah halaman.
-2. Cek ulang semua halaman admin/user di browser buat mastiin tampilan gak ada yang kepotong/rusak — terutama form yang barusan ditambah field baru (properti, transaksi-detail, users).
-3. Kalau mau, rapikan CSS icon di stat card statistik transaksi (`admin-dashboard.php`) — sekarang fungsional tapi belum ada warna/size khusus per status, masih polos.
-4. Lanjut checklist test manual di bagian bawah.
+1. Cek ulang semua halaman admin/user di browser buat mastiin tampilan gak ada yang kepotong/rusak — terutama form yang barusan ditambah field baru (properti, transaksi-detail, users).
+2. Kalau mau, rapikan CSS icon di stat card statistik transaksi (`admin-dashboard.php`) — sekarang fungsional tapi belum ada warna/size khusus per status, masih polos.
+3. Lanjut checklist test manual di bagian bawah.
 
 ## Catatan struktur
 
@@ -68,5 +72,6 @@ Kode kamu di `main` pakai struktur flat di root (`admin-agen.php`, `proses-*.php
 - [x] Tambah pagination di `admin-transaksi.php`, `admin-agen.php`, `admin-users.php` — *selesai di `mentor-fixes`*
 - [x] Tambah search per-tabel di 4 tabel admin — *selesai di `mentor-fixes`*
 - [x] Icon di statistik transaksi — *selesai di `mentor-fixes` (optional, tapi udah dikerjain)*
-- [ ] Sidebar bisa di-collapse/expand pakai toggle `<<` — **belum, giliran kamu**
+- [x] Sidebar bisa di-collapse/expand pakai toggle `<<` — *selesai di `mentor-fixes`*
+- [x] Cetak bukti transaksi buat status `selesai` — *selesai di `mentor-fixes`*
 - [ ] Test manual: guest gak bisa wishlist/ajukan (harus keredirect login), user cuma bisa liat pesanan sendiri

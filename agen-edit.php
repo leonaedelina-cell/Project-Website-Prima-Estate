@@ -22,7 +22,7 @@ require_once __DIR__ . '/includes/header.php';
 ?>
     <div class="page-header page-header-photo"><div class="container">
         <p class="eyebrow mb-2">Panel Admin</p><h1 class="mb-2">Edit Agen</h1>
-        <div class="breadcrumb-estate"><a href="<?= BASE_URL ?>index.php">Beranda</a><span class="sep">/</span><a href="admin-agen.php">Kelola Agen</a><span class="sep">/</span><span class="current"><?= htmlspecialchars($agen['nama']) ?></span></div>
+        <p class="lead mb-0">Ubah data kontak dan foto agen <?= htmlspecialchars($agen['nama']) ?>.</p>
     </div></div>
     <main class="py-5"><div class="container"><div class="admin-form-card">
         <div class="d-flex justify-content-between align-items-start gap-3 mb-4"><div><p class="section-eyebrow mb-2">Data Agen</p><h2 class="section-title mb-0">Edit Agen</h2></div><a href="admin-agen.php" class="btn btn-outline-navy"><i class="bi bi-arrow-left me-1"></i> Kembali</a></div>

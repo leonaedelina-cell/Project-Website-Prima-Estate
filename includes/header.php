@@ -35,41 +35,47 @@ $user = $user ?? null;
 
 <?php if ($admin_sidebar): ?>
     <aside class="dashboard-sidebar admin-sidebar">
-        <a class="dashboard-sidebar-brand" href="<?= BASE_URL ?>admin-dashboard.php">ESTATE <span>PRIMA</span></a>
+        <button type="button" class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Ciutkan atau lebarkan sidebar" title="Ciutkan/lebarkan sidebar">
+            <i class="bi bi-chevron-double-left"></i>
+        </button>
+        <a class="dashboard-sidebar-brand" href="<?= BASE_URL ?>admin-dashboard.php"><span class="sidebar-label">ESTATE <span>PRIMA</span></span></a>
         <div class="dashboard-sidebar-user">
             <i class="bi bi-shield-lock-fill"></i>
-            <div><small>Panel Admin</small><strong><?= htmlspecialchars(isset($user['nama']) ? $user['nama'] : 'Administrator') ?></strong></div>
+            <div class="sidebar-label"><small>Panel Admin</small><strong><?= htmlspecialchars(isset($user['nama']) ? $user['nama'] : 'Administrator') ?></strong></div>
         </div>
         <nav class="dashboard-sidebar-nav" aria-label="Navigasi admin">
-            <a href="<?= BASE_URL ?>admin-dashboard.php" class="<?= $dashboard_sidebar_active === 'dashboard' ? 'active' : '' ?>"><i class="bi bi-speedometer2"></i> Dashboard</a>
-            <a href="<?= BASE_URL ?>admin-properti.php" class="<?= $dashboard_sidebar_active === 'properti' ? 'active' : '' ?>"><i class="bi bi-houses-fill"></i> Kelola Properti</a>
-            <a href="<?= BASE_URL ?>admin-transaksi.php" class="<?= $dashboard_sidebar_active === 'transaksi' ? 'active' : '' ?>"><i class="bi bi-receipt"></i> Kelola Transaksi</a>
-            <a href="<?= BASE_URL ?>admin-agen.php" class="<?= $dashboard_sidebar_active === 'agen' ? 'active' : '' ?>"><i class="bi bi-person-badge-fill"></i> Kelola Agen</a>
-            <a href="<?= BASE_URL ?>admin-pesan.php" class="<?= $dashboard_sidebar_active === 'pesan' ? 'active' : '' ?>"><i class="bi bi-envelope-fill"></i> Pesan Kontak</a>
-            <a href="<?= BASE_URL ?>admin-users.php" class="<?= $dashboard_sidebar_active === 'users' ? 'active' : '' ?>"><i class="bi bi-people-fill"></i> Kelola Users</a>
+            <a href="<?= BASE_URL ?>admin-dashboard.php" class="<?= $dashboard_sidebar_active === 'dashboard' ? 'active' : '' ?>" title="Dashboard"><i class="bi bi-speedometer2"></i><span class="sidebar-label">Dashboard</span></a>
+            <a href="<?= BASE_URL ?>admin-properti.php" class="<?= $dashboard_sidebar_active === 'properti' ? 'active' : '' ?>" title="Kelola Properti"><i class="bi bi-houses-fill"></i><span class="sidebar-label">Kelola Properti</span></a>
+            <a href="<?= BASE_URL ?>admin-transaksi.php" class="<?= $dashboard_sidebar_active === 'transaksi' ? 'active' : '' ?>" title="Kelola Transaksi"><i class="bi bi-receipt"></i><span class="sidebar-label">Kelola Transaksi</span></a>
+            <a href="<?= BASE_URL ?>admin-agen.php" class="<?= $dashboard_sidebar_active === 'agen' ? 'active' : '' ?>" title="Kelola Agen"><i class="bi bi-person-badge-fill"></i><span class="sidebar-label">Kelola Agen</span></a>
+            <a href="<?= BASE_URL ?>admin-pesan.php" class="<?= $dashboard_sidebar_active === 'pesan' ? 'active' : '' ?>" title="Pesan Kontak"><i class="bi bi-envelope-fill"></i><span class="sidebar-label">Pesan Kontak</span></a>
+            <a href="<?= BASE_URL ?>admin-users.php" class="<?= $dashboard_sidebar_active === 'users' ? 'active' : '' ?>" title="Kelola Users"><i class="bi bi-people-fill"></i><span class="sidebar-label">Kelola Users</span></a>
         </nav>
         <div class="dashboard-sidebar-bottom">
-            <a href="<?= BASE_URL ?>index.php"><i class="bi bi-arrow-left"></i> Kembali ke Beranda</a>
-            <form method="POST" action="<?= BASE_URL ?>logout.php"><input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>"><button type="submit" class="sidebar-logout"><i class="bi bi-box-arrow-right"></i> Keluar</button></form>
+            <a href="<?= BASE_URL ?>index.php" title="Kembali ke Beranda"><i class="bi bi-arrow-left"></i><span class="sidebar-label">Kembali ke Beranda</span></a>
+            <form method="POST" action="<?= BASE_URL ?>logout.php"><input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>"><button type="submit" class="sidebar-logout" title="Keluar"><i class="bi bi-box-arrow-right"></i><span class="sidebar-label">Keluar</span></button></form>
         </div>
     </aside>
 <?php elseif ($dashboard_sidebar): ?>
     <aside class="dashboard-sidebar">
-        <a class="dashboard-sidebar-brand" href="<?= BASE_URL ?>dashboard-user.php">ESTATE <span>PRIMA</span></a>
+        <button type="button" class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Ciutkan atau lebarkan sidebar" title="Ciutkan/lebarkan sidebar">
+            <i class="bi bi-chevron-double-left"></i>
+        </button>
+        <a class="dashboard-sidebar-brand" href="<?= BASE_URL ?>dashboard-user.php"><span class="sidebar-label">ESTATE <span>PRIMA</span></span></a>
         <div class="dashboard-sidebar-user">
             <i class="bi bi-person-circle"></i>
-            <div><small>Selamat datang</small><strong><?= htmlspecialchars(isset($user['nama']) ? $user['nama'] : 'Pengguna') ?></strong></div>
+            <div class="sidebar-label"><small>Selamat datang</small><strong><?= htmlspecialchars(isset($user['nama']) ? $user['nama'] : 'Pengguna') ?></strong></div>
         </div>
         <nav class="dashboard-sidebar-nav" aria-label="Navigasi dashboard">
-            <a href="<?= BASE_URL ?>dashboard-user.php" class="<?= $dashboard_sidebar_active === 'dashboard' ? 'active' : '' ?>"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a>
-            <a href="<?= BASE_URL ?>wishlist.php" class="<?= $dashboard_sidebar_active === 'wishlist' ? 'active' : '' ?>"><i class="bi bi-heart-fill"></i> Wishlist</a>
-            <a href="<?= BASE_URL ?>pesanan.php" class="<?= $dashboard_sidebar_active === 'pesanan' ? 'active' : '' ?>"><i class="bi bi-receipt"></i> Pesanan</a>
-            <a href="<?= BASE_URL ?>profil.php" class="<?= $dashboard_sidebar_active === 'profil' ? 'active' : '' ?>"><i class="bi bi-person-gear"></i> Profil</a>
-            <a href="<?= BASE_URL ?>listing.php"><i class="bi bi-houses-fill"></i> Jelajahi Properti</a>
+            <a href="<?= BASE_URL ?>dashboard-user.php" class="<?= $dashboard_sidebar_active === 'dashboard' ? 'active' : '' ?>" title="Dashboard"><i class="bi bi-grid-1x2-fill"></i><span class="sidebar-label">Dashboard</span></a>
+            <a href="<?= BASE_URL ?>wishlist.php" class="<?= $dashboard_sidebar_active === 'wishlist' ? 'active' : '' ?>" title="Wishlist"><i class="bi bi-heart-fill"></i><span class="sidebar-label">Wishlist</span></a>
+            <a href="<?= BASE_URL ?>pesanan.php" class="<?= $dashboard_sidebar_active === 'pesanan' ? 'active' : '' ?>" title="Pesanan"><i class="bi bi-receipt"></i><span class="sidebar-label">Pesanan</span></a>
+            <a href="<?= BASE_URL ?>profil.php" class="<?= $dashboard_sidebar_active === 'profil' ? 'active' : '' ?>" title="Profil"><i class="bi bi-person-gear"></i><span class="sidebar-label">Profil</span></a>
+            <a href="<?= BASE_URL ?>listing.php" title="Jelajahi Properti"><i class="bi bi-houses-fill"></i><span class="sidebar-label">Jelajahi Properti</span></a>
         </nav>
         <div class="dashboard-sidebar-bottom">
-            <a href="<?= BASE_URL ?>index.php"><i class="bi bi-arrow-left"></i> Kembali ke Beranda</a>
-            <form method="POST" action="<?= BASE_URL ?>logout.php"><input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>"><button type="submit" class="sidebar-logout"><i class="bi bi-box-arrow-right"></i> Keluar</button></form>
+            <a href="<?= BASE_URL ?>index.php" title="Kembali ke Beranda"><i class="bi bi-arrow-left"></i><span class="sidebar-label">Kembali ke Beranda</span></a>
+            <form method="POST" action="<?= BASE_URL ?>logout.php"><input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>"><button type="submit" class="sidebar-logout" title="Keluar"><i class="bi bi-box-arrow-right"></i><span class="sidebar-label">Keluar</span></button></form>
         </div>
     </aside>
 <?php else: ?>
@@ -101,4 +107,31 @@ $user = $user ?? null;
             </div>
         </div>
     </nav>
+<?php endif; ?>
+<?php if ($admin_sidebar || $dashboard_sidebar): ?>
+<script>
+    // Sidebar collapse/expand - state disimpan di localStorage per browser, gak ngaruh ke user lain
+    (function () {
+        var sidebar = document.querySelector('.dashboard-sidebar');
+        if (!sidebar) return;
+        var STORAGE_KEY = 'estateprima-sidebar-collapsed';
+        var collapsed = false;
+        try { collapsed = localStorage.getItem(STORAGE_KEY) === '1'; } catch (e) {}
+
+        function terapkan(state) {
+            sidebar.classList.toggle('collapsed', state);
+            document.body.classList.toggle('sidebar-collapsed', state);
+        }
+        terapkan(collapsed);
+
+        var tombol = document.getElementById('sidebarToggleBtn');
+        if (tombol) {
+            tombol.addEventListener('click', function () {
+                collapsed = !collapsed;
+                terapkan(collapsed);
+                try { localStorage.setItem(STORAGE_KEY, collapsed ? '1' : '0'); } catch (e) {}
+            });
+        }
+    })();
+</script>
 <?php endif; ?>
