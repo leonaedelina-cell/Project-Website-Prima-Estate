@@ -11,6 +11,8 @@ $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
+    cek_csrf();
+
     $email    = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
@@ -36,6 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (empty($errors)) {
+        session_regenerate_id(true);
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['nama']    = $user['nama'];
         $_SESSION['email']   = $user['email'];
@@ -117,6 +120,7 @@ require_once __DIR__ . '/includes/header.php';
                         <?php endif; ?>
 
                         <form method="POST" action="login.php">
+                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
                             <div class="mb-3">
                                 <label class="d-block">Email</label>
                                 <input type="email" name="email" class="form-control"

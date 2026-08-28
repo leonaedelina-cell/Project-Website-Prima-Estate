@@ -204,6 +204,7 @@ require_once __DIR__ . '/includes/header.php';
                         <?php else: ?>
                             <!-- Tombol Wishlist -->
                             <form method="POST" action="proses-wishlist.php" class="mb-2">
+                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
                                 <input type="hidden" name="properti_id" value="<?= $properti['id'] ?>">
                                 <button type="submit" class="btn btn-wishlist w-100 py-2 <?= $sudah_wishlist ? 'active' : '' ?>">
                                     <i class="bi bi-heart<?= $sudah_wishlist ? '-fill' : '' ?> me-1"></i>
@@ -214,6 +215,7 @@ require_once __DIR__ . '/includes/header.php';
                             <!-- Form Ajukan Beli -->
                             <?php if ($properti['status'] === 'tersedia'): ?>
                                 <form method="POST" action="proses-transaksi.php" class="field-panel mt-3 pt-3" style="border-top:1px dashed #e3e1da;">
+                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
                                     <input type="hidden" name="properti_id" value="<?= $properti['id'] ?>">
                                     <label class="d-block">Metode Pembayaran</label>
                                     <select name="metode_bayar" class="form-select mb-3" required>

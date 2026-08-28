@@ -37,6 +37,8 @@ $label_status = [
 <?php
 $user = user_login();
 $page_title = 'Pesanan Saya — Estate Prima';
+$dashboard_sidebar = true;
+$dashboard_sidebar_active = 'pesanan';
 require_once __DIR__ . '/includes/header.php';
 ?>
 <style>

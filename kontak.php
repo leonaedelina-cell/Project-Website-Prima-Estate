@@ -11,6 +11,7 @@ $errors = [];
 $berhasil = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    cek_csrf();
     $nama  = trim($_POST['nama'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $no_hp = trim($_POST['no_hp'] ?? '');
@@ -119,6 +120,7 @@ require_once __DIR__ . '/includes/header.php';
             <?php endif; ?>
 
             <form method="POST" action="kontak.php" class="field-panel">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
                 <div class="row g-3">
                     <div class="col-md-4">
                         <label class="d-block">Nama Lengkap</label>

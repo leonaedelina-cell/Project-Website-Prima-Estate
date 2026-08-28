@@ -9,6 +9,7 @@ require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/includes/auth.php';
 
 cek_login(); // wajib login, kalau belum akan otomatis redirect ke login.php
+cek_csrf();
 
 $user_id     = $_SESSION['user_id'];
 $properti_id = (int)($_POST['properti_id'] ?? 0);

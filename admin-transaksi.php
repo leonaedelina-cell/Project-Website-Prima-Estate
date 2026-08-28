@@ -32,6 +32,8 @@ if (in_array($filter_status, $status_valid)) {
 
 $user = user_login();
 $page_title = 'Kelola Transaksi — Estate Prima';
+$admin_sidebar = true;
+$dashboard_sidebar_active = 'transaksi';
 require_once __DIR__ . '/includes/header.php';
 ?>
 <style>
@@ -42,14 +44,6 @@ require_once __DIR__ . '/includes/header.php';
         background-size: cover;
         background-position: center;
     }
-    .admin-subnav { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1.25rem; }
-    .admin-subnav a {
-        padding: 0.5rem 1.1rem; border-radius: 3px; font-weight: 700; font-size: 0.85rem;
-        color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.25); text-decoration: none;
-        transition: all 0.2s ease;
-    }
-    .admin-subnav a:hover { border-color: var(--gold-500); color: var(--gold-300); }
-    .admin-subnav a.active { background: var(--gold-grad); border-color: var(--gold-600); color: var(--navy-950); }
 
     .filter-panel { background: #fff; border: 1px solid var(--ivory-100); border-radius: 3px; padding: 1rem 1.25rem; }
     .filter-link { color: var(--ink-500); text-decoration: none; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
@@ -97,17 +91,10 @@ require_once __DIR__ . '/includes/header.php';
                 <span class="current">Kelola Transaksi</span>
             </div>
 
-            <div class="admin-subnav">
-                <a href="admin-dashboard.php"><i class="bi bi-speedometer2 me-1"></i> Dashboard</a>
-                <a href="admin-properti.php"><i class="bi bi-houses-fill me-1"></i> Kelola Properti</a>
-                <a href="admin-transaksi.php" class="active"><i class="bi bi-receipt me-1"></i> Kelola Transaksi</a>
-                <a href="admin-agen.php"><i class="bi bi-person-badge-fill me-1"></i> Kelola Agen</a>
-                <a href="admin-pesan.php"><i class="bi bi-envelope-fill me-1"></i> Pesan Kontak</a>
-            </div>
         </div>
     </div>
 
-    <section class="py-5">
+    <main class="py-5">
         <div class="container">
             <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
                 <div>
@@ -149,6 +136,6 @@ require_once __DIR__ . '/includes/header.php';
                 </table>
             </div>
         </div>
-    </section>
+    </main>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

@@ -28,6 +28,8 @@ $daftar_agen = mysqli_fetch_all(mysqli_query($koneksi, "SELECT id, nama FROM age
 
 $user = user_login();
 $page_title = 'Edit Properti - Estate Prima';
+$admin_sidebar = true;
+$dashboard_sidebar_active = 'properti';
 require_once __DIR__ . '/includes/header.php';
 
 // Helper kecil biar gak nulis berkali-kali: cek apakah suatu <option> harus 'selected'
@@ -44,17 +46,10 @@ function is_selected($a, $b) {
                 <a href="admin-properti.php">Kelola Properti</a><span class="sep">/</span>
                 <span class="current"><?= htmlspecialchars($properti['judul']) ?></span>
             </div>
-            <div class="admin-subnav">
-                <a href="admin-dashboard.php"><i class="bi bi-speedometer2 me-1"></i> Dashboard</a>
-                <a href="admin-properti.php" class="active"><i class="bi bi-houses-fill me-1"></i> Kelola Properti</a>
-                <a href="admin-transaksi.php"><i class="bi bi-receipt me-1"></i> Kelola Transaksi</a>
-                <a href="admin-agen.php"><i class="bi bi-person-badge-fill me-1"></i> Kelola Agen</a>
-                <a href="admin-pesan.php"><i class="bi bi-envelope-fill me-1"></i> Pesan Kontak</a>
-            </div>
         </div>
     </div>
 
-    <section class="py-5">
+    <main class="py-5">
         <div class="container">
             <div class="admin-form-card">
                 <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
@@ -62,6 +57,7 @@ function is_selected($a, $b) {
                     <a href="admin-properti.php" class="btn btn-outline-navy"><i class="bi bi-arrow-left me-1"></i> Kembali</a>
                 </div>
                 <form method="POST" action="proses-properti.php">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
         <input type="hidden" name="aksi" value="edit">
         <input type="hidden" name="id" value="<?= $properti['id'] ?>">
 
@@ -101,5 +97,5 @@ function is_selected($a, $b) {
                 </form>
             </div>
         </div>
-    </section>
+    </main>
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

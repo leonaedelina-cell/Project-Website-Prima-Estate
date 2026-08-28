@@ -9,6 +9,7 @@ require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/includes/auth.php';
 
 cek_admin();
+cek_csrf();
 
 $aksi = $_POST['aksi'] ?? '';
 
@@ -41,15 +42,36 @@ if ($aksi === 'tambah' || $aksi === 'edit') {
     $status        = $_POST['status'] ?? 'tersedia'; // cuma dipakai saat edit, saat tambah selalu default 'tersedia'
     $alamat        = trim($_POST['alamat'] ?? '');
     $kota          = trim($_POST['kota'] ?? '');
-    $lat           = $_POST['lat'] !== '' ? (float)$_POST['lat'] : null;
-    $lng           = $_POST['lng'] !== '' ? (float)$_POST['lng'] : null;
-    $luas_tanah    = $_POST['luas_tanah'] !== '' ? (int)$_POST['luas_tanah'] : null;
-    $luas_bangunan = $_POST['luas_bangunan'] !== '' ? (int)$_POST['luas_bangunan'] : null;
+    $lat_input     = $_POST['lat'] ?? '';
+    $lng_input     = $_POST['lng'] ?? '';
+    $tanah_input   = $_POST['luas_tanah'] ?? '';
+    $bangunan_input = $_POST['luas_bangunan'] ?? '';
+    $agen_input    = $_POST['agen_id'] ?? '';
+    $lat           = $lat_input !== '' ? (float)$lat_input : null;
+    $lng           = $lng_input !== '' ? (float)$lng_input : null;
+    $luas_tanah    = $tanah_input !== '' ? (int)$tanah_input : null;
+    $luas_bangunan = $bangunan_input !== '' ? (int)$bangunan_input : null;
     $kamar_tidur   = (int)($_POST['kamar_tidur'] ?? 0);
     $kamar_mandi   = (int)($_POST['kamar_mandi'] ?? 0);
     $carport       = (int)($_POST['carport'] ?? 0);
     $gambar_url    = trim($_POST['gambar_url'] ?? '');
-    $agen_id       = $_POST['agen_id'] !== '' ? (int)$_POST['agen_id'] : null;
+    $agen_id       = $agen_input !== '' ? (int)$agen_input : null;
+
+    if (!in_array($tipe, ['rumah', 'apartemen', 'tanah', 'ruko'], true)) {
+        die('Tipe properti tidak valid.');
+    }
+    if (!in_array($status, ['tersedia', 'terjual'], true)) {
+        die('Status properti tidak valid.');
+    }
+    if ($lat !== null && ($lat < -90 || $lat > 90) || $lng !== null && ($lng < -180 || $lng > 180)) {
+        die('Koordinat properti tidak valid.');
+    }
+    if ($luas_tanah !== null && $luas_tanah < 0 || $luas_bangunan !== null && $luas_bangunan < 0) {
+        die('Luas properti tidak valid.');
+    }
+    if ($gambar_url !== '' && !filter_var($gambar_url, FILTER_VALIDATE_URL)) {
+        die('URL gambar tidak valid.');
+    }
 
     // Validasi dasar
     if ($judul === '' || $harga <= 0 || $alamat === '' || $kota === '') {

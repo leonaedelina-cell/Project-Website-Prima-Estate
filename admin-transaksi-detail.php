@@ -21,6 +21,7 @@ $pesan_sukses = '';
 $pesan_error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    cek_csrf();
     $metode_bayar = $_POST['metode_bayar'] ?? '';
     $bukti_bayar = trim($_POST['bukti_bayar'] ?? '');
     $status = $_POST['status'] ?? '';
@@ -36,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         mysqli_begin_transaction($koneksi);
         try {
-            $stmt = mysqli_prepare($koneksi, "SELECT properti_id FROM transaksi WHERE id = ? FOR UPDATE");
+            $stmt = mysqli_prepare($koneksi, "SELECT properti_id, status FROM transaksi WHERE id = ? FOR UPDATE");
             mysqli_stmt_bind_param($stmt, 'i', $id);
             mysqli_stmt_execute($stmt);
             $transaksi_ref = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
@@ -44,6 +45,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if (!$transaksi_ref) {
                 throw new RuntimeException('Transaksi tidak ditemukan.');
+            }
+
+            if (in_array($status, ['disetujui', 'selesai'], true)) {
+                $stmt = mysqli_prepare($koneksi, "SELECT status FROM properti WHERE id = ? FOR UPDATE");
+                mysqli_stmt_bind_param($stmt, 'i', $transaksi_ref['properti_id']);
+                mysqli_stmt_execute($stmt);
+                $properti_ref = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+                mysqli_stmt_close($stmt);
+                if (!$properti_ref || ($properti_ref['status'] === 'terjual' && !in_array($transaksi_ref['status'], ['disetujui', 'selesai'], true))) {
+                    throw new RuntimeException('Properti sudah terjual dan tidak dapat disetujui lagi.');
+                }
             }
 
             $stmt = mysqli_prepare(
@@ -122,6 +134,8 @@ $status_teks = [
 
 $user = user_login();
 $page_title = 'Detail Transaksi - Estate Prima';
+$admin_sidebar = true;
+$dashboard_sidebar_active = 'transaksi';
 require_once __DIR__ . '/includes/header.php';
 ?>
 <style>
@@ -156,17 +170,10 @@ require_once __DIR__ . '/includes/header.php';
             <a href="admin-transaksi.php">Kelola Transaksi</a><span class="sep">/</span>
             <span class="current">Transaksi #<?= $transaksi['id'] ?></span>
         </div>
-        <div class="admin-subnav">
-            <a href="admin-dashboard.php"><i class="bi bi-speedometer2 me-1"></i> Dashboard</a>
-            <a href="admin-properti.php"><i class="bi bi-houses-fill me-1"></i> Kelola Properti</a>
-            <a href="admin-transaksi.php" class="active"><i class="bi bi-receipt me-1"></i> Kelola Transaksi</a>
-            <a href="admin-agen.php"><i class="bi bi-person-badge-fill me-1"></i> Kelola Agen</a>
-            <a href="admin-pesan.php"><i class="bi bi-envelope-fill me-1"></i> Pesan Kontak</a>
-        </div>
     </div>
 </div>
 
-<section class="py-5">
+<main class="py-5">
     <div class="container">
         <?php if ($pesan_sukses): ?>
             <div class="alert-estate-success p-3 mb-4"><i class="bi bi-check-circle-fill me-1"></i><?= htmlspecialchars($pesan_sukses) ?></div>
@@ -213,6 +220,7 @@ require_once __DIR__ . '/includes/header.php';
                         <span class="small text-muted">Status properti: <strong><?= ucfirst($transaksi['status_properti']) ?></strong></span>
                     </div>
                     <form method="POST" action="admin-transaksi-detail.php?id=<?= $transaksi['id'] ?>">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
                         <input type="hidden" name="id" value="<?= $transaksi['id'] ?>">
                         <div class="row g-3">
                             <div class="col-md-6 field-panel"><label class="form-label" for="metode_bayar">Metode Pembayaran</label><select class="form-select" id="metode_bayar" name="metode_bayar"><option value="">- Belum dipilih -</option><option value="transfer_bank" <?= $transaksi['metode_bayar'] === 'transfer_bank' ? 'selected' : '' ?>>Transfer Bank</option><option value="cicilan_kpr" <?= $transaksi['metode_bayar'] === 'cicilan_kpr' ? 'selected' : '' ?>>Cicilan KPR</option><option value="tunai" <?= $transaksi['metode_bayar'] === 'tunai' ? 'selected' : '' ?>>Tunai</option></select></div>
@@ -232,6 +240,6 @@ require_once __DIR__ . '/includes/header.php';
             </div>
         </div>
     </div>
-</section>
+</main>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

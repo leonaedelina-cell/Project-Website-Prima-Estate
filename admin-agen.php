@@ -22,6 +22,8 @@ $pesan = $_GET['pesan'] ?? '';
 
 $user = user_login();
 $page_title = 'Kelola Agen — Estate Prima';
+$admin_sidebar = true;
+$dashboard_sidebar_active = 'agen';
 require_once __DIR__ . '/includes/header.php';
 ?>
 <style>
@@ -32,14 +34,6 @@ require_once __DIR__ . '/includes/header.php';
         background-size: cover;
         background-position: center;
     }
-    .admin-subnav { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1.25rem; }
-    .admin-subnav a {
-        padding: 0.5rem 1.1rem; border-radius: 3px; font-weight: 700; font-size: 0.85rem;
-        color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.25); text-decoration: none;
-        transition: all 0.2s ease;
-    }
-    .admin-subnav a:hover { border-color: var(--gold-500); color: var(--gold-300); }
-    .admin-subnav a.active { background: var(--gold-grad); border-color: var(--gold-600); color: var(--navy-950); }
     .table-estate {
         width: 100%; background: #fff; border-collapse: collapse;
         border: 1px solid var(--ivory-100); border-radius: 3px; overflow: hidden;
@@ -72,17 +66,10 @@ require_once __DIR__ . '/includes/header.php';
                 <span class="current">Kelola Agen</span>
             </div>
 
-            <div class="admin-subnav">
-                <a href="admin-dashboard.php"><i class="bi bi-speedometer2 me-1"></i> Dashboard</a>
-                <a href="admin-properti.php"><i class="bi bi-houses-fill me-1"></i> Kelola Properti</a>
-                <a href="admin-transaksi.php"><i class="bi bi-receipt me-1"></i> Kelola Transaksi</a>
-                <a href="admin-agen.php" class="active"><i class="bi bi-person-badge-fill me-1"></i> Kelola Agen</a>
-                <a href="admin-pesan.php"><i class="bi bi-envelope-fill me-1"></i> Pesan Kontak</a>
-            </div>
         </div>
     </div>
 
-    <section class="py-5">
+    <main class="py-5">
         <div class="container">
 
             <?php if ($pesan === 'tambah-berhasil'): ?>
@@ -127,6 +114,7 @@ require_once __DIR__ . '/includes/header.php';
                                             </a>
                                             <form method="POST" action="proses-agen.php" class="d-inline"
                                                   onsubmit="return confirm('<?= $a['jumlah_properti'] > 0 ? "Agen ini masih pegang {$a['jumlah_properti']} properti, propertinya akan jadi Tanpa Agen. " : '' ?>Yakin hapus agen ini?');">
+                                                                                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
                                                 <input type="hidden" name="aksi" value="hapus">
                                                 <input type="hidden" name="id" value="<?= $a['id'] ?>">
                                                 <button type="submit" class="btn-mini btn-hapus">
@@ -142,6 +130,6 @@ require_once __DIR__ . '/includes/header.php';
                 </table>
             </div>
         </div>
-    </section>
+    </main>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

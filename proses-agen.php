@@ -1,69 +1,135 @@
 <?php
 /**
- * pages/admin/admin-properti.php - Estate Prima
- * Tabel semua properti + modal konfirmasi hapus (versi sederhana: confirm() JS)
+ * proses-agen.php - Estate Prima
+ * Menangani aksi tambah, edit, dan hapus agen dari panel admin.
  */
 
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/includes/auth.php';
 
 cek_admin();
+cek_csrf();
 
-$daftar_properti = mysqli_fetch_all(mysqli_query($koneksi,
-    "SELECT id, judul, harga, tipe, kota, status FROM properti ORDER BY created_at DESC"
-), MYSQLI_ASSOC);
+$aksi = $_POST['aksi'] ?? '';
 
-$pesan = $_GET['pesan'] ?? '';
-?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Kelola Properti - Estate Prima (data test)</title>
-</head>
-<body>
-    <p>
-        <a href="admin-dashboard.php">&larr; Dashboard</a> |
-        <a href="admin-transaksi.php">Kelola Transaksi</a>
-    </p>
+if ($aksi === 'hapus') {
+    $id = (int)($_POST['id'] ?? 0);
+    if ($id <= 0) {
+        die('ID agen tidak valid.');
+    }
 
-    <h1>Kelola Properti</h1>
+    $stmt = mysqli_prepare($koneksi, "DELETE FROM agen WHERE id = ?");
+    mysqli_stmt_bind_param($stmt, "i", $id);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
 
-    <?php if ($pesan === 'tambah-berhasil'): ?>
-        <p style="color:green;">Properti berhasil ditambahkan.</p>
-    <?php elseif ($pesan === 'edit-berhasil'): ?>
-        <p style="color:green;">Properti berhasil diupdate.</p>
-    <?php elseif ($pesan === 'hapus-berhasil'): ?>
-        <p style="color:green;">Properti berhasil dihapus.</p>
-    <?php endif; ?>
+    header('Location: admin-agen.php?pesan=hapus-berhasil');
+    exit;
+}
 
-    <p><a href="properti-tambah.php"><button>+ Tambah Properti</button></a></p>
+if ($aksi === 'tambah' || $aksi === 'edit') {
+    $nama = trim($_POST['nama'] ?? '');
+    $no_hp = trim($_POST['no_hp'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $foto_url = trim($_POST['foto_url'] ?? '');
 
-    <table border="1" cellpadding="8" cellspacing="0" style="width:100%; border-collapse:collapse;">
-        <tr>
-            <th>Judul</th><th>Harga</th><th>Tipe</th><th>Kota</th><th>Status</th><th>Aksi</th>
-        </tr>
-        <?php foreach ($daftar_properti as $p): ?>
-            <tr>
-                <td><?= htmlspecialchars($p['judul']) ?></td>
-                <td>Rp <?= number_format($p['harga'], 0, ',', '.') ?></td>
-                <td><?= ucfirst($p['tipe']) ?></td>
-                <td><?= htmlspecialchars($p['kota']) ?></td>
-                <td><?= ucfirst($p['status']) ?></td>
-                <td>
-                    <a href="properti-edit.php?id=<?= $p['id'] ?>">Edit</a> |
-                    <a href="properti-galeri.php?id=<?= $p['id'] ?>">Galeri</a>
+    if ($nama === '') {
+        die('Nama agen wajib diisi.');
+    }
 
-                    <!-- Konfirmasi hapus pakai confirm() JS bawaan browser -->
-                    <form method="POST" action="proses-properti.php" style="display:inline;"
-                          onsubmit="return confirm('Yakin mau hapus properti ini? Data wishlist & transaksi terkait ikut terhapus.');">
-                        <input type="hidden" name="aksi" value="hapus">
-                        <input type="hidden" name="id" value="<?= $p['id'] ?>">
-                        <button type="submit">Hapus</button>
-                    </form>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-    </table>
-</body>
-</html>
+    if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        die('Format email agen tidak valid.');
+    }
+
+    $foto_url = trim($_POST['foto_url'] ?? '');
+    $foto_baru = $_FILES['foto'] ?? null;
+    $foto_lama = '';
+
+    if ($aksi === 'edit') {
+        $id = (int)($_POST['id'] ?? 0);
+        if ($id <= 0) {
+            die('ID agen tidak valid.');
+        }
+
+        $stmt = mysqli_prepare($koneksi, "SELECT foto_url FROM agen WHERE id = ?");
+        mysqli_stmt_bind_param($stmt, "i", $id);
+        mysqli_stmt_execute($stmt);
+        $hasil = mysqli_stmt_get_result($stmt);
+        $data_lama = mysqli_fetch_assoc($hasil);
+        mysqli_stmt_close($stmt);
+
+        if (!$data_lama) {
+            die('Agen tidak ditemukan.');
+        }
+        $foto_lama = $data_lama['foto_url'] ?? '';
+    }
+
+    if ($foto_baru && $foto_baru['error'] !== UPLOAD_ERR_NO_FILE) {
+        if ($foto_baru['error'] !== UPLOAD_ERR_OK) {
+            die('Upload foto gagal.');
+        }
+        if ($foto_baru['size'] > 400 * 1024) {
+            die('Ukuran foto maksimal 400 KB.');
+        }
+
+        $info_gambar = @getimagesize($foto_baru['tmp_name']);
+        $tipe_gambar = $info_gambar['mime'] ?? '';
+        $tipe_diizinkan = [
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            'image/webp' => 'webp',
+        ];
+        if (!$info_gambar || !isset($tipe_diizinkan[$tipe_gambar])) {
+            die('Format foto harus JPG, PNG, atau WEBP.');
+        }
+
+        $nama_file = bin2hex(random_bytes(16)) . '.' . $tipe_diizinkan[$tipe_gambar];
+        $folder_upload = __DIR__ . '/assets/uploads/agen/';
+        if (!is_dir($folder_upload) && !mkdir($folder_upload, 0755, true)) {
+            die('Folder upload foto tidak dapat dibuat.');
+        }
+        if (!move_uploaded_file($foto_baru['tmp_name'], $folder_upload . $nama_file)) {
+            die('Foto gagal disimpan.');
+        }
+
+        $foto_url = BASE_URL . 'assets/uploads/agen/' . $nama_file;
+    } elseif ($aksi === 'edit') {
+        $foto_url = $foto_lama;
+    }
+
+    if ($aksi === 'tambah') {
+        $stmt = mysqli_prepare(
+            $koneksi,
+            "INSERT INTO agen (nama, no_hp, email, foto_url) VALUES (?, ?, ?, ?)"
+        );
+        mysqli_stmt_bind_param($stmt, "ssss", $nama, $no_hp, $email, $foto_url);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+
+        header('Location: admin-agen.php?pesan=tambah-berhasil');
+        exit;
+    }
+
+    $stmt = mysqli_prepare(
+        $koneksi,
+        "UPDATE agen SET nama = ?, no_hp = ?, email = ?, foto_url = ? WHERE id = ?"
+    );
+    mysqli_stmt_bind_param($stmt, "ssssi", $nama, $no_hp, $email, $foto_url, $id);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+
+    if ($foto_baru && $foto_baru['error'] === UPLOAD_ERR_OK && $foto_lama !== '') {
+        $path_lama = parse_url($foto_lama, PHP_URL_PATH);
+        if (strpos($path_lama, '/assets/uploads/agen/') !== false) {
+            $file_lama = __DIR__ . '/assets/uploads/agen/' . basename($path_lama);
+            if (is_file($file_lama)) {
+                unlink($file_lama);
+            }
+        }
+    }
+
+    header('Location: admin-agen.php?pesan=edit-berhasil');
+    exit;
+}
+
+die('Aksi tidak dikenali.');

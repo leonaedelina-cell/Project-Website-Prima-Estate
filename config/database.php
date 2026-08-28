@@ -8,6 +8,7 @@
 // tetap berjalan walau nama folder di Laragon/XAMPP berubah.
 $base_path = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/')), '/');
 define('BASE_URL', ($base_path === '' || $base_path === '/') ? '/' : $base_path . '/');
+define('WHATSAPP_ADMIN', '6281234567890');
 
 $DB_HOST = 'localhost';
 $DB_NAME = 'estate_prima';

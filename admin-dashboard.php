@@ -12,11 +12,14 @@ cek_admin(); // wajib login SEBAGAI ADMIN
 // Statistik properti
 $stat_properti = mysqli_fetch_assoc(mysqli_query($koneksi,
     "SELECT
-        COUNT(*) AS total,
-        SUM(status = 'tersedia') AS tersedia,
-        SUM(status = 'terjual') AS terjual
+        COUNT(*) AS total
      FROM properti"
 ));
+
+$stat_properti['terjual'] = mysqli_fetch_assoc(mysqli_query($koneksi,
+    "SELECT COUNT(*) AS total FROM properti WHERE status = 'terjual'"
+))['total'];
+$stat_properti['tersedia'] = $stat_properti['total'] - $stat_properti['terjual'];
 
 // Statistik user
 $total_user = mysqli_fetch_assoc(mysqli_query($koneksi,
@@ -32,7 +35,13 @@ while ($row = mysqli_fetch_assoc($hasil)) {
 
 // Total nilai properti yang sudah terjual (revenue kasar)
 $total_revenue = mysqli_fetch_assoc(mysqli_query($koneksi,
-    "SELECT COALESCE(SUM(harga), 0) AS total FROM properti WHERE status = 'terjual'"
+    "SELECT COALESCE(SUM(harga), 0) AS total
+     FROM (
+         SELECT p.id, p.harga
+         FROM properti p
+         WHERE p.status = 'terjual'
+         GROUP BY p.id, p.harga
+     ) AS properti_terjual"
 ))['total'];
 
 // 5 pengajuan transaksi terbaru yang butuh perhatian (masih 'menunggu')
@@ -48,6 +57,8 @@ $transaksi_pending = mysqli_fetch_all(mysqli_query($koneksi,
 
 $user = user_login();
 $page_title = 'Dashboard Admin — Estate Prima';
+$admin_sidebar = true;
+$dashboard_sidebar_active = 'dashboard';
 require_once __DIR__ . '/includes/header.php';
 ?>
 <style>
@@ -58,14 +69,6 @@ require_once __DIR__ . '/includes/header.php';
         background-size: cover;
         background-position: center;
     }
-    .admin-subnav { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1.25rem; }
-    .admin-subnav a {
-        padding: 0.5rem 1.1rem; border-radius: 3px; font-weight: 700; font-size: 0.85rem;
-        color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.25); text-decoration: none;
-        transition: all 0.2s ease;
-    }
-    .admin-subnav a:hover { border-color: var(--gold-500); color: var(--gold-300); }
-    .admin-subnav a.active { background: var(--gold-grad); border-color: var(--gold-600); color: var(--navy-950); }
     .stat-card {
         background: #fff; border: 1px solid var(--ivory-100); border-radius: 3px;
         padding: 1.5rem; height: 100%;
@@ -98,18 +101,10 @@ require_once __DIR__ . '/includes/header.php';
                 <span class="current">Dashboard Admin</span>
             </div>
 
-            <!-- Sub-navigasi admin -->
-            <div class="admin-subnav">
-                <a href="admin-dashboard.php" class="active"><i class="bi bi-speedometer2 me-1"></i> Dashboard</a>
-                <a href="admin-properti.php"><i class="bi bi-houses-fill me-1"></i> Kelola Properti</a>
-                <a href="admin-transaksi.php"><i class="bi bi-receipt me-1"></i> Kelola Transaksi</a>
-                <a href="admin-agen.php"><i class="bi bi-person-badge-fill me-1"></i> Kelola Agen</a>
-                <a href="admin-pesan.php"><i class="bi bi-envelope-fill me-1"></i> Pesan Kontak</a>
-            </div>
         </div>
     </div>
 
-    <section class="py-5">
+    <main class="py-5">
         <div class="container">
 
             <!-- ============ STATISTIK PROPERTI ============ -->
@@ -195,6 +190,6 @@ require_once __DIR__ . '/includes/header.php';
                 </div>
             </div>
         </div>
-    </section>
+    </main>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

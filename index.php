@@ -14,13 +14,10 @@ $total_properti = mysqli_fetch_assoc(
     mysqli_query($koneksi, "SELECT COUNT(*) AS total FROM properti")
 )['total'];
 
-$total_tersedia = mysqli_fetch_assoc(
-    mysqli_query($koneksi, "SELECT COUNT(*) AS total FROM properti WHERE status = 'tersedia'")
-)['total'];
-
 $total_terjual = mysqli_fetch_assoc(
     mysqli_query($koneksi, "SELECT COUNT(*) AS total FROM properti WHERE status = 'terjual'")
 )['total'];
+$total_tersedia = $total_properti - $total_terjual;
 
 $total_user = mysqli_fetch_assoc(
     mysqli_query($koneksi, "SELECT COUNT(*) AS total FROM users WHERE role = 'user'")

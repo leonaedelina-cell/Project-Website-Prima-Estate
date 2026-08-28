@@ -52,6 +52,8 @@ mysqli_stmt_close($stmt);
 <?php
 $user = user_login();
 $page_title = 'Dashboard Saya — Estate Prima';
+$dashboard_sidebar = true;
+$dashboard_sidebar_active = 'dashboard';
 require_once __DIR__ . '/includes/header.php';
 ?>
 <style>

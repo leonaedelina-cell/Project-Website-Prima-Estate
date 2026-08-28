@@ -12,6 +12,8 @@ $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
+    cek_csrf();
+
     // 1. Ambil & bersihkan input
     $nama                = trim($_POST['nama'] ?? '');
     $email               = trim($_POST['email'] ?? '');
@@ -139,6 +141,7 @@ require_once __DIR__ . '/includes/header.php';
                         <?php endif; ?>
 
                         <form method="POST" action="register.php">
+                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
                             <div class="mb-3">
                                 <label class="d-block">Nama Lengkap</label>
                                 <input type="text" name="nama" class="form-control"

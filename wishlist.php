@@ -27,6 +27,8 @@ mysqli_stmt_close($stmt);
 <?php
 $user = user_login();
 $page_title = 'Wishlist Saya — Estate Prima';
+$dashboard_sidebar = true;
+$dashboard_sidebar_active = 'wishlist';
 require_once __DIR__ . '/includes/header.php';
 ?>
 <style>
@@ -82,6 +84,7 @@ require_once __DIR__ . '/includes/header.php';
                                 <div class="d-flex justify-content-between align-items-center gap-2">
                                     <span class="badge-status <?= htmlspecialchars($w['status']) ?>"><i class="bi bi-circle-fill"></i> <?= ucfirst($w['status']) ?></span>
                                     <form method="POST" action="<?= BASE_URL ?>proses-wishlist.php" class="remove-form">
+                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
                                         <input type="hidden" name="properti_id" value="<?= $w['properti_id'] ?>">
                                         <button type="submit" class="btn btn-sm"><i class="bi bi-trash3 me-1"></i> Hapus</button>
                                     </form>
