@@ -45,10 +45,23 @@ Di luar hasil review kode, ini permintaan perbaikan/fitur tambahan:
    - Tambah user baru dari panel admin.
    - Edit profil/data akun user lain (nama, email, no HP) dari panel admin.
    Perlu ditambah form tambah user (mirip `register.php` tapi admin yang isi + bisa pilih role langsung) dan form edit data user per akun.
-5. **Upload gambar masih link doang, belum bisa upload file.** Berlaku buat dua tempat:
-   - Gambar properti (sekarang cuma isi URL di form tambah/edit properti).
-   - Bukti pembayaran/transaksi (sekarang juga cuma isi URL di `admin-transaksi-detail.php`).
-   Perlu ditambah input `type="file"`, handle pakai `$_FILES` + `move_uploaded_file()`, simpan ke folder kayak `uploads/properti/` dan `uploads/bukti-bayar/`, terus path-nya yang disimpan ke database (bukan link eksternal). Validasi tipe file (jpg/png) dan ukuran max juga perlu ditambahin biar aman.
+5. **Upload gambar masih link doang di beberapa tempat, belum bisa upload file.** Update: foto agen (`proses-agen.php`) ternyata **udah bisa** upload file — pola-nya udah bagus (validasi ukuran max 400KB, cek tipe file pakai `getimagesize()`, nama file di-random, foto lama otomatis kehapus pas ganti). Tinggal **copy pola yang sama** ke dua tempat ini yang masih link doang:
+   - Gambar properti (form tambah/edit properti).
+   - Bukti pembayaran/transaksi (`admin-transaksi-detail.php`).
+   Simpan ke folder kayak `assets/uploads/properti/` dan `assets/uploads/bukti-bayar/`, path-nya yang disimpan ke database (bukan link eksternal).
+6. **Semua tabel (admin & user) belum ada nomor urut.** Tabel di `admin-properti.php`, `admin-transaksi.php`, `admin-agen.php`, `admin-users.php` semua belum punya kolom "No" di paling kiri. Tambahin kolom nomor urut biar gampang direferensiin pas ngobrol/laporan (misal "data nomor 5"). Kalau tabelnya pakai pagination, nomornya jangan reset ke 1 tiap ganti halaman — lanjutin dari halaman sebelumnya (contoh: halaman 2 mulai dari nomor 11, bukan 1 lagi).
+7. **Pagination belum ada di semua tabel admin & user.** `admin-properti.php` udah punya pagination (`page`, `LIMIT`/`OFFSET`), pola ini yang harus dicontek. Yang masih belum ada pagination:
+   - `admin-transaksi.php`
+   - `admin-agen.php`
+   - `admin-users.php`
+   Kalau daftar user/agen/transaksi makin banyak, halaman bakal berat kalau semua data ditampilin sekaligus tanpa pagination.
+8. **Search belum ada di tabel admin.** Tambahin fitur cari di 4 tabel: `admin-properti.php`, `admin-transaksi.php`, `admin-agen.php`, `admin-users.php`. **Pakai pola per-tabel** (bukan search universal/gabungan) — contek persis pola yang udah ada di `listing.php` (`?q=` + `LIKE` + prepared statement), digabung sama pagination biar `?q=...&page=2` gak saling ilangin (sama kayak yang udah jalan di `listing.php`). Kolom yang di-search beda tiap tabel, contoh:
+   - Properti: judul, kota
+   - Transaksi: nama customer, judul properti
+   - Agen: nama, email
+   - Users: nama, email
+
+   Kenapa bukan universal search (satu search box nyari lintas semua tabel)? Karena tiap tabel struktur & kolomnya beda-beda, hasilnya bakal susah ditampilin rapi dalam satu daftar, query-nya jadi lebih ribet (union/banyak query sekaligus), dan gak match sama cara admin biasa pakai — admin biasanya emang lagi buka halaman tabel tertentu pas nyari data, bukan nyari acak dari mana-mana. Universal search itu pola buat command-palette di SaaS gede, bukan buat admin panel skala kecil kayak ini.
 
 ## Checklist cepat sebelum submit final
 
@@ -59,6 +72,9 @@ Di luar hasil review kode, ini permintaan perbaikan/fitur tambahan:
 - [ ] Buang footer dari layout dashboard admin & user
 - [ ] Hapus wishlist pakai AJAX, gak reload halaman
 - [ ] Tambah form tambah user + edit profil user di panel admin
-- [ ] Upload gambar properti & bukti bayar pakai file, bukan cuma link
+- [ ] Upload gambar properti & bukti bayar pakai file, bukan cuma link (contek pola foto agen)
+- [ ] Tambah kolom nomor urut di semua tabel (properti, transaksi, agen, users)
+- [ ] Tambah pagination di `admin-transaksi.php`, `admin-agen.php`, `admin-users.php` (contek pola `admin-properti.php`)
+- [ ] Tambah search per-tabel di 4 tabel admin (contek pola `?q=` di `listing.php`)
 - [ ] (Optional) icon/logo di statistik transaksi
 - [ ] Test manual: guest gak bisa wishlist/ajukan (harus keredirect login), user cuma bisa liat pesanan sendiri
