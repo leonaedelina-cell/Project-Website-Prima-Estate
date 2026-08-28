@@ -56,7 +56,13 @@ Semua ini statusnya **selesai di branch `mentor-fixes`**, belum masuk `main` kam
 
 1. Cek ulang semua halaman admin/user di browser buat mastiin tampilan gak ada yang kepotong/rusak — terutama form yang barusan ditambah field baru (properti, transaksi-detail, users).
 2. Kalau mau, rapikan CSS icon di stat card statistik transaksi (`admin-dashboard.php`) — sekarang fungsional tapi belum ada warna/size khusus per status, masih polos.
-3. Lanjut checklist test manual di bagian bawah.
+3. **Halaman "Cara Kerja" (baru, belum ada sama sekali)** — buat halaman publik yang jelasin proses beli/sewa properti step-by-step buat guest/customer. Beberapa keputusan yang udah didiskusiin, tinggal eksekusi:
+   - **Halaman terpisah**, jangan digabung ke `listing.php` atau `kontak.php` — konteksnya beda (edukasi proses, bukan belanja atau kontak).
+   - **Nama di navbar**: `Cara Kerja` (pendek, jelas — gaya sama kayak "Cara Beli" di situs properti lain). Alternatif: `Panduan`.
+   - **FAQ** ditaro sebagai section DI DALAM halaman ini (accordion Bootstrap misalnya), bukan menu navbar terpisah — biar navbar gak kepanjangan.
+   - **Tombol "Hubungi Tim Sales"** — arahin ke `wa.me` pakai constant `WHATSAPP_ADMIN` yang udah ada di `config/database.php`, sama pola kayak yang dipakai di `proses-transaksi.php` (pesan default di-`urlencode()`).
+   - **Carousel foto agen** (auto-slide) — pakai Bootstrap Carousel (`data-bs-ride="carousel"`), library-nya udah ke-load di project, gak perlu tambahan. Bisa ditaro di halaman ini atau di `index.php` (homepage) biar agen keliatan dari awal — pilih salah satu, jangan dobel.
+4. Lanjut checklist test manual di bagian bawah.
 
 ## Catatan struktur
 
