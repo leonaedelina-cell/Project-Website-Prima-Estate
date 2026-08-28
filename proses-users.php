@@ -38,7 +38,7 @@ if ($aksi === 'tambah') {
     exit;
 }
 
-// AKSI: EDIT - admin ubah data akun user lain (nama/email/no_hp)
+// AKSI: EDIT - admin ubah data akun user lain (nama/email/no_hp/role sekaligus dari 1 form)
 if ($aksi === 'edit') {
     $id = (int)($_POST['id'] ?? 0);
     if ($id <= 0) die('User tidak valid.');
@@ -46,9 +46,12 @@ if ($aksi === 'edit') {
     $nama = trim($_POST['nama'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $no_hp = trim($_POST['no_hp'] ?? '');
+    $role = $_POST['role'] ?? '';
+    $is_diri_sendiri = $id === (int) $_SESSION['user_id'];
 
     if ($nama === '') die('Nama wajib diisi.');
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) die('Format email tidak valid.');
+    if (!in_array($role, ['admin', 'user'], true)) die('Role tidak valid.');
 
     $stmt = mysqli_prepare($koneksi, 'SELECT id FROM users WHERE email = ? AND id != ?');
     mysqli_stmt_bind_param($stmt, 'si', $email, $id);
@@ -59,8 +62,14 @@ if ($aksi === 'edit') {
     }
     mysqli_stmt_close($stmt);
 
-    $stmt = mysqli_prepare($koneksi, 'UPDATE users SET nama = ?, email = ?, no_hp = ? WHERE id = ?');
-    mysqli_stmt_bind_param($stmt, 'sssi', $nama, $email, $no_hp, $id);
+    if ($is_diri_sendiri) {
+        // Gak boleh ubah role sendiri (biar gak ada admin yang gak sengaja demote diri sendiri sampai kekunci)
+        $stmt = mysqli_prepare($koneksi, 'UPDATE users SET nama = ?, email = ?, no_hp = ? WHERE id = ?');
+        mysqli_stmt_bind_param($stmt, 'sssi', $nama, $email, $no_hp, $id);
+    } else {
+        $stmt = mysqli_prepare($koneksi, 'UPDATE users SET nama = ?, email = ?, no_hp = ?, role = ? WHERE id = ?');
+        mysqli_stmt_bind_param($stmt, 'ssssi', $nama, $email, $no_hp, $role, $id);
+    }
     if (!mysqli_stmt_execute($stmt)) die('Data user gagal diperbarui.');
     mysqli_stmt_close($stmt);
 
@@ -71,17 +80,6 @@ if ($aksi === 'edit') {
 $id = (int)($_POST['id'] ?? 0);
 if ($id <= 0) die('User tidak valid.');
 if ($id === (int) $_SESSION['user_id']) die('Akun sendiri tidak dapat diubah atau dihapus.');
-
-if ($aksi === 'ubah-role') {
-    $role = $_POST['role'] ?? '';
-    if (!in_array($role, ['admin', 'user'], true)) die('Role tidak valid.');
-    $stmt = mysqli_prepare($koneksi, 'UPDATE users SET role = ? WHERE id = ?');
-    mysqli_stmt_bind_param($stmt, 'si', $role, $id);
-    if (!mysqli_stmt_execute($stmt)) die('Role gagal diperbarui.');
-    mysqli_stmt_close($stmt);
-    header('Location: admin-users.php?pesan=role-berhasil');
-    exit;
-}
 
 if ($aksi === 'hapus') {
     $stmt = mysqli_prepare($koneksi, 'DELETE FROM users WHERE id = ?');

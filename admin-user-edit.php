@@ -13,6 +13,8 @@ if ($id <= 0) {
     die('User tidak valid.');
 }
 
+$sedang_login = $id === (int) ($_SESSION['user_id'] ?? 0);
+
 $stmt = mysqli_prepare($koneksi, 'SELECT id, nama, email, no_hp, role FROM users WHERE id = ?');
 mysqli_stmt_bind_param($stmt, 'i', $id);
 mysqli_stmt_execute($stmt);
@@ -41,7 +43,19 @@ require_once __DIR__ . '/includes/header.php';
             <div class="col-12 field-panel"><label class="form-label">Nama</label><input class="form-control" type="text" name="nama" value="<?= htmlspecialchars($akun['nama']) ?>" required></div>
             <div class="col-md-6 field-panel"><label class="form-label">Email</label><input class="form-control" type="email" name="email" value="<?= htmlspecialchars($akun['email']) ?>" required></div>
             <div class="col-md-6 field-panel"><label class="form-label">No. HP</label><input class="form-control" type="text" name="no_hp" value="<?= htmlspecialchars($akun['no_hp'] ?? '') ?>"></div>
-            <div class="col-md-6 field-panel"><label class="form-label">Role</label><input class="form-control" type="text" value="<?= htmlspecialchars(ucfirst($akun['role'])) ?>" disabled><small class="text-muted">Ganti role lewat tombol "Jadikan Admin/User" di daftar users.</small></div>
+            <div class="col-md-6 field-panel">
+                <label class="form-label">Role</label>
+                <?php if ($sedang_login): ?>
+                    <input class="form-control" type="text" value="<?= htmlspecialchars(ucfirst($akun['role'])) ?>" disabled>
+                    <input type="hidden" name="role" value="<?= htmlspecialchars($akun['role']) ?>">
+                    <small class="text-muted">Role akun sendiri gak bisa diubah lewat sini.</small>
+                <?php else: ?>
+                    <select class="form-select" name="role" required>
+                        <option value="user" <?= $akun['role'] === 'user' ? 'selected' : '' ?>>User</option>
+                        <option value="admin" <?= $akun['role'] === 'admin' ? 'selected' : '' ?>>Admin</option>
+                    </select>
+                <?php endif; ?>
+            </div>
         </div>
         <div class="form-actions"><button type="submit" class="btn btn-gold px-4"><i class="bi bi-check2-circle me-1"></i> Update User</button></div>
     </form>

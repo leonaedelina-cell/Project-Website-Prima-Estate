@@ -90,15 +90,8 @@ require_once __DIR__ . '/includes/header.php';
                     <div class="d-flex gap-2 flex-wrap">
                         <a href="admin-user-edit.php?id=<?= $akun['id'] ?>" class="btn btn-sm btn-outline-navy"><i class="bi bi-pencil-fill"></i> Edit</a>
                         <?php if ((int) $akun['id'] === (int) $_SESSION['user_id']): ?>
-                            <span class="text-muted small align-self-center">Akun Anda</span>
+                            <span class="badge rounded-pill text-bg-light border align-self-center"><i class="bi bi-person-check-fill me-1"></i>Akun Anda</span>
                         <?php else: ?>
-                            <form method="POST" action="proses-users.php">
-                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
-                                <input type="hidden" name="aksi" value="ubah-role">
-                                <input type="hidden" name="id" value="<?= $akun['id'] ?>">
-                                <input type="hidden" name="role" value="<?= $akun['role'] === 'admin' ? 'user' : 'admin' ?>">
-                                <button class="btn btn-sm btn-outline-navy" type="submit">Jadikan <?= $akun['role'] === 'admin' ? 'User' : 'Admin' ?></button>
-                            </form>
                             <button class="btn btn-sm btn-outline-danger" type="button" data-bs-toggle="modal" data-bs-target="#modalHapusUser<?= $akun['id'] ?>"><i class="bi bi-trash-fill"></i></button>
                             <div class="modal fade" id="modalHapusUser<?= $akun['id'] ?>" tabindex="-1" aria-labelledby="labelHapusUser<?= $akun['id'] ?>" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered"><div class="modal-content">

@@ -36,8 +36,9 @@ Kamu udah bikin pola upload yang bagus di `proses-agen.php` (foto agen) — ment
 Sebelumnya admin cuma bisa ubah role & hapus user. Sekarang:
 
 - `admin-user-tambah.php` (baru): form buat admin bikin akun baru + langsung pilih role (mirip `register.php` tapi role-nya bisa dipilih admin).
-- `admin-user-edit.php` (baru): form edit nama/email/no HP user lain. Role tetep diubah lewat tombol "Jadikan Admin/User" di `admin-users.php`, bukan di form ini — biar gak dobel tempat ganti role.
-- `proses-users.php`: nambah 2 aksi baru, `tambah` dan `edit`, dengan validasi yang sama kayak `register.php` (email valid, gak duplikat, password min 6 karakter).
+- `admin-user-edit.php` (baru): form edit nama/email/no HP **+ role** user lain, semua dari 1 form (revisi — awalnya role dipisah lewat tombol quick-toggle "Jadikan Admin/User" di `admin-users.php`, sekarang digabung ke form edit sesuai permintaan, tombol quick-togglenya dihapus).
+- `proses-users.php`: aksi `edit` sekarang handle nama/email/no_hp/role sekaligus. Tetep ada proteksi: kalau admin edit akun sendiri, field role di-skip (dipaksa tetep nilai lama) biar gak ada yang gak sengaja demote diri sendiri sampai kekunci dari panel admin.
+- `admin-users.php`: baris "Akun Anda" (buat baris akun yang lagi login) sekarang badge pill kecil (`<span class="badge rounded-pill ...">`), bukan teks polos lagi.
 
 ## 5. Nomor Urut, Pagination, Search — 4 Tabel Admin
 
