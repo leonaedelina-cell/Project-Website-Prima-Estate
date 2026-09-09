@@ -22,3 +22,31 @@ if (!$koneksi) {
 }
 
 mysqli_set_charset($koneksi, 'utf8mb4');
+
+function migrate_property_schema($koneksi) {
+    $result = mysqli_query($koneksi, 'SHOW COLUMNS FROM properti');
+    if (!$result) {
+        return;
+    }
+
+    $columns = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $columns[$row['Field']] = true;
+    }
+    mysqli_free_result($result);
+
+    $alter_sql = [
+        'tipe_transaksi' => "ALTER TABLE properti ADD COLUMN tipe_transaksi ENUM('jual','sewa') NOT NULL DEFAULT 'jual' AFTER harga",
+        'durasi_minimal' => "ALTER TABLE properti ADD COLUMN durasi_minimal ENUM('6 bulan','1 tahun') DEFAULT NULL AFTER tipe_transaksi",
+        'fasilitas' => "ALTER TABLE properti ADD COLUMN fasilitas TEXT DEFAULT NULL AFTER carport",
+        'status_hunian' => "ALTER TABLE properti ADD COLUMN status_hunian ENUM('kosong','terisi') NOT NULL DEFAULT 'kosong' AFTER fasilitas"
+    ];
+
+    foreach ($alter_sql as $field => $sql) {
+        if (!isset($columns[$field])) {
+            mysqli_query($koneksi, $sql);
+        }
+    }
+}
+
+migrate_property_schema($koneksi);

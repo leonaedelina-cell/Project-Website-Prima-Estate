@@ -38,7 +38,7 @@ $dashboard_sidebar_active = 'properti';
 require_once __DIR__ . '/includes/header.php';
 ?>
     <div class="page-header page-header-photo"><div class="container">
-        <p class="eyebrow mb-2">Panel Admin</p><h1 class="mb-2">Kelola Galeri</h1><div class="breadcrumb-estate"><a href="<?= BASE_URL ?>index.php">Beranda</a><span class="sep">/</span><a href="admin-properti.php">Kelola Properti</a><span class="sep">/</span><span class="current"><?= htmlspecialchars($properti['judul']) ?></span></div>
+        <p class="eyebrow mb-2">Panel Admin</p><h1 class="mb-2">Kelola Galeri</h1><p class="lead mb-0">Tambahkan atau hapus foto galeri properti ini.</p>
     </div></div>
     <main class="py-5"><div class="container"><div class="admin-form-card mb-4">
         <div class="d-flex justify-content-between align-items-start gap-3 mb-4"><div><p class="section-eyebrow mb-2">Properti</p><h2 class="section-title mb-0">Galeri Foto</h2><p class="text-muted mb-0 mt-2"><?= htmlspecialchars($properti['judul']) ?></p></div><a href="admin-properti.php" class="btn btn-outline-navy"><i class="bi bi-arrow-left me-1"></i> Kembali</a></div>
@@ -56,18 +56,45 @@ require_once __DIR__ . '/includes/header.php';
         <div class="admin-form-card text-center text-muted py-5"><i class="bi bi-images fs-2 d-block mb-2 text-gold"></i>Belum ada foto galeri.</div>
     <?php else: ?>
         <div class="gallery-admin-grid">
-        <?php foreach ($galeri as $g): ?>
-            <div class="gallery-admin-item"><img src="<?= htmlspecialchars($g['gambar_url']) ?>" alt="Galeri <?= htmlspecialchars($properti['judul']) ?>"><div class="item-footer"><div class="url mb-2" title="<?= htmlspecialchars($g['gambar_url']) ?>"><?= htmlspecialchars($g['gambar_url']) ?></div>
-                <form method="POST" action="proses-galeri.php" onsubmit="return confirm('Hapus foto ini dari galeri?');">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
-                    <input type="hidden" name="aksi" value="hapus">
-                    <input type="hidden" name="id" value="<?= $g['id'] ?>">
-                    <input type="hidden" name="properti_id" value="<?= $properti_id ?>">
-                    <button type="submit" class="btn btn-sm btn-outline-danger w-100"><i class="bi bi-trash3 me-1"></i> Hapus Foto</button>
-                </form>
-            </div></div>
-        <?php endforeach; ?>
+<?php foreach ($galeri as $g): ?>
+    <div class="gallery-admin-item">
+        <img src="<?= htmlspecialchars($g['gambar_url']) ?>" alt="Galeri <?= htmlspecialchars($properti['judul']) ?>">
+        <div class="item-footer">
+            <div class="url mb-2" title="<?= htmlspecialchars($g['gambar_url']) ?>"><?= htmlspecialchars($g['gambar_url']) ?></div>
+            
+            <button type="button" class="btn btn-sm btn-outline-danger w-100" data-bs-toggle="modal" data-bs-target="#modalHapusFoto<?= $g['id'] ?>">
+                <i class="bi bi-trash3 me-1"></i> Hapus Foto
+            </button>
+
+            <!-- Modal Hapus Foto -->
+            <div class="modal fade" id="modalHapusFoto<?= $g['id'] ?>" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content text-start">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Hapus Foto Galeri?</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                        </div>
+                        <div class="modal-body">
+                            Foto ini akan dihapus permanen dari galeri properti <strong><?= htmlspecialchars($properti['judul']) ?></strong>.
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-sm btn-outline-navy" data-bs-dismiss="modal">Batal</button>
+                            <form method="POST" action="proses-galeri.php" class="d-inline">
+                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
+                                <input type="hidden" name="aksi" value="hapus">
+                                <input type="hidden" name="id" value="<?= $g['id'] ?>">
+                                <input type="hidden" name="properti_id" value="<?= $properti_id ?>">
+                                <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
+    </div>
+<?php endforeach; ?>
+</div>
     <?php endif; ?>
     </div></main>
-<?php require_once __DIR__ . '/includes/footer.php'; ?>
+<?php require_once __DIR__ . '/includes/dashboard-footer.php'; ?>

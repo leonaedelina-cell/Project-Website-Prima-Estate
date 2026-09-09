@@ -27,7 +27,7 @@ $total_user = mysqli_fetch_assoc(mysqli_query($koneksi,
 ))['total'];
 
 // Statistik transaksi per status
-$stat_transaksi = ['menunggu' => 0, 'diproses' => 0, 'disetujui' => 0, 'ditolak' => 0, 'selesai' => 0];
+$stat_transaksi = ['menunggu' => 0, 'diproses' => 0, 'disetujui' => 0, 'ditolak' => 0, 'selesai' => 0, 'lunas' => 0];
 $hasil = mysqli_query($koneksi, "SELECT status, COUNT(*) AS total FROM transaksi GROUP BY status");
 while ($row = mysqli_fetch_assoc($hasil)) {
     $stat_transaksi[$row['status']] = $row['total'];
@@ -61,45 +61,12 @@ $admin_sidebar = true;
 $dashboard_sidebar_active = 'dashboard';
 require_once __DIR__ . '/includes/header.php';
 ?>
-<style>
-    .page-header-photo {
-        background-image:
-            linear-gradient(180deg, rgba(13,31,51,0.72) 0%, rgba(13,31,51,0.6) 55%, rgba(13,31,51,0.94) 100%),
-            url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?fm=jpg&q=80&w=2000&auto=format&fit=crop');
-        background-size: cover;
-        background-position: center;
-    }
-    .stat-card {
-        background: #fff; border: 1px solid var(--ivory-100); border-radius: 3px;
-        padding: 1.5rem; height: 100%;
-    }
-    .stat-card .icon-box {
-        width: 44px; height: 44px; border-radius: 3px;
-        background: var(--navy-950); color: var(--gold-300);
-        display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
-        margin-bottom: 1rem;
-    }
-    .stat-card .num { font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.8rem; color: var(--navy-900); }
-    .stat-card .lbl { font-size: 0.8rem; color: var(--ink-500); }
-    .review-item {
-        display: flex; justify-content: space-between; align-items: center;
-        padding: 0.9rem 1.1rem; border: 1px solid var(--ivory-100); border-radius: 3px;
-        margin-bottom: 0.6rem; background: #fff;
-    }
-    .review-item a { text-decoration: none; color: var(--navy-900); font-weight: 600; }
-    .review-item a:hover { color: var(--gold-600); }
-</style>
-
     <!-- ============ PAGE HEADER ============ -->
     <div class="page-header page-header-photo">
         <div class="container">
             <p class="eyebrow mb-2">Panel Admin</p>
             <h1 class="mb-2">Dashboard Admin</h1>
-            <div class="breadcrumb-estate">
-                <a href="<?= BASE_URL ?>index.php">Beranda</a>
-                <span class="sep">/</span>
-                <span class="current">Dashboard Admin</span>
-            </div>
+            <p class="lead mb-0">Pantau ringkasan properti, transaksi, dan aktivitas terbaru.</p>
 
         </div>
     </div>
@@ -148,19 +115,22 @@ require_once __DIR__ . '/includes/header.php';
                     <h2 class="section-title mb-4" style="font-size:1.6rem;">Statistik Transaksi</h2>
                     <div class="row g-3">
                         <div class="col-6 col-md-4">
-                            <div class="stat-card"><div class="num"><?= $stat_transaksi['menunggu'] ?></div><div class="lbl">Menunggu</div></div>
+                            <div class="stat-card"><div class="icon-box"><i class="bi bi-hourglass-split"></i></div><div class="num"><?= $stat_transaksi['menunggu'] ?></div><div class="lbl">Menunggu</div></div>
                         </div>
                         <div class="col-6 col-md-4">
-                            <div class="stat-card"><div class="num"><?= $stat_transaksi['diproses'] ?></div><div class="lbl">Diproses</div></div>
+                            <div class="stat-card"><div class="icon-box"><i class="bi bi-arrow-repeat"></i></div><div class="num"><?= $stat_transaksi['diproses'] ?></div><div class="lbl">Diproses</div></div>
                         </div>
                         <div class="col-6 col-md-4">
-                            <div class="stat-card"><div class="num"><?= $stat_transaksi['disetujui'] ?></div><div class="lbl">Disetujui</div></div>
+                            <div class="stat-card"><div class="icon-box"><i class="bi bi-check-circle-fill"></i></div><div class="num"><?= $stat_transaksi['disetujui'] ?></div><div class="lbl">Disetujui</div></div>
                         </div>
                         <div class="col-6 col-md-4">
-                            <div class="stat-card"><div class="num"><?= $stat_transaksi['ditolak'] ?></div><div class="lbl">Ditolak</div></div>
+                            <div class="stat-card"><div class="icon-box"><i class="bi bi-x-circle-fill"></i></div><div class="num"><?= $stat_transaksi['ditolak'] ?></div><div class="lbl">Ditolak</div></div>
                         </div>
                         <div class="col-6 col-md-4">
-                            <div class="stat-card"><div class="num"><?= $stat_transaksi['selesai'] ?></div><div class="lbl">Selesai</div></div>
+                            <div class="stat-card"><div class="icon-box"><i class="bi bi-check2-all"></i></div><div class="num"><?= $stat_transaksi['selesai'] ?></div><div class="lbl">Selesai</div></div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="stat-card"><div class="icon-box"><i class="bi bi-cash-coin"></i></div><div class="num"><?= $stat_transaksi['lunas'] ?></div><div class="lbl">Lunas</div></div>
                         </div>
                         <div class="col-6 col-md-4">
                             <div class="stat-card"><div class="num"><?= $total_user ?></div><div class="lbl">Total User</div></div>
@@ -192,4 +162,4 @@ require_once __DIR__ . '/includes/header.php';
         </div>
     </main>
 
-<?php require_once __DIR__ . '/includes/footer.php'; ?>
+<?php require_once __DIR__ . '/includes/dashboard-footer.php'; ?>

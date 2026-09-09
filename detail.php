@@ -1,7 +1,7 @@
 <?php
 /**
  * detail.php - Estate Prima
- * Detail 1 properti: galeri, fasilitas, kartu agen, tombol Wishlist & Ajukan Beli
+ * Detail 1 properti: galeri, fasilitas, kartu agen, tombol Wishlist & Ajukan Beli/Sewa
  * Akses: detail.php?id=1
  */
 
@@ -54,10 +54,14 @@ if ($user) {
     mysqli_stmt_close($stmt);
 }
 
-// Pesan sukses/gagal dari redirect proses-wishlist.php / proses-transaksi.php
+// Pesan sukses/gagal dari redirect
 $pesan = $_GET['pesan'] ?? '';
 
-// Siapkan foto-foto buat grid galeri: gambar utama + max 3 thumbnail
+// Tentukan mode transaksi properti.
+$tipe_transaksi_properti = $properti['tipe_transaksi'] ?? 'jual';
+$label_transaksi = $tipe_transaksi_properti === 'sewa' ? 'Disewakan' : 'Dijual';
+
+// Siapkan foto-foto buat grid galeri
 $gambar_utama = $properti['gambar_url'] ?: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994';
 $thumbnail    = array_slice($galeri, 0, 3);
 $sisa_foto    = max(count($galeri) - 3, 0);
@@ -89,9 +93,9 @@ require_once __DIR__ . '/includes/header.php';
             <?php elseif ($pesan === 'wishlist-dihapus'): ?>
                 <div class="alert-estate-success p-3 mb-4"><i class="bi bi-check-circle-fill me-1"></i> Berhasil dihapus dari wishlist.</div>
             <?php elseif ($pesan === 'pengajuan-berhasil'): ?>
-                <div class="alert-estate-success p-3 mb-4"><i class="bi bi-check-circle-fill me-1"></i> Pengajuan beli berhasil dikirim! Cek status di halaman Pesanan.</div>
+                <div class="alert-estate-success p-3 mb-4"><i class="bi bi-check-circle-fill me-1"></i> Pengajuan berhasil dikirim! Cek status di halaman Pesanan.</div>
             <?php elseif ($pesan === 'sudah-diajukan'): ?>
-                <div class="alert-estate-error p-3 mb-4"><i class="bi bi-exclamation-circle-fill me-1"></i> Kamu sudah pernah mengajukan pembelian untuk properti ini.</div>
+                <div class="alert-estate-error p-3 mb-4"><i class="bi bi-exclamation-circle-fill me-1"></i> Kamu sedang memiliki pengajuan aktif untuk properti ini.</div>
             <?php endif; ?>
 
             <div class="row g-4">
@@ -116,13 +120,16 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
 
                     <!-- Status & Tipe -->
-                    <div class="d-flex gap-2 mb-4">
+                    <div class="d-flex gap-2 mb-4 flex-wrap">
                         <span class="badge-status <?= $properti['status'] ?>">
                             <i class="bi bi-<?= $properti['status'] === 'tersedia' ? 'check-circle-fill' : 'x-circle-fill' ?>"></i>
                             <?= ucfirst($properti['status']) ?>
                         </span>
                         <span class="badge-status" style="background:#f1eee5; color:var(--navy-900);">
-                            <i class="bi bi-tag-fill"></i> <?= ucfirst($properti['tipe']) ?>
+                            <i class="bi bi-tag-fill"></i> Tipe: <?= ucfirst($properti['tipe']) ?>
+                        </span>
+                        <span class="badge-status" style="background:#e8f0f8; color:#2c4f74;">
+                            <i class="bi bi-house-door-fill"></i> <?= $label_transaksi ?>
                         </span>
                     </div>
 
@@ -151,6 +158,17 @@ require_once __DIR__ . '/includes/header.php';
                             <div><span class="val"><?= $properti['luas_bangunan'] ?? '-' ?> m&sup2;</span><span class="lbl">Luas Bangunan</span></div>
                         </div>
                     </div>
+                    <?php
+                        $fasilitas = array_filter(array_map('trim', explode(',', (string)($properti['fasilitas'] ?? ''))));
+                    ?>
+                    <?php if ($fasilitas): ?>
+                        <div class="d-flex flex-wrap gap-2 mb-4">
+                            <?php foreach ($fasilitas as $fasilitas_item): ?>
+                                <span class="badge rounded-pill text-bg-light border"><i class="bi bi-check2 me-1 text-success"></i><?= htmlspecialchars($fasilitas_item) ?></span>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+                    <p class="small text-muted mb-4"><i class="bi bi-house-check me-1"></i>Status hunian: <strong><?= ($properti['status_hunian'] ?? 'kosong') === 'terisi' ? 'Terisi' : 'Kosong' ?></strong></p>
 
                     <!-- Deskripsi -->
                     <p class="section-eyebrow mb-2">Tentang Properti</p>
@@ -193,11 +211,22 @@ require_once __DIR__ . '/includes/header.php';
                 <!-- ============ KOLOM KANAN: ACTION PANEL ============ -->
                 <div class="col-lg-4">
                     <div class="action-panel">
-                        <p class="text-muted mb-1 small">Harga</p>
-                        <div class="price mb-3">Rp <?= number_format($properti['harga'], 0, ',', '.') ?></div>
+                        <!-- Tampilan Harga berdasarkan tipe transaksi -->
+                        <?php if ($tipe_transaksi_properti === 'jual'): ?>
+                            <p class="text-muted mb-0 small">Harga Beli</p>
+                            <div class="price mb-2">Rp <?= number_format($properti['harga'], 0, ',', '.') ?></div>
+                        <?php endif; ?>
+
+                        <?php if ($tipe_transaksi_properti === 'sewa' && !empty($properti['harga_sewa'])): ?>
+                            <p class="text-muted mb-0 small">Harga Sewa</p>
+                            <div class="price text-primary mb-3" style="font-size: 1.35rem;">
+                                Rp <?= number_format($properti['harga_sewa'], 0, ',', '.') ?>
+                                <span class="fs-6 text-muted fw-normal">/ <?= htmlspecialchars($properti['periode_sewa'] ?? 'bulan') ?></span>
+                            </div>
+                        <?php endif; ?>
 
                         <?php if (!$user): ?>
-                            <p class="text-muted small mb-3">Silakan masuk dulu untuk menambah wishlist atau mengajukan pembelian.</p>
+                            <p class="text-muted small mb-3">Silakan masuk dulu untuk menambah wishlist atau mengajukan transaksi.</p>
                             <a href="login.php" class="btn btn-gold w-100 py-2 mb-2">
                                 <i class="bi bi-box-arrow-in-right me-1"></i> Masuk untuk Lanjut
                             </a>
@@ -212,25 +241,53 @@ require_once __DIR__ . '/includes/header.php';
                                 </button>
                             </form>
 
-                            <!-- Form Ajukan Beli -->
+                            <!-- Form Ajukan Beli / Sewa -->
                             <?php if ($properti['status'] === 'tersedia'): ?>
                                 <form method="POST" action="proses-transaksi.php" class="field-panel mt-3 pt-3" style="border-top:1px dashed #e3e1da;">
                                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
                                     <input type="hidden" name="properti_id" value="<?= $properti['id'] ?>">
-                                    <label class="d-block">Metode Pembayaran</label>
+
+                                    <!-- Jenis Transaksi -->
+                                    <label class="d-block mb-1 font-weight-bold">Jenis Transaksi</label>
+                                    <select name="tipe_transaksi" id="tipe_transaksi" class="form-select mb-3" required>
+                                        <?php if ($tipe_transaksi_properti === 'jual'): ?>
+                                            <option value="jual" selected>Beli Properti</option>
+                                        <?php else: ?>
+                                            <option value="sewa" selected>Sewa Properti</option>
+                                        <?php endif; ?>
+                                    </select>
+
+                                    <!-- Durasi Sewa (Dinamis) -->
+                                    <div id="container_sewa" class="mb-3" style="<?= $tipe_transaksi_properti === 'sewa' ? '' : 'display:none;' ?>">
+                                        <label class="d-block mb-1">Durasi Sewa (<?= htmlspecialchars($properti['periode_sewa'] ?? 'bulan') ?>)</label>
+                                        <input type="number" 
+                                               name="durasi_sewa" 
+                                               id="durasi_sewa" 
+                                               class="form-control" 
+                                               min="<?= (int)($properti['minimal_sewa'] ?? 1) ?>" 
+                                               value="<?= (int)($properti['minimal_sewa'] ?? 1) ?>" 
+                                               placeholder="Jumlah <?= htmlspecialchars($properti['periode_sewa'] ?? 'bulan') ?>">
+                                        <small class="text-muted">Minimal sewa: <?= (int)($properti['minimal_sewa'] ?? 1) ?> <?= htmlspecialchars($properti['periode_sewa'] ?? 'bulan') ?></small>
+                                    </div>
+
+                                    <!-- Metode Pembayaran -->
+                                    <label class="d-block mb-1">Metode Pembayaran</label>
                                     <select name="metode_bayar" class="form-select mb-3" required>
                                         <option value="">Pilih Metode Bayar</option>
                                         <option value="transfer_bank">Transfer Bank</option>
                                         <option value="cicilan_kpr">Cicilan KPR</option>
                                         <option value="tunai">Tunai</option>
+                                        <option value="e-wallet">E-Wallet</option>
+                                        <option value="qris">QRIS</option>
                                     </select>
+
                                     <button type="submit" class="btn btn-outline-navy w-100 py-2">
-                                        <i class="bi bi-send-check-fill me-1"></i> Ajukan Beli
+                                        <i class="bi bi-send-check-fill me-1"></i> <?= $tipe_transaksi_properti === 'sewa' ? 'Ajukan Sewa' : 'Ajukan Pembelian' ?>
                                     </button>
                                 </form>
                             <?php else: ?>
                                 <div class="alert-estate-error p-2 mt-3 text-center small mb-0">
-                                    <i class="bi bi-x-circle-fill me-1"></i> Properti ini sudah terjual
+                                    <i class="bi bi-x-circle-fill me-1"></i> Properti ini tidak tersedia
                                 </div>
                             <?php endif; ?>
                         <?php endif; ?>
@@ -239,5 +296,7 @@ require_once __DIR__ . '/includes/header.php';
             </div>
         </div>
     </section>
+
+<script src="<?= BASE_URL ?>assets/js/detail.js?v=<?= filemtime(__DIR__ . '/assets/js/detail.js') ?>"></script>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

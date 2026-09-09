@@ -358,6 +358,8 @@ Ganti nilai `q=` sama alamat kantor (spasi diganti `+`) atau koordinat (`q=-6.20
 
 ### Checklist Sebelum Submit
 
+> Catatan implementasi project ini: nama file dan kolom database mengikuti versi yang benar-benar dipakai di repository. Handler transaksi ada di `proses-transaksi.php` dan `proses-transaksi-admin.php`, tabel menggunakan `nama`, `status`, `metode_bayar`, dan `bukti_bayar`, serta status transaksi mencakup `menunggu`, `diproses`, `disetujui`, `ditolak`, `selesai`, dan `lunas`.
+
 - [ ] `setup.sql` jalan tanpa error, ada minimal 6-8 data properti contoh
 - [ ] Register, login, logout jalan; password ke-hash (cek di phpMyAdmin, jangan plaintext)
 - [ ] Guest gak bisa wishlist/ajukan transaksi — ke-redirect ke login

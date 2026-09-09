@@ -19,48 +19,12 @@ $admin_sidebar = true;
 $dashboard_sidebar_active = 'pesan';
 require_once __DIR__ . '/includes/header.php';
 ?>
-<style>
-    .page-header-photo {
-        background-image:
-            linear-gradient(180deg, rgba(13,31,51,0.72) 0%, rgba(13,31,51,0.6) 55%, rgba(13,31,51,0.94) 100%),
-            url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?fm=jpg&q=80&w=2000&auto=format&fit=crop');
-        background-size: cover;
-        background-position: center;
-    }
-
-    .pesan-card {
-        background: #fff; border: 1px solid var(--ivory-100); border-radius: 3px;
-        padding: 1.25rem 1.5rem; margin-bottom: 1rem; position: relative;
-    }
-    .pesan-card.belum-dibaca { border-left: 3px solid var(--gold-500); background: #fdf9f0; }
-    .pesan-card .nama { font-family: 'Fraunces', serif; font-weight: 600; color: var(--navy-900); }
-    .pesan-card .meta { font-size: 0.82rem; color: var(--ink-500); }
-    .badge-belum {
-        background: var(--gold-grad); color: var(--navy-950); font-size: 0.66rem; font-weight: 800;
-        letter-spacing: 0.06em; text-transform: uppercase; padding: 0.25rem 0.6rem; border-radius: 3px;
-        margin-left: 0.5rem;
-    }
-    .pesan-card .isi-pesan { color: var(--ink-900); font-size: 0.92rem; margin: 0.85rem 0; line-height: 1.6; }
-    .btn-mini {
-        font-size: 0.78rem; padding: 0.35rem 0.8rem; border-radius: 3px; font-weight: 700;
-        border: 1px solid var(--ivory-100); text-decoration: none; display: inline-block;
-    }
-    .btn-tandai { color: var(--navy-900); background: #fff; }
-    .btn-tandai:hover { border-color: var(--gold-500); color: var(--gold-600); }
-    .btn-hapus-pesan { color: #8a2c22; background: #fff; }
-    .btn-hapus-pesan:hover { background: #fbeceb; border-color: #f0bdb9; }
-</style>
-
     <!-- ============ PAGE HEADER ============ -->
     <div class="page-header page-header-photo">
         <div class="container">
             <p class="eyebrow mb-2">Panel Admin</p>
             <h1 class="mb-2">Pesan Kontak Masuk</h1>
-            <div class="breadcrumb-estate">
-                <a href="<?= BASE_URL ?>index.php">Beranda</a>
-                <span class="sep">/</span>
-                <span class="current">Pesan Kontak</span>
-            </div>
+            <p class="lead mb-0">Baca dan kelola pesan yang dikirim calon pelanggan.</p>
 
         </div>
     </div>
@@ -97,31 +61,49 @@ require_once __DIR__ . '/includes/header.php';
                         <p class="isi-pesan"><?= nl2br(htmlspecialchars($p['pesan'])) ?></p>
 
                         <div class="d-flex gap-2">
-                            <?php if ($p['status_dibaca'] === 'belum'): ?>
-                                <form method="POST" action="proses-pesan.php" class="d-inline">
-                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
-                                    <input type="hidden" name="aksi" value="tandai-dibaca">
-                                    <input type="hidden" name="id" value="<?= $p['id'] ?>">
-                                    <button type="submit" class="btn-mini btn-tandai">
-                                        <i class="bi bi-check2 me-1"></i> Tandai Dibaca
-                                    </button>
-                                </form>
-                            <?php endif; ?>
+    <?php if ($p['status_dibaca'] === 'belum'): ?>
+        <form method="POST" action="proses-pesan.php" class="d-inline">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
+            <input type="hidden" name="aksi" value="tandai-dibaca">
+            <input type="hidden" name="id" value="<?= $p['id'] ?>">
+            <button type="submit" class="btn-mini btn-tandai">
+                <i class="bi bi-check2 me-1"></i> Tandai Dibaca
+            </button>
+        </form>
+    <?php endif; ?>
 
-                            <form method="POST" action="proses-pesan.php" class="d-inline"
-                                  onsubmit="return confirm('Hapus pesan ini?');">
-                                                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
-                                <input type="hidden" name="aksi" value="hapus">
-                                <input type="hidden" name="id" value="<?= $p['id'] ?>">
-                                <button type="submit" class="btn-mini btn-hapus-pesan">
-                                    <i class="bi bi-trash-fill me-1"></i> Hapus
-                                </button>
-                            </form>
-                        </div>
+    <button type="button" class="btn-mini btn-hapus-pesan" data-bs-toggle="modal" data-bs-target="#modalHapusPesan<?= $p['id'] ?>">
+        <i class="bi bi-trash-fill me-1"></i> Hapus
+    </button>
+
+    <!-- Modal Hapus Pesan -->
+    <div class="modal fade" id="modalHapusPesan<?= $p['id'] ?>" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Hapus Pesan?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                </div>
+                <div class="modal-body">
+                    Hapus pesan dari <strong><?= htmlspecialchars($p['nama']) ?></strong>? Tindakan ini tidak dapat dibatalkan.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-outline-navy" data-bs-dismiss="modal">Batal</button>
+                    <form method="POST" action="proses-pesan.php" class="d-inline">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
+                        <input type="hidden" name="aksi" value="hapus">
+                        <input type="hidden" name="id" value="<?= $p['id'] ?>">
+                        <button type="submit" class="btn btn-sm btn-danger">Hapus Pesan</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
                     </div>
                 <?php endforeach; ?>
             <?php endif; ?>
         </div>
     </main>
 
-<?php require_once __DIR__ . '/includes/footer.php'; ?>
+<?php require_once __DIR__ . '/includes/dashboard-footer.php'; ?>

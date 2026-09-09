@@ -1,15 +1,7 @@
 <?php
 /**
  * listing.php - Estate Prima
- * Semua properti - search + filter (tipe, kota, rentang harga) + pagination
- *
- * Query string yang didukung:
- *   ?q=green valley          -> cari di judul/alamat/kota
- *   &tipe=rumah              -> filter tipe (rumah/apartemen/tanah/ruko)
- *   &kota=Bekasi             -> filter kota
- *   &harga_min=100000000
- *   &harga_max=900000000
- *   &page=2                  -> pagination
+ * Semua properti - search + filter (tipe_transaksi, tipe, kota, rentang harga) + pagination
  */
 
 require_once __DIR__ . '/config/database.php';
@@ -18,22 +10,32 @@ require_once __DIR__ . '/includes/auth.php';
 // ------------------------------------------------------------------
 // 1. Ambil & bersihkan input filter dari query string
 // ------------------------------------------------------------------
-$q         = trim($_GET['q'] ?? '');
-$tipe      = trim($_GET['tipe'] ?? '');
-$kota      = trim($_GET['kota'] ?? '');
-$harga_min = $_GET['harga_min'] ?? '';
-$harga_max = $_GET['harga_max'] ?? '';
+$q              = trim($_GET['q'] ?? '');
+$tipe_transaksi = trim($_GET['tipe_transaksi'] ?? '');
+$tipe           = trim($_GET['tipe'] ?? '');
+$kota           = trim($_GET['kota'] ?? '');
+$status         = trim($_GET['status'] ?? '');
+$harga_min      = $_GET['harga_min'] ?? '';
+$harga_max      = $_GET['harga_max'] ?? '';
 
 $halaman        = max((int)($_GET['page'] ?? 1), 1);
 $data_per_halaman = 9;
 $offset         = ($halaman - 1) * $data_per_halaman;
 
 // ------------------------------------------------------------------
-// 2. Bangun WHERE clause secara dinamis, TAPI tetap pakai prepared statement
+// 2. Bangun WHERE clause secara dinamis
 // ------------------------------------------------------------------
-$kondisi = ["status = 'tersedia'"];
+$kondisi = [];
 $tipe_data = '';
 $parameter = [];
+
+if (in_array($status, ['tersedia', 'terjual'], true)) {
+    $kondisi[] = 'status = ?';
+    $parameter[] = $status;
+    $tipe_data .= 's';
+} else {
+    $kondisi[] = "status = 'tersedia'";
+}
 
 if ($q !== '') {
     $kondisi[]  = "(judul LIKE ? OR alamat LIKE ? OR kota LIKE ?)";
@@ -44,7 +46,15 @@ if ($q !== '') {
     $tipe_data  .= 'sss';
 }
 
-if ($tipe !== '' && in_array($tipe, ['rumah', 'apartemen', 'tanah', 'ruko'])) {
+if ($tipe_transaksi !== '' && in_array($tipe_transaksi, ['jual', 'sewa'], true)) {
+    if ($tipe_transaksi === 'jual') {
+        $kondisi[] = "tipe_transaksi = 'jual'";
+    } else {
+        $kondisi[] = "tipe_transaksi = 'sewa'";
+    }
+}
+
+if ($tipe !== '' && in_array($tipe, ['rumah', 'apartemen', 'tanah', 'ruko'], true)) {
     $kondisi[]  = "tipe = ?";
     $parameter[] = $tipe;
     $tipe_data  .= 's';
@@ -57,15 +67,19 @@ if ($kota !== '') {
 }
 
 if ($harga_min !== '' && is_numeric($harga_min)) {
-    $kondisi[]  = "harga >= ?";
-    $parameter[] = (int)$harga_min;
-    $tipe_data  .= 'i';
+    $kondisi[]  = "(harga >= ? OR harga_sewa >= ?)";
+    $val_min = (int)$harga_min;
+    $parameter[] = $val_min;
+    $parameter[] = $val_min;
+    $tipe_data  .= 'ii';
 }
 
 if ($harga_max !== '' && is_numeric($harga_max)) {
-    $kondisi[]  = "harga <= ?";
-    $parameter[] = (int)$harga_max;
-    $tipe_data  .= 'i';
+    $kondisi[]  = "(harga <= ? OR harga_sewa <= ?)";
+    $val_max = (int)$harga_max;
+    $parameter[] = $val_max;
+    $parameter[] = $val_max;
+    $tipe_data  .= 'ii';
 }
 
 $where_sql = implode(' AND ', $kondisi);
@@ -84,9 +98,9 @@ $total_halaman  = max((int)ceil($total_data / $data_per_halaman), 1);
 mysqli_stmt_close($stmt_total);
 
 // ------------------------------------------------------------------
-// 4. Ambil data properti sesuai filter + pagination
+// 4. Ambil data properti
 // ------------------------------------------------------------------
-$query_data = "SELECT id, judul, harga, tipe, kota, kamar_tidur, kamar_mandi, luas_bangunan, gambar_url
+$query_data = "SELECT id, judul, harga, harga_sewa, periode_sewa, tipe_transaksi, tipe, kota, kamar_tidur, kamar_mandi, luas_bangunan, gambar_url
                FROM properti
                WHERE {$where_sql}
                ORDER BY created_at DESC
@@ -100,7 +114,7 @@ mysqli_stmt_execute($stmt);
 $daftar_properti = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
 mysqli_stmt_close($stmt);
 
-// Daftar kota unik buat dropdown filter
+// Daftar kota unik
 $daftar_kota = mysqli_fetch_all(
     mysqli_query($koneksi, "SELECT DISTINCT kota FROM properti ORDER BY kota"),
     MYSQLI_ASSOC
@@ -110,28 +124,6 @@ $user = user_login();
 $page_title = 'Semua Properti — Estate Prima';
 require_once __DIR__ . '/includes/header.php';
 ?>
-<style>
-    .hero-listing {
-        position: relative;
-        min-height: 56vh;
-        display: flex;
-        align-items: center;
-        background-image:
-            linear-gradient(180deg, rgba(10,24,38,0.65) 0%, rgba(10,24,38,0.5) 40%, rgba(10,24,38,0.95) 100%),
-            url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?fm=jpg&q=80&w=2200&auto=format&fit=crop');
-        background-size: cover;
-        background-position: center;
-    }
-    .hero-listing .breadcrumb-estate a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.85rem; }
-    .hero-listing .breadcrumb-estate a:hover { color: var(--gold-300); }
-    .hero-listing .breadcrumb-estate .sep { color: rgba(255,255,255,0.35); margin: 0 0.4rem; }
-    .hero-listing .breadcrumb-estate .current { color: var(--gold-300); font-size: 0.85rem; }
-    .hero-listing .hero-eyebrow { font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.78rem; color: var(--gold-300); }
-    .hero-listing h1 { font-family: 'Fraunces', serif; font-weight: 600; font-size: clamp(2rem, 4vw, 3rem); line-height: 1.1; color: #fff; }
-    .hero-listing h1 em { font-style: italic; color: var(--gold-300); }
-    .hero-listing p.lead { color: rgba(255,255,255,0.88); font-size: 1.02rem; max-width: 36rem; }
-</style>
-
     <!-- ============ HERO ============ -->
     <header class="hero-listing">
         <div class="container pb-5">
@@ -143,77 +135,30 @@ require_once __DIR__ . '/includes/header.php';
             <p class="hero-eyebrow mb-3">Jelajahi Koleksi &middot; <?= $total_data ?> Properti</p>
             <h1 class="mb-3">Semua <em>properti pilihan</em> kami.</h1>
             <p class="lead mb-4">
-                Gunakan pencarian di bawah untuk menyaring properti berdasarkan kata kunci,
-                tipe, kota, hingga rentang harga yang sesuai kebutuhanmu.
+                Gunakan pencarian di bawah untuk menyaring properti berdasarkan tipe transaksi, kata kunci, kota, hingga harga.
             </p>
 
-            <!-- Search card, mengambang di bawah hero -->
-            <div class="row justify-content-start">
-                <div class="col-lg-12">
-                    <div class="floating-card field-panel mt-2">
-                        <span class="corner-tick tl"></span>
-                        <span class="corner-tick tr"></span>
-                        <span class="corner-tick bl"></span>
-                        <span class="corner-tick br"></span>
-
-                        <form action="listing.php" method="GET" class="row g-3 align-items-end">
-                            <div class="col-md-3">
-                                <label class="d-block">Kata Kunci</label>
-                                <input type="text" name="q" class="form-control" placeholder="Judul, alamat, kota..."
-                                       value="<?= htmlspecialchars($q) ?>">
-                            </div>
-                            <div class="col-md-2">
-                                <label class="d-block">Tipe</label>
-                                <select name="tipe" class="form-select">
-                                    <option value="">Semua Tipe</option>
-                                    <?php foreach (['rumah', 'apartemen', 'tanah', 'ruko'] as $t): ?>
-                                        <option value="<?= $t ?>" <?= $tipe === $t ? 'selected' : '' ?>><?= ucfirst($t) ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <label class="d-block">Kota</label>
-                                <select name="kota" class="form-select">
-                                    <option value="">Semua Kota</option>
-                                    <?php foreach ($daftar_kota as $k): ?>
-                                        <option value="<?= htmlspecialchars($k['kota']) ?>" <?= $kota === $k['kota'] ? 'selected' : '' ?>>
-                                            <?= htmlspecialchars($k['kota']) ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <label class="d-block">Harga Min</label>
-                                <input type="number" name="harga_min" class="form-control" placeholder="Rp"
-                                       value="<?= htmlspecialchars($harga_min) ?>">
-                            </div>
-                            <div class="col-md-2">
-                                <label class="d-block">Harga Max</label>
-                                <input type="number" name="harga_max" class="form-control" placeholder="Rp"
-                                       value="<?= htmlspecialchars($harga_max) ?>">
-                            </div>
-                            <div class="col-md-1">
-                                <button type="submit" class="btn btn-gold w-100 py-2" title="Cari Properti">
-                                    <i class="bi bi-search"></i>
-                                </button>
-                            </div>
-                        </form>
-                        <?php if ($q !== '' || $tipe !== '' || $kota !== '' || $harga_min !== '' || $harga_max !== ''): ?>
-                            <div class="mt-3">
-                                <a href="listing.php" class="btn btn-outline-navy btn-sm px-3">
-                                    <i class="bi bi-x-circle me-1"></i> Reset Filter
-                                </a>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            </div>
         </div>
     </header>
 
     <!-- ============ HASIL LISTING ============ -->
     <section class="py-5">
         <div class="container">
+            <div class="row g-4 align-items-start">
+                <aside class="col-lg-3">
+                    <form action="listing.php" method="GET" class="filter-panel p-3 sticky-lg-top" style="top:1rem;">
+                        <h2 class="h5 fw-bold mb-3"><i class="bi bi-funnel me-1"></i> Filter Properti</h2>
+                        <div class="mb-3"><label class="form-label small fw-semibold">Cari</label><input type="text" name="q" class="form-control form-control-sm" placeholder="Judul atau lokasi..." value="<?= htmlspecialchars($q) ?>"></div>
+                        <div class="mb-3"><label class="form-label small fw-semibold">Tipe Transaksi</label><select name="tipe_transaksi" class="form-select form-select-sm"><option value="">Jual & Sewa</option><option value="jual" <?= $tipe_transaksi === 'jual' ? 'selected' : '' ?>>Dijual</option><option value="sewa" <?= $tipe_transaksi === 'sewa' ? 'selected' : '' ?>>Disewa</option></select></div>
+                        <div class="mb-3"><label class="form-label small fw-semibold">Tipe Properti</label><select name="tipe" class="form-select form-select-sm"><option value="">Semua Tipe</option><?php foreach (['rumah', 'apartemen', 'tanah', 'ruko'] as $t): ?><option value="<?= $t ?>" <?= $tipe === $t ? 'selected' : '' ?>><?= ucfirst($t) ?></option><?php endforeach; ?></select></div>
+                        <div class="mb-3"><label class="form-label small fw-semibold">Status</label><select name="status" class="form-select form-select-sm"><option value="">Tersedia</option><option value="tersedia" <?= $status === 'tersedia' ? 'selected' : '' ?>>Tersedia</option><option value="terjual" <?= $status === 'terjual' ? 'selected' : '' ?>>Terjual</option></select></div>
+                        <div class="mb-3"><label class="form-label small fw-semibold">Kota</label><select name="kota" class="form-select form-select-sm"><option value="">Semua Kota</option><?php foreach ($daftar_kota as $k): ?><option value="<?= htmlspecialchars($k['kota']) ?>" <?= $kota === $k['kota'] ? 'selected' : '' ?>><?= htmlspecialchars($k['kota']) ?></option><?php endforeach; ?></select></div>
+                        <div class="row g-2 mb-3"><div class="col-6"><label class="form-label small fw-semibold">Harga Min</label><input type="number" name="harga_min" class="form-control form-control-sm" value="<?= htmlspecialchars($harga_min) ?>"></div><div class="col-6"><label class="form-label small fw-semibold">Harga Max</label><input type="number" name="harga_max" class="form-control form-control-sm" value="<?= htmlspecialchars($harga_max) ?>"></div></div>
+                        <button type="submit" class="btn btn-gold w-100 mb-2"><i class="bi bi-search me-1"></i> Terapkan Filter</button>
+                        <a href="listing.php" class="btn btn-outline-navy btn-sm w-100">Reset</a>
+                    </form>
+                </aside>
+                <div class="col-lg-9">
             <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
                 <div>
                     <p class="section-eyebrow mb-2">Hasil Pencarian</p>
@@ -232,14 +177,25 @@ require_once __DIR__ . '/includes/header.php';
             <?php else: ?>
                 <div class="row g-4">
                     <?php foreach ($daftar_properti as $p): ?>
+                        <?php 
+                            $tx_type = $p['tipe_transaksi'] ?? 'jual';
+                            $badge_class = 'badge-tx-' . $tx_type;
+                            $tx_label = $tx_type === 'sewa' ? 'Disewakan' : 'Dijual';
+                        ?>
                         <div class="col-md-6 col-lg-4">
-                            <div class="property-card">
+                            <div class="property-card position-relative">
                                 <span class="corner-tick tl"></span>
                                 <span class="corner-tick br"></span>
 
                                 <div class="thumb" style="background-image:url('<?= htmlspecialchars($p['gambar_url'] ?: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994') ?>');">
-                                    <span class="type-tag"><?= ucfirst($p['tipe']) ?></span>
-                                    <span class="price-tag">Rp <?= number_format($p['harga'], 0, ',', '.') ?></span>
+                                    <span class="badge-tx-tag <?= $badge_class ?>"><?= ucfirst($p['tipe']) ?> - <?= $tx_label ?></span>
+                                    <span class="price-tag">
+                                        <?php if ($tx_type === 'sewa'): ?>
+                                            Rp <?= number_format($p['harga_sewa'], 0, ',', '.') ?> / <?= $p['periode_sewa'] ?>
+                                        <?php else: ?>
+                                            Rp <?= number_format($p['harga'], 0, ',', '.') ?>
+                                        <?php endif; ?>
+                                    </span>
                                 </div>
                                 <div class="card-body p-3">
                                     <h3 class="mb-1"><?= htmlspecialchars($p['judul']) ?></h3>
@@ -256,7 +212,7 @@ require_once __DIR__ . '/includes/header.php';
                     <?php endforeach; ?>
                 </div>
 
-                <!-- ============ PAGINATION ============ -->
+                <!-- PAGINATION -->
                 <?php if ($total_halaman > 1): ?>
                     <div class="pagination-estate mt-5 justify-content-center">
                         <?php
@@ -275,6 +231,8 @@ require_once __DIR__ . '/includes/header.php';
                         <?php if ($halaman < $total_halaman): $qs['page'] = $halaman + 1; ?>
                             <a href="listing.php?<?= http_build_query($qs) ?>"><i class="bi bi-chevron-right"></i></a>
                         <?php endif; ?>
+                            </div>
+                        </div>
                     </div>
                 <?php endif; ?>
             <?php endif; ?>

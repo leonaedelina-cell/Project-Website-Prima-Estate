@@ -1,7 +1,7 @@
 <?php
 /**
  * index.php - Estate Prima
- * Homepage: hero + search cepat + statistik + properti terbaru
+ * Homepage: hero + search cepat (termasuk filter transaksi) + statistik + properti terbaru
  */
 
 require_once __DIR__ . '/config/database.php';
@@ -24,9 +24,9 @@ $total_user = mysqli_fetch_assoc(
 )['total'];
 
 // ------------------------------------------------------------------
-// 2. Properti terbaru (6 item, status masih tersedia)
+// 2. Properti terbaru (6 item)
 // ------------------------------------------------------------------
-$query_terbaru = "SELECT id, judul, harga, tipe, kota, kamar_tidur, kamar_mandi, luas_bangunan, gambar_url
+$query_terbaru = "SELECT id, judul, harga, harga_sewa, periode_sewa, tipe_transaksi, tipe, kota, kamar_tidur, kamar_mandi, luas_bangunan, gambar_url
                    FROM properti
                    WHERE status = 'tersedia'
                    ORDER BY created_at DESC
@@ -34,7 +34,7 @@ $query_terbaru = "SELECT id, judul, harga, tipe, kota, kamar_tidur, kamar_mandi,
 $hasil_terbaru = mysqli_query($koneksi, $query_terbaru);
 $properti_terbaru = mysqli_fetch_all($hasil_terbaru, MYSQLI_ASSOC);
 
-// Daftar kota unik (buat dropdown quick search)
+// Daftar kota unik
 $daftar_kota = mysqli_fetch_all(
     mysqli_query($koneksi, "SELECT DISTINCT kota FROM properti ORDER BY kota"),
     MYSQLI_ASSOC
@@ -45,24 +45,6 @@ $user = user_login();
 $page_title = 'Estate Prima — Temukan Hunian Impian Anda';
 require_once __DIR__ . '/includes/header.php';
 ?>
-<style>
-    .hero {
-        position: relative;
-        min-height: 92vh;
-        display: flex;
-        align-items: center;
-        background-image:
-            linear-gradient(180deg, rgba(13,31,51,0.55) 0%, rgba(13,31,51,0.35) 40%, rgba(13,31,51,0.92) 100%),
-            url('https://images.unsplash.com/photo-1757359056339-22968344cce6?fm=jpg&q=80&w=2200&auto=format&fit=crop');
-        background-size: cover;
-        background-position: center;
-    }
-    .hero-eyebrow { font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.78rem; color: var(--gold-300); }
-    .hero h1 { font-family: 'Fraunces', serif; font-weight: 600; font-size: clamp(2.4rem, 5vw, 3.9rem); line-height: 1.08; color: #fff; }
-    .hero h1 em { font-style: italic; color: var(--gold-300); }
-    .hero p.lead { color: rgba(255,255,255,0.85); font-size: 1.08rem; max-width: 34rem; }
-</style>
-
     <!-- ============ HERO ============ -->
     <header class="hero">
         <div class="container pb-5">
@@ -71,14 +53,13 @@ require_once __DIR__ . '/includes/header.php';
                     <p class="hero-eyebrow mb-3">Properti Pilihan &middot; Terverifikasi</p>
                     <h1 class="mb-3">Temukan hunian yang <em>terasa seperti pulang.</em></h1>
                     <p class="lead mb-4">
-                        Estate Prima menghadirkan koleksi rumah, apartemen, dan tanah pilihan
-                        di lokasi-lokasi strategis — lengkap dengan proses pengajuan beli yang transparan.
+                        Estate Prima menghadirkan pilihan rumah, apartemen, dan ruko untuk dijual maupun disewakan dengan proses transparan.
                     </p>
                 </div>
             </div>
 
             <div class="row justify-content-start">
-                <div class="col-lg-10">
+                <div class="col-lg-11">
                     <div class="floating-card field-panel mt-4">
                         <span class="corner-tick tl"></span>
                         <span class="corner-tick tr"></span>
@@ -86,11 +67,19 @@ require_once __DIR__ . '/includes/header.php';
                         <span class="corner-tick br"></span>
 
                         <form action="listing.php" method="GET" class="row g-3 align-items-end">
+                            <div class="col-md-2">
+                                <label class="d-block">Pilihan Transaksi</label>
+                                <select name="tipe_transaksi" class="form-select">
+                                    <option value="">Semua</option>
+                                    <option value="jual">Beli</option>
+                                    <option value="sewa">Sewa</option>
+                                </select>
+                            </div>
                             <div class="col-md-3">
                                 <label class="d-block">Kata Kunci</label>
                                 <input type="text" name="q" class="form-control" placeholder="Nama, alamat, kota...">
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <label class="d-block">Kota</label>
                                 <select name="kota" class="form-select">
                                     <option value="">Semua Kota</option>
@@ -109,9 +98,9 @@ require_once __DIR__ . '/includes/header.php';
                                     <option value="ruko">Ruko</option>
                                 </select>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <button type="submit" class="btn btn-gold w-100 py-2">
-                                    <i class="bi bi-search me-1"></i> Cari Properti
+                                    <i class="bi bi-search me-1"></i> Cari
                                 </button>
                             </div>
                         </form>
@@ -131,11 +120,11 @@ require_once __DIR__ . '/includes/header.php';
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="stat-num"><?= $total_tersedia ?></div>
-                    <div class="stat-label">Siap Dihuni</div>
+                    <div class="stat-label">Siap Dihuni / Disewa</div>
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="stat-num"><?= $total_terjual ?></div>
-                    <div class="stat-label">Telah Terjual</div>
+                    <div class="stat-label">Telah Terjual / Tersewa</div>
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="stat-num"><?= $total_user ?></div>
@@ -163,14 +152,25 @@ require_once __DIR__ . '/includes/header.php';
             <?php else: ?>
                 <div class="row g-4">
                     <?php foreach ($properti_terbaru as $p): ?>
+                        <?php 
+                            $tx_type = $p['tipe_transaksi'] ?? 'jual';
+                            $badge_class = 'badge-tx-' . $tx_type;
+                            $tx_label = $tx_type === 'sewa' ? 'Disewakan' : 'Dijual';
+                        ?>
                         <div class="col-md-6 col-lg-4">
-                            <div class="property-card">
+                            <div class="property-card position-relative">
                                 <span class="corner-tick tl"></span>
                                 <span class="corner-tick br"></span>
 
                                 <div class="thumb" style="background-image:url('<?= htmlspecialchars($p['gambar_url'] ?: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994') ?>');">
-                                    <span class="type-tag"><?= ucfirst($p['tipe']) ?></span>
-                                    <span class="price-tag">Rp <?= number_format($p['harga'], 0, ',', '.') ?></span>
+                                    <span class="badge-tx-tag <?= $badge_class ?>"><?= ucfirst($p['tipe']) ?> - <?= $tx_label ?></span>
+                                    <span class="price-tag">
+                                        <?php if ($tx_type === 'sewa'): ?>
+                                            Rp <?= number_format($p['harga_sewa'], 0, ',', '.') ?> / <?= $p['periode_sewa'] ?>
+                                        <?php else: ?>
+                                            Rp <?= number_format($p['harga'], 0, ',', '.') ?>
+                                        <?php endif; ?>
+                                    </span>
                                 </div>
                                 <div class="card-body p-3">
                                     <h3 class="mb-1"><?= htmlspecialchars($p['judul']) ?></h3>
@@ -194,7 +194,7 @@ require_once __DIR__ . '/includes/header.php';
     <section class="container pb-5 mb-4">
         <div class="cta-banner text-center">
             <h2 class="mb-2">Butuh bantuan menemukan hunian yang tepat?</h2>
-            <p class="text-white-50 mb-4">Tim sales kami siap membantu, dari konsultasi hingga proses pengajuan pembelian.</p>
+            <p class="text-white-50 mb-4">Tim sales kami siap membantu, dari konsultasi hingga proses transaksi jual dan sewa.</p>
             <a href="kontak.php" class="btn btn-gold px-4 py-2">Hubungi Tim Sales</a>
         </div>
     </section>

@@ -33,11 +33,11 @@ if ($aksi === 'tambah' || $aksi === 'edit') {
     $email = trim($_POST['email'] ?? '');
     $foto_url = trim($_POST['foto_url'] ?? '');
 
-    if ($nama === '') {
-        die('Nama agen wajib diisi.');
+    if ($nama === '' || $no_hp === '' || $email === '') {
+        die('Nama, nomor HP, dan email agen wajib diisi.');
     }
 
-    if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         die('Format email agen tidak valid.');
     }
 

@@ -1,0 +1,8 @@
+/assets/uploads/*
+!/assets/uploads/.gitkeep
+!/assets/uploads/properti/
+!/assets/uploads/properti/.gitkeep
+!/assets/uploads/bukti-bayar/
+!/assets/uploads/bukti-bayar/.gitkeep
+!/assets/uploads/agen/
+!/assets/uploads/agen/.gitkeep

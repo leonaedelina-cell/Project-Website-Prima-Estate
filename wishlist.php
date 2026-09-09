@@ -13,7 +13,7 @@ $user_id = $_SESSION['user_id'];
 
 $stmt = mysqli_prepare(
     $koneksi,
-    "SELECT w.id AS wishlist_id, p.id AS properti_id, p.judul, p.harga, p.kota, p.status, p.gambar_url
+    "SELECT w.id AS wishlist_id, p.id AS properti_id, p.judul, p.harga, p.harga_sewa, p.periode_sewa, p.tipe_transaksi, p.kota, p.status, p.gambar_url
      FROM wishlist w
      JOIN properti p ON w.properti_id = p.id
      WHERE w.user_id = ?
@@ -31,14 +31,6 @@ $dashboard_sidebar = true;
 $dashboard_sidebar_active = 'wishlist';
 require_once __DIR__ . '/includes/header.php';
 ?>
-<style>
-    .wishlist-card .thumb { height: 220px; }
-    .wishlist-card .card-body { position: relative; }
-    .wishlist-card .remove-form { position: relative; z-index: 3; }
-    .wishlist-card .remove-form .btn { border-color: #e3c3bd; color: #8a2c22; font-size: 0.78rem; font-weight: 700; }
-    .wishlist-card .remove-form .btn:hover { background: #fbeceb; }
-</style>
-
 <header class="page-header">
     <div class="container">
         <p class="eyebrow mb-2">Koleksi Pribadi</p>
@@ -68,25 +60,25 @@ require_once __DIR__ . '/includes/header.php';
                 <a href="<?= BASE_URL ?>listing.php" class="btn btn-gold">Cari Properti <i class="bi bi-arrow-right ms-1"></i></a>
             </div>
         <?php else: ?>
-            <div class="row g-4">
+            <div class="row g-4" id="wishlist-grid" data-endpoint="<?= BASE_URL ?>proses-wishlist.php" data-csrf-token="<?= htmlspecialchars(csrf_token()) ?>">
                 <?php foreach ($daftar_wishlist as $w): ?>
-                    <div class="col-md-6 col-lg-4">
+                    <div class="col-md-6 col-lg-4 wishlist-item" data-properti-id="<?= $w['properti_id'] ?>">
                         <div class="property-card wishlist-card">
                             <span class="corner-tick tl"></span>
                             <span class="corner-tick br"></span>
                             <div class="thumb" style="background-image:url('<?= htmlspecialchars($w['gambar_url'] ?: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994') ?>');">
                                 <span class="type-tag"><i class="bi bi-heart-fill me-1"></i> Tersimpan</span>
-                                <span class="price-tag">Rp <?= number_format($w['harga'], 0, ',', '.') ?></span>
+                                <span class="price-tag">Rp <?= number_format($w['tipe_transaksi'] === 'sewa' ? ($w['harga_sewa'] ?? 0) : $w['harga'], 0, ',', '.') ?><?= $w['tipe_transaksi'] === 'sewa' ? ' / ' . htmlspecialchars($w['periode_sewa'] ?? 'bulan') : '' ?></span>
                             </div>
                             <div class="card-body p-3">
                                 <h3 class="mb-1"><?= htmlspecialchars($w['judul']) ?></h3>
                                 <p class="location mb-3"><i class="bi bi-geo-alt-fill"></i> <?= htmlspecialchars($w['kota']) ?></p>
                                 <div class="d-flex justify-content-between align-items-center gap-2">
                                     <span class="badge-status <?= htmlspecialchars($w['status']) ?>"><i class="bi bi-circle-fill"></i> <?= ucfirst($w['status']) ?></span>
-                                    <form method="POST" action="<?= BASE_URL ?>proses-wishlist.php" class="remove-form">
+                                    <form method="POST" action="<?= BASE_URL ?>proses-wishlist.php" class="remove-form remove-wishlist-form">
                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
                                         <input type="hidden" name="properti_id" value="<?= $w['properti_id'] ?>">
-                                        <button type="submit" class="btn btn-sm"><i class="bi bi-trash3 me-1"></i> Hapus</button>
+                                        <button type="submit" class="btn btn-sm remove-wishlist" data-properti-id="<?= $w['properti_id'] ?>"><i class="bi bi-trash3 me-1"></i> Hapus</button>
                                     </form>
                                 </div>
                                 <a href="<?= BASE_URL ?>detail.php?id=<?= $w['properti_id'] ?>" class="stretched-link"></a>
@@ -99,4 +91,5 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 </main>
 
-<?php require_once __DIR__ . '/includes/footer.php'; ?>
+<script src="<?= BASE_URL ?>assets/js/wishlist.js?v=<?= filemtime(__DIR__ . '/assets/js/wishlist.js') ?>"></script>
+<?php require_once __DIR__ . '/includes/dashboard-footer.php'; ?>
