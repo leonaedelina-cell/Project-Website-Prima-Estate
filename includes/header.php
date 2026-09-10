@@ -95,12 +95,12 @@ $user = $user ?? null;
                             <button class="btn btn-outline-gold btn-sm px-3 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-person-circle me-1"></i> <?= htmlspecialchars($user['nama']) ?>
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-estate">
                                 <li><a class="dropdown-item" href="<?= BASE_URL ?><?= $user['role'] === 'admin' ? 'admin-dashboard.php' : 'dashboard-user.php' ?>"><i class="bi bi-grid-1x2 me-2"></i>Dashboard</a></li>
                                 <?php if ($user['role'] !== 'admin'): ?><li><a class="dropdown-item" href="<?= BASE_URL ?>profil.php"><i class="bi bi-person-gear me-2"></i>Profil</a></li><?php endif; ?>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><form method="POST" action="<?= BASE_URL ?>logout.php" class="px-3"><input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>"><button type="submit" class="dropdown-item px-0"><i class="bi bi-box-arrow-right me-2"></i>Keluar</button></form></li>
-                            </ul>
+                                <li><form method="POST" action="<?= BASE_URL ?>logout.php" class="dropdown-menu-estate-form"><input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>"><button type="submit" class="dropdown-item"><i class="bi bi-box-arrow-right me-2"></i>Keluar</button></form></li>
+                            </ul> 
                         </div>
                     <?php else: ?>
                         <a href="<?= BASE_URL ?>login.php" class="btn btn-outline-gold btn-sm px-3">Masuk</a>

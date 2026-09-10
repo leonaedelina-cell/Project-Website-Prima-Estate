@@ -236,3 +236,39 @@ body {
     justify-content: center;
     flex-shrink: 0;
 }
+
+/* ---------- cara-kerja.html: 4 langkah proses, carousel agen, CTA sales ---------- */
+.step-num {
+    width: 34px;
+    height: 34px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background-color: #16324f;
+    color: #e3c896;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.agen-photo {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.agen-carousel .carousel-control-prev,
+.agen-carousel .carousel-control-next {
+    width: 5%;
+    filter: invert(1) grayscale(100);
+}
+.agen-carousel .carousel-indicators [data-bs-target] {
+    background-color: #16324f;
+    opacity: 0.3;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+}
+.agen-carousel .carousel-indicators .active {
+    opacity: 1;
+}
+.cta-sales { background-color: #16324f; }

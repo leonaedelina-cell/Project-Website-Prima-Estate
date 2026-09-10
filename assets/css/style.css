@@ -63,6 +63,186 @@ body {
 .navbar-estate .nav-link:hover,
 .navbar-estate .nav-link.active { color: var(--gold-300); }
 
+.dropdown-menu-estate {
+    min-width: 11rem;
+    padding: 0.45rem;
+    background: var(--navy-900);
+    border: 1px solid rgba(227, 200, 150, 0.35);
+    border-radius: 4px;
+    box-shadow: 0 12px 28px rgba(10, 24, 38, 0.3);
+}
+.dropdown-menu-estate .dropdown-item {
+    padding: 0.6rem 0.75rem;
+    border-radius: 3px;
+    color: rgba(255, 255, 255, 0.86);
+}
+.dropdown-menu-estate-form { margin: 0; }
+.dropdown-menu-estate .dropdown-item i { color: var(--gold-300); }
+.dropdown-menu-estate .dropdown-item:hover,
+.dropdown-menu-estate .dropdown-item:focus {
+    color: var(--navy-950);
+    background: var(--gold-grad);
+}
+.dropdown-menu-estate .dropdown-item:hover i,
+.dropdown-menu-estate .dropdown-item:focus i { color: var(--navy-950); }
+.dropdown-menu-estate .dropdown-divider { border-color: rgba(227, 200, 150, 0.25); }
+
+/* ---------- Cara Kerja ---------- */
+.cara-kerja-hero-content { max-width: 720px; position: relative; z-index: 1; }
+.cara-kerja-hero-tags { display: flex; flex-wrap: wrap; gap: .65rem; }
+.cara-kerja-hero-tags span {
+    padding: .5rem .8rem;
+    border: 1px solid rgba(227, 200, 150, .45);
+    border-radius: 999px;
+    color: var(--gold-300);
+    background: rgba(10, 24, 38, .28);
+    font-size: .78rem;
+    font-weight: 700;
+}
+.cara-kerja-steps-section { background: var(--ivory-50); }
+.cara-kerja-flow-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .75rem;
+    color: var(--gold-600);
+    font-size: .72rem;
+    font-weight: 800;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+}
+.cara-kerja-flow-label span { width: 42px; height: 1px; background: var(--gold-500); }
+.cara-kerja-step-card {
+    overflow: hidden;
+    padding: 1.7rem;
+    background: #fff;
+    border: 1px solid var(--ivory-100);
+    border-top: 3px solid var(--gold-500);
+    border-radius: 4px;
+    box-shadow: 0 10px 25px rgba(10, 24, 38, .06);
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+.cara-kerja-step-card:hover {
+    transform: translateY(-7px);
+    border-color: var(--gold-500);
+    box-shadow: 0 18px 35px rgba(10, 24, 38, .14);
+}
+.cara-kerja-step-number {
+    position: absolute;
+    top: 1rem;
+    right: 1.2rem;
+    color: var(--ivory-100);
+    font-family: 'Fraunces', serif;
+    font-size: 2.6rem;
+    font-weight: 700;
+    line-height: 1;
+}
+.cara-kerja-step-icon {
+    display: inline-flex;
+    width: 3.35rem;
+    height: 3.35rem;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.25rem;
+    color: var(--navy-950);
+    background: var(--gold-grad);
+    border-radius: 50%;
+    box-shadow: 0 7px 16px rgba(163, 129, 63, .25);
+    font-size: 1.35rem;
+}
+.cara-kerja-step-card h3 { color: var(--navy-900); font-weight: 800; }
+.cara-kerja-step-card p { font-size: .9rem; line-height: 1.7; }
+.cara-kerja-step-arrow {
+    position: absolute;
+    right: 1.25rem;
+    bottom: 1.15rem;
+    color: var(--gold-600);
+    opacity: 0;
+    transform: translate(-4px, 4px);
+    transition: opacity .25s ease, transform .25s ease;
+}
+.cara-kerja-step-card:hover .cara-kerja-step-arrow { opacity: 1; transform: translate(0, 0); }
+.cara-kerja-team-section { background: linear-gradient(135deg, var(--navy-950), var(--navy-900)); }
+.cara-kerja-team-section .section-title,
+.cara-kerja-team-section p { color: #fff; }
+.cara-kerja-team-section .text-muted { color: rgba(255,255,255,.7) !important; }
+.cara-kerja-team-intro { color: rgba(255,255,255,.72); }
+.cara-kerja-contact-box {
+    max-width: 850px;
+    padding: 2rem;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(227,200,150,.35);
+    border-radius: 6px;
+    box-shadow: 0 14px 30px rgba(0,0,0,.14);
+}
+.cara-kerja-contact-box .section-title { color: #fff; }
+.cara-kerja-agents { max-width: 650px; margin: 0 auto; }
+.cara-kerja-team-section .agent-card {
+    min-height: 122px;
+    border: 1px solid rgba(227,200,150,.35);
+    box-shadow: 0 12px 25px rgba(0,0,0,.15);
+}
+.cara-kerja-team-section .agent-card .avatar { object-fit: cover; }
+.cara-kerja-team-section .carousel-control-prev,
+.cara-kerja-team-section .carousel-control-next { width: 8%; }
+.cara-kerja-team-section .carousel-control-prev-icon,
+.cara-kerja-team-section .carousel-control-next-icon { filter: invert(1); }
+.cara-kerja-agent-card {
+    max-width: 380px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    text-align: center;
+    background: #fff;
+    border: 1px solid rgba(227,200,150,.35);
+    border-radius: 6px;
+    box-shadow: 0 12px 25px rgba(0,0,0,.15);
+}
+.cara-kerja-agent-photo {
+    width: 110px;
+    height: 110px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    object-fit: cover;
+    border: 4px solid var(--gold-500);
+    border-radius: 50%;
+    background: var(--navy-900);
+    color: var(--gold-300);
+    font-family: 'Fraunces', serif;
+    font-size: 2rem;
+    font-weight: 700;
+}
+.cara-kerja-agent-card h3 { margin-bottom: .25rem; color: var(--navy-900); font-family: 'Fraunces', serif; font-size: 1.2rem; }
+.cara-kerja-agent-role { margin-bottom: .5rem; color: var(--gold-600); font-size: .8rem; font-weight: 700; }
+.cara-kerja-agent-role span { color: var(--ink-500); font-weight: 600; }
+.cara-kerja-agent-contact { color: var(--ink-500); font-size: .85rem; }
+.cara-kerja-agent-card .btn-success { background: #198754; border-color: #198754; }
+.cara-kerja-faq-header { margin-bottom: 1.75rem; }
+.cara-kerja-faq {
+    padding: .5rem;
+    background: #fff;
+    border: 1px solid var(--ivory-100);
+    border-top: 4px solid var(--gold-500);
+    border-radius: 6px;
+    box-shadow: 0 12px 30px rgba(10,24,38,.08);
+}
+.cara-kerja-faq .accordion-item { border: 0; border-bottom: 1px solid var(--ivory-100); }
+.cara-kerja-faq .accordion-item:last-child { border-bottom: 0; }
+.cara-kerja-faq .accordion-button {
+    padding: 1.1rem 1.25rem;
+    color: var(--navy-900);
+    background: #fff;
+    font-weight: 800;
+}
+.cara-kerja-faq .accordion-button:not(.collapsed) {
+    color: var(--navy-950);
+    background: var(--ivory-50);
+    box-shadow: none;
+}
+.cara-kerja-faq .accordion-button::after { filter: sepia(1) saturate(3); }
+.cara-kerja-faq .accordion-body { padding: 0 1.25rem 1.2rem; color: var(--ink-500); line-height: 1.8; }
+
 .btn-gold {
     background: var(--gold-grad);
     border: 1px solid var(--gold-600);
@@ -560,6 +740,11 @@ textarea.form-control:focus {
 }
 
 @media (max-width: 575.98px) {
+    .cara-kerja-hero-tags { gap: .45rem; }
+    .cara-kerja-hero-tags span { font-size: .7rem; padding: .4rem .6rem; }
+    .cara-kerja-flow-label { font-size: .65rem; letter-spacing: .1em; }
+    .cara-kerja-flow-label span { width: 22px; }
+    .cara-kerja-step-card { padding: 1.35rem; }
     .page-header,
     header.hero,
     header.hero-listing,
